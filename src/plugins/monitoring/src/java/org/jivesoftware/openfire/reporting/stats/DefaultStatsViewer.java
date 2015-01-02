@@ -33,7 +33,7 @@ public class DefaultStatsViewer implements StatsViewer {
     private StatsEngine engine;
 
     /**
-     * Default constructor used by the plugin container to create this class.
+     * Default constructor used by the org.hangout.org.thirdplace container to create this class.
      *
      * @param engine The stats engine used to retrieve the stats.
      */

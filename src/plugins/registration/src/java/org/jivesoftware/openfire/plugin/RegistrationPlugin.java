@@ -44,7 +44,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
 /**
- * Registration plugin.
+ * Registration org.org.thirdplace.org.hangout.org.thirdplace.
  *
  * @author Ryan Graham.
  */

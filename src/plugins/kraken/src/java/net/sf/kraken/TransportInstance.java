@@ -61,8 +61,8 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
         this.nameOfClass = classname;
         this.componentManager = componentManager;
         this.sessionRouter = sessionRouter;
-        enabled = JiveGlobals.getBooleanProperty("plugin.gateway."+this.type.toString()+".enabled", false);
-        subDomain = JiveGlobals.getProperty("plugin.gateway."+this.type.toString()+".subdomain", this.type.toString());
+        enabled = JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway."+this.type.toString()+".enabled", false);
+        subDomain = JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway."+this.type.toString()+".subdomain", this.type.toString());
     }
 
     /**
@@ -97,7 +97,7 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
      */
     public void enable() {
         enabled = true;
-        JiveGlobals.setProperty("plugin.gateway."+this.type.toString()+".enabled", "true");
+        JiveGlobals.setProperty("org.hangout.org.thirdplace.gateway."+this.type.toString()+".enabled", "true");
         if (!running) {
             startInstance();
         }
@@ -108,7 +108,7 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
      */
     public void disable() {
         enabled = false;
-        JiveGlobals.setProperty("plugin.gateway."+this.type.toString()+".enabled", "false");
+        JiveGlobals.setProperty("org.hangout.org.thirdplace.gateway."+this.type.toString()+".enabled", "false");
         if (running) {
             stopInstance();
         }
@@ -223,8 +223,8 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
 
     @SuppressWarnings("unchecked")
     public void propertySet(String property, Map params) {
-        if (property.startsWith("plugin.gateway.")) {
-            if (property.equals("plugin.gateway."+this.type.toString()+".enabled")) {
+        if (property.startsWith("org.hangout.org.thirdplace.gateway.")) {
+            if (property.equals("org.hangout.org.thirdplace.gateway."+this.type.toString()+".enabled")) {
                 enabled = Boolean.parseBoolean((String)params.get("value"));
                 if (enabled) {
                     if (!running) {
@@ -237,7 +237,7 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
                     }
                 }
             }
-            else if (property.equals("plugin.gateway."+this.type.toString()+".subdomain")) {
+            else if (property.equals("org.hangout.org.thirdplace.gateway."+this.type.toString()+".subdomain")) {
                 String newSubDomain = (String)params.get("value");
                 if (!newSubDomain.equals(this.subDomain)) {
                     if (running) {
@@ -252,13 +252,13 @@ public class TransportInstance<B extends TransportBuddy> implements PropertyEven
 
     @SuppressWarnings("unchecked")
     public void propertyDeleted(String property, Map params) {
-        if (property.startsWith("plugin.gateway.")) {
-            if (property.equals("plugin.gateway."+this.type.toString()+".enabled")) {
+        if (property.startsWith("org.hangout.org.thirdplace.gateway.")) {
+            if (property.equals("org.hangout.org.thirdplace.gateway."+this.type.toString()+".enabled")) {
                 if (running) {
                     stopInstance();
                 }
             }
-            else if (property.equals("plugin.gateway."+this.type.toString()+".subdomain")) {
+            else if (property.equals("org.hangout.org.thirdplace.gateway."+this.type.toString()+".subdomain")) {
                 String newSubDomain = this.type.toString();
                 if (!newSubDomain.equals(this.subDomain)) {
                     if (running) {

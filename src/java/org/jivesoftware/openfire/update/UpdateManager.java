@@ -141,7 +141,7 @@ public class UpdateManager extends BasicModule {
                             try {
                                 // Check for server updates
                                 checkForServerUpdate(true);
-                                // Refresh list of available plugins and check for plugin updates
+                                // Refresh list of available plugins and check for org.hangout.org.thirdplace updates
                                 checkForPluginsUpdates(true);
                             }
                             catch (Exception e) {
@@ -205,7 +205,7 @@ public class UpdateManager extends BasicModule {
     }
 
     /**
-     * Queries the igniterealtime.org server for new server and plugin updates.
+     * Queries the igniterealtime.org server for new server and org.hangout.org.thirdplace updates.
      *
      * @param notificationsEnabled true if admins will be notified when new updates are found.
      * @throws Exception if some error happens during the query.
@@ -259,14 +259,14 @@ public class UpdateManager extends BasicModule {
     }
 
     /**
-     * Download and install latest version of plugin.
+     * Download and install latest version of org.hangout.org.thirdplace.
      *
-     * @param url the URL of the latest version of the plugin.
-     * @return true if the plugin was successfully downloaded and installed.
+     * @param url the URL of the latest version of the org.hangout.org.thirdplace.
+     * @return true if the org.hangout.org.thirdplace was successfully downloaded and installed.
      */
     public boolean downloadPlugin(String url) {
         boolean installed = false;
-        // Download and install new version of plugin
+        // Download and install new version of org.hangout.org.thirdplace
         HttpClient httpClient = new HttpClient();
         // Check if a proxy should be used
         if (isUsingProxy()) {
@@ -286,7 +286,7 @@ public class UpdateManager extends BasicModule {
                         .installPlugin(in, pluginFilename);
                 in.close();
                 if (installed) {
-                    // Remove the plugin from the list of plugins to update
+                    // Remove the org.hangout.org.thirdplace from the list of plugins to update
                     for (Update update : pluginUpdates) {
                         if (update.getURL().equals(url)) {
                             update.setDownloaded(true);
@@ -298,18 +298,18 @@ public class UpdateManager extends BasicModule {
             }
         }
         catch (IOException e) {
-            Log.warn("Error downloading new plugin version", e);
+            Log.warn("Error downloading new org.hangout.org.thirdplace version", e);
         }
         return installed;
     }
 
     /**
-     * Returns true if the plugin downloaded from the specified URL has been downloaded. Plugins
+     * Returns true if the org.hangout.org.thirdplace downloaded from the specified URL has been downloaded. Plugins
      * may be downloaded but not installed. The install process may take like 30 seconds to
      * detect new plugins to install.
      *
-     * @param url the URL of the latest version of the plugin.
-     * @return true if the plugin downloaded from the specified URL has been downloaded.
+     * @param url the URL of the latest version of the org.hangout.org.thirdplace.
+     * @return true if the org.hangout.org.thirdplace downloaded from the specified URL has been downloaded.
      */
     public boolean isPluginDownloaded(String url) {
         String pluginFilename = url.substring(url.lastIndexOf("/") + 1);
@@ -492,17 +492,17 @@ public class UpdateManager extends BasicModule {
     }
 
     /**
-     * Returns the plugin update or <tt>null</tt> if the plugin is up to date.
+     * Returns the org.hangout.org.thirdplace update or <tt>null</tt> if the org.hangout.org.thirdplace is up to date.
      *
-     * @param pluginName     the name of the plugin (as described in the meta-data).
-     * @param currentVersion current version of the plugin that is installed.
-     * @return the plugin update or null if the plugin is up to date.
+     * @param pluginName     the name of the org.hangout.org.thirdplace (as described in the meta-data).
+     * @param currentVersion current version of the org.hangout.org.thirdplace that is installed.
+     * @return the org.hangout.org.thirdplace update or null if the org.hangout.org.thirdplace is up to date.
      */
     public Update getPluginUpdate(String pluginName, String currentVersion) {
         for (Update update : pluginUpdates) {
-            // Check if this is the requested plugin
+            // Check if this is the requested org.hangout.org.thirdplace
             if (update.getComponentName().equals(pluginName)) {
-                // Check if the plugin version is right
+                // Check if the org.hangout.org.thirdplace version is right
                 if (update.getLatestVersion().compareTo(currentVersion) > 0) {
                     return update;
                 }
@@ -572,7 +572,7 @@ public class UpdateManager extends BasicModule {
         SAXReader xmlReader = new SAXReader();
         xmlReader.setEncoding("UTF-8");
         Element xmlResponse = xmlReader.read(new StringReader(response)).getRootElement();
-        Iterator plugins = xmlResponse.elementIterator("plugin");
+        Iterator plugins = xmlResponse.elementIterator("org.hangout.org.thirdplace");
         while (plugins.hasNext()) {
             Element plugin = (Element) plugins.next();
             String pluginName = plugin.attributeValue("name");
@@ -588,7 +588,7 @@ public class UpdateManager extends BasicModule {
             String fileSize = plugin.attributeValue("fileSize");
             AvailablePlugin available = new AvailablePlugin(pluginName, description, latestVersion,
                     author, icon, changelog, readme, licenseType, minServerVersion, url, fileSize);
-            // Add plugin to the list of available plugins at js.org
+            // Add org.hangout.org.thirdplace to the list of available plugins at js.org
             availablePlugins.put(pluginName, available);
         }
 
@@ -699,7 +699,7 @@ public class UpdateManager extends BasicModule {
         //  XML to store in the file
         Element xml = docFactory.createDocument().addElement("available");
         for (AvailablePlugin plugin : availablePlugins.values()) {
-            Element component = xml.addElement("plugin");
+            Element component = xml.addElement("org.hangout.org.thirdplace");
             component.addAttribute("name", plugin.getName());
             component.addAttribute("latest", plugin.getLatestVersion());
             component.addAttribute("changelog", plugin.getChangelog());
@@ -841,7 +841,7 @@ public class UpdateManager extends BasicModule {
             }
         }
         // Parse info and recreate available plugins
-        Iterator it = xmlResponse.getRootElement().elementIterator("plugin");
+        Iterator it = xmlResponse.getRootElement().elementIterator("org.hangout.org.thirdplace");
         while (it.hasNext()) {
             Element plugin = (Element) it.next();
             String pluginName = plugin.attributeValue("name");
@@ -857,7 +857,7 @@ public class UpdateManager extends BasicModule {
             String fileSize = plugin.attributeValue("fileSize");
             AvailablePlugin available = new AvailablePlugin(pluginName, description, latestVersion,
                     author, icon, changelog, readme, licenseType, minServerVersion, url, fileSize);
-            // Add plugin to the list of available plugins at js.org
+            // Add org.hangout.org.thirdplace to the list of available plugins at js.org
             availablePlugins.put(pluginName, available);
         }
     }

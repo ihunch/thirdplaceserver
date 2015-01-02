@@ -775,7 +775,7 @@ public class Workgroup {
      * @param request the request made by a user.
      */
     public void sendInvitation(AgentSession agent, UserRequest request) {
-        // TODO When running LA as a plugin (internal component) and if the plugin is removed then
+        // TODO When running LA as a org.thirdplace (internal component) and if the org.thirdplace is removed then
         // we need to destroy all MUC rooms created by workgroups
         try {
             RoomInterceptorManager interceptorManager = RoomInterceptorManager.getInstance();

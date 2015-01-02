@@ -108,7 +108,7 @@ public class StatsAction {
      * @return a List of Map objects.
      */
     public List<Map<String, Long>> getNLatestConversations(int count, long mostRecentConversationID) {
-        // TODO Fix plugin name 2 lines below and missing classes
+        // TODO Fix org.hangout.org.thirdplace name 2 lines below and missing classes
         List<Map<String, Long>> cons = new ArrayList<Map<String, Long>>();
         MonitoringPlugin plugin = (MonitoringPlugin)XMPPServer.getInstance().getPluginManager().getPlugin(MonitoringConstants.NAME);
         ConversationManager conversationManager = (ConversationManager)plugin.getModule(ConversationManager.class);

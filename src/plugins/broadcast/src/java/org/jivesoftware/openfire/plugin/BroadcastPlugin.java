@@ -55,7 +55,7 @@ import org.xmpp.packet.PacketError;
 import org.xmpp.packet.Presence;
 
 /**
- * Broadcast service plugin. It accepts messages and broadcasts them out to
+ * Broadcast service org.thirdplace. It accepts messages and broadcasts them out to
  * groups of connected users. The address <tt>all@[serviceName].[server]</tt> is
  * reserved for sending a broadcast message to all connected users. Otherwise,
  * broadcast messages can be sent to groups of users by using addresses
@@ -80,17 +80,17 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
     private UserManager userManager;
 
     /**
-     * Constructs a new broadcast plugin.
+     * Constructs a new broadcast org.thirdplace.
      */
     public BroadcastPlugin() {
-        serviceName = JiveGlobals.getProperty("plugin.broadcast.serviceName", "broadcast");
+        serviceName = JiveGlobals.getProperty("org.thirdplace.broadcast.serviceName", "broadcast");
         disableGroupPermissions = JiveGlobals.getBooleanProperty(
-                "plugin.broadcast.disableGroupPermissions");
+                "org.thirdplace.broadcast.disableGroupPermissions");
         groupMembersAllowed = JiveGlobals.getBooleanProperty(
-                "plugin.broadcast.groupMembersAllowed", true);
-        allowedUsers = stringToList(JiveGlobals.getProperty("plugin.broadcast.allowedUsers", ""));
-        all2ofline = JiveGlobals.getBooleanProperty("plugin.broadcast.all2offline", false);
-        messagePrefix = JiveGlobals.getProperty("plugin.broadcast.messagePrefix", null);
+                "org.thirdplace.broadcast.groupMembersAllowed", true);
+        allowedUsers = stringToList(JiveGlobals.getProperty("org.thirdplace.broadcast.allowedUsers", ""));
+        all2ofline = JiveGlobals.getBooleanProperty("org.thirdplace.broadcast.all2offline", false);
+        messagePrefix = JiveGlobals.getProperty("org.thirdplace.broadcast.messagePrefix", null);
     }
 
     // Plugin Interface
@@ -143,12 +143,12 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
     // Component Interface
 
     public String getName() {
-        // Get the name from the plugin.xml file.
+        // Get the name from the org.thirdplace.xml file.
         return pluginManager.getName(this);
     }
 
     public String getDescription() {
-        // Get the description from the plugin.xml file.
+        // Get the description from the org.thirdplace.xml file.
         return pluginManager.getDescription(this);
     }
 
@@ -456,7 +456,7 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
      * @param serviceName the service name of this component.
      */
     public void setServiceName(String serviceName) {
-        JiveGlobals.setProperty("plugin.broadcast.serviceName", serviceName);
+        JiveGlobals.setProperty("org.thirdplace.broadcast.serviceName", serviceName);
     }
 
     /**
@@ -485,7 +485,7 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
         for (String jid : allowedUsers) {
             buf.append(jid).append(",");
         }
-        JiveGlobals.setProperty("plugin.broadcast.allowedUsers", buf.toString());
+        JiveGlobals.setProperty("org.thirdplace.broadcast.allowedUsers", buf.toString());
     }
 
     /**
@@ -507,7 +507,7 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
      */
     public void setGroupPermissionsDisabled(boolean disableGroupPermissions) {
         this.disableGroupPermissions = disableGroupPermissions;
-        JiveGlobals.setProperty("plugin.broadcast.disableGroupPermissions",
+        JiveGlobals.setProperty("org.thirdplace.broadcast.disableGroupPermissions",
                 Boolean.toString(disableGroupPermissions));
     }
 
@@ -535,37 +535,37 @@ public class BroadcastPlugin implements Plugin, Component, PropertyEventListener
      */
     public void setGroupMembersAllowed(boolean allowed) {
         this.groupMembersAllowed = allowed;
-        JiveGlobals.setProperty("plugin.broadcast.groupMembersAllowed", Boolean.toString(allowed));
+        JiveGlobals.setProperty("org.thirdplace.broadcast.groupMembersAllowed", Boolean.toString(allowed));
     }
 
     // PropertyEventListener Methods
 
     public void propertySet(String property, Map<String, Object> params) {
-        if (property.equals("plugin.broadcast.groupMembersAllowed")) {
+        if (property.equals("org.thirdplace.broadcast.groupMembersAllowed")) {
             this.groupMembersAllowed = Boolean.parseBoolean((String)params.get("value"));
         }
-        else if (property.equals("plugin.broadcast.disableGroupPermissions")) {
+        else if (property.equals("org.thirdplace.broadcast.disableGroupPermissions")) {
             this.disableGroupPermissions = Boolean.parseBoolean((String)params.get("value"));
         }
-        else if (property.equals("plugin.broadcast.allowedUsers")) {
+        else if (property.equals("org.thirdplace.broadcast.allowedUsers")) {
             this.allowedUsers = stringToList((String)params.get("value"));
         }
-        else if (property.equals("plugin.broadcast.serviceName")) {
+        else if (property.equals("org.thirdplace.broadcast.serviceName")) {
             changeServiceName((String)params.get("value"));
         }
     }
 
     public void propertyDeleted(String property, Map<String, Object> params) {
-        if (property.equals("plugin.broadcast.groupMembersAllowed")) {
+        if (property.equals("org.thirdplace.broadcast.groupMembersAllowed")) {
             this.groupMembersAllowed = true;
         }
-        else if (property.equals("plugin.broadcast.disableGroupPermissions")) {
+        else if (property.equals("org.thirdplace.broadcast.disableGroupPermissions")) {
             this.disableGroupPermissions = false;
         }
-        else if (property.equals("plugin.broadcast.allowedUsers")) {
+        else if (property.equals("org.thirdplace.broadcast.allowedUsers")) {
             this.allowedUsers = Collections.emptyList();
         }
-        else if (property.equals("plugin.broadcast.serviceName")) {
+        else if (property.equals("org.thirdplace.broadcast.serviceName")) {
             changeServiceName("broadcast");
         }
     }

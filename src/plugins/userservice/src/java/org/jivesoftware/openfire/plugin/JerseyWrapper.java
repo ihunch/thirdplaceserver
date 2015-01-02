@@ -23,7 +23,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 public class JerseyWrapper extends ServletContainer {
 
 	/** The Constant AUTHFILTER. */
-	private static final String AUTHFILTER = "org.jivesoftware.openfire.plugin.AuthFilter";
+	private static final String AUTHFILTER = "org.jivesoftware.openfire.org.thirdplace.AuthFilter";
 
 	/** The Constant CONTAINER_REQUEST_FILTERS. */
 	private static final String CONTAINER_REQUEST_FILTERS = "com.sun.jersey.spi.container.ContainerRequestFilters";

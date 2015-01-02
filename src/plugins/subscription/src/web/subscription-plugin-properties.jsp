@@ -48,7 +48,7 @@
          try  {
             XMPPServer.getInstance().getUserManager().getUser(username);
             plugin.addWhiteListUser(username);
-            response.sendRedirect("subscription-plugin-properties.jsp?addSuccess=true");
+            response.sendRedirect("subscription-org.hangout.org.thirdplace-properties.jsp?addSuccess=true");
             return;
          }
          catch (UserNotFoundException unfe) {
@@ -59,7 +59,7 @@
 
    if (deleteUser) {
       plugin.removeWhiteListUser(username);
-      response.sendRedirect("subscription-plugin-properties.jsp?deleteSuccess=true");
+      response.sendRedirect("subscription-org.hangout.org.thirdplace-properties.jsp?deleteSuccess=true");
       return;
    }
    
@@ -71,7 +71,7 @@
          plugin.setSubscriptionLevel(level);
       }
             
-      response.sendRedirect("subscription-plugin-properties.jsp?success=true");
+      response.sendRedirect("subscription-org.hangout.org.thirdplace-properties.jsp?success=true");
       return;
    }
    

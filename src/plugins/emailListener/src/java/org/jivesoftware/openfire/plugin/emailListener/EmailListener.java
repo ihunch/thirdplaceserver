@@ -264,7 +264,7 @@ public class EmailListener {
             props.setProperty("mail.imap.port", String.valueOf(port));
             props.setProperty("mail.imap.connectiontimeout", String.valueOf(10 * 1000));
             // Allow messages with a mix of valid and invalid recipients to still be sent.
-            props.setProperty("mail.debug", JiveGlobals.getProperty("plugin.email.listener.debug", "false"));
+            props.setProperty("mail.debug", JiveGlobals.getProperty("org.thirdplace.email.listener.debug", "false"));
 
             // Methology from an article on www.javaworld.com (Java Tip 115)
             // We will attempt to failback to an insecure connection
@@ -323,7 +323,7 @@ public class EmailListener {
      * @return the host where the IMAP server is running or null if none was defined.
      */
     public String getHost() {
-        return JiveGlobals.getProperty("plugin.email.listener.host");
+        return JiveGlobals.getProperty("org.thirdplace.email.listener.host");
     }
 
     /**
@@ -332,7 +332,7 @@ public class EmailListener {
      * @param host the host where the IMAP server is running or null if none was defined.
      */
     public void setHost(String host) {
-        JiveGlobals.setProperty("plugin.email.listener.host", host);
+        JiveGlobals.setProperty("org.thirdplace.email.listener.host", host);
     }
 
     /**
@@ -342,7 +342,7 @@ public class EmailListener {
      * @return port where the IMAP server is listening.
      */
     public int getPort() {
-        return JiveGlobals.getIntProperty("plugin.email.listener.port", isSSLEnabled() ? 993 : 143);
+        return JiveGlobals.getIntProperty("org.thirdplace.email.listener.port", isSSLEnabled() ? 993 : 143);
     }
 
     /**
@@ -352,7 +352,7 @@ public class EmailListener {
      * @param port port where the IMAP server is listening.
      */
     public void setPort(int port) {
-        JiveGlobals.setProperty("plugin.email.listener.port", Integer.toString(port));
+        JiveGlobals.setProperty("org.thirdplace.email.listener.port", Integer.toString(port));
     }
 
     /**
@@ -362,7 +362,7 @@ public class EmailListener {
      * @return the user to use to connect to the IMAP server.
      */
     public String getUser() {
-        return JiveGlobals.getProperty("plugin.email.listener.user");
+        return JiveGlobals.getProperty("org.thirdplace.email.listener.user");
     }
 
     /**
@@ -372,7 +372,7 @@ public class EmailListener {
      * @param user the user to use to connect to the IMAP server.
      */
     public void setUser(String user) {
-        JiveGlobals.setProperty("plugin.email.listener.user", user);
+        JiveGlobals.setProperty("org.thirdplace.email.listener.user", user);
     }
 
     /**
@@ -382,7 +382,7 @@ public class EmailListener {
      * @return the password to use to connect to the IMAP server.
      */
     public String getPassword() {
-        return JiveGlobals.getProperty("plugin.email.listener.password");
+        return JiveGlobals.getProperty("org.thirdplace.email.listener.password");
     }
 
     /**
@@ -392,7 +392,7 @@ public class EmailListener {
      * @param password the password to use to connect to the IMAP server.
      */
     public void setPassword(String password) {
-        JiveGlobals.setProperty("plugin.email.listener.password", password);
+        JiveGlobals.setProperty("org.thirdplace.email.listener.password", password);
     }
 
     /**
@@ -403,7 +403,7 @@ public class EmailListener {
      * @return the name of the folder.
      */
     public String getFolder() {
-        return JiveGlobals.getProperty("plugin.email.listener.folder");
+        return JiveGlobals.getProperty("org.thirdplace.email.listener.folder");
     }
 
     /**
@@ -414,7 +414,7 @@ public class EmailListener {
      * @param folder the name of the folder.
      */
     public void setFolder(String folder) {
-        JiveGlobals.setProperty("plugin.email.listener.folder", folder);
+        JiveGlobals.setProperty("org.thirdplace.email.listener.folder", folder);
     }
 
     /**
@@ -424,7 +424,7 @@ public class EmailListener {
      * @return the milliseconds to wait to check for new emails.
      */
     public int getFrequency() {
-        return JiveGlobals.getIntProperty("plugin.email.listener.frequency", 5 * 60 * 1000);
+        return JiveGlobals.getIntProperty("org.thirdplace.email.listener.frequency", 5 * 60 * 1000);
     }
 
     /**
@@ -434,7 +434,7 @@ public class EmailListener {
      * @param frequency the milliseconds to wait to check for new emails.
      */
     public void setFrequency(int frequency) {
-        JiveGlobals.setProperty("plugin.email.listener.frequency", Integer.toString(frequency));
+        JiveGlobals.setProperty("org.thirdplace.email.listener.frequency", Integer.toString(frequency));
     }
     /**
      * Returns true if SSL is enabled to connect to the server.
@@ -442,7 +442,7 @@ public class EmailListener {
      * @return true if SSL is enabled to connect to the server.
      */
     public boolean isSSLEnabled() {
-        return JiveGlobals.getBooleanProperty("plugin.email.listener.ssl", false);
+        return JiveGlobals.getBooleanProperty("org.thirdplace.email.listener.ssl", false);
     }
 
     /**
@@ -451,11 +451,11 @@ public class EmailListener {
      * @param enabled true if SSL is enabled to connect to the server.
      */
     public void setSSLEnabled(boolean enabled) {
-        JiveGlobals.setProperty("plugin.email.listener.ssl", Boolean.toString(enabled));
+        JiveGlobals.setProperty("org.thirdplace.email.listener.ssl", Boolean.toString(enabled));
     }
 
     public Collection<String> getUsers() {
-        String users = JiveGlobals.getProperty("plugin.email.listener.users");
+        String users = JiveGlobals.getProperty("org.thirdplace.email.listener.users");
         if (users == null || users.trim().length() == 0) {
             Collection<String> admins = new ArrayList<String>();
             for (JID jid : XMPPServer.getInstance().getAdmins()) {
@@ -467,6 +467,6 @@ public class EmailListener {
     }
 
     public void setUsers(Collection<String> users) {
-        JiveGlobals.setProperty("plugin.email.listener.users", StringUtils.collectionToString(users));
+        JiveGlobals.setProperty("org.thirdplace.email.listener.users", StringUtils.collectionToString(users));
     }
 }

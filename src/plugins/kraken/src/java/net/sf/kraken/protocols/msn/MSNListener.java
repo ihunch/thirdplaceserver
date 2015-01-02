@@ -170,7 +170,7 @@ public class MSNListener implements MsnContactListListener, MsnMessageListener, 
 
     public void initialEmailNotificationReceived(MsnSwitchboard switchboard, MsnEmailInitMessage message, MsnContact contact) {
         Log.debug("MSN: Got init email notify "+message.getInboxUnread()+" unread message(s)");
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.mailnotifications", true) && message.getInboxUnread() > 0) {
+        if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway.msn.mailnotifications", true) && message.getInboxUnread() > 0) {
             getSession().getTransport().sendMessage(
                     getSession().getJID(),
                     getSession().getTransport().getJID(),
@@ -182,7 +182,7 @@ public class MSNListener implements MsnContactListListener, MsnMessageListener, 
 
     public void initialEmailDataReceived(MsnSwitchboard switchboard, MsnEmailInitEmailData message, MsnContact contact) {
         Log.debug("MSN: Got init email data "+message.getInboxUnread()+" unread message(s)");
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.mailnotifications", true) && message.getInboxUnread() > 0) {
+        if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway.msn.mailnotifications", true) && message.getInboxUnread() > 0) {
             getSession().getTransport().sendMessage(
                     getSession().getJID(),
                     getSession().getTransport().getJID(),
@@ -194,7 +194,7 @@ public class MSNListener implements MsnContactListListener, MsnMessageListener, 
 
     public void newEmailNotificationReceived(MsnSwitchboard switchboard, MsnEmailNotifyMessage message, MsnContact contact) {
         Log.debug("MSN: Got new email notification from "+message.getFrom()+" <"+message.getFromAddr()+">");
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.mailnotifications", true)) {
+        if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway.msn.mailnotifications", true)) {
             getSession().getTransport().sendMessage(
                     getSession().getJID(),
                     getSession().getTransport().getJID(),
@@ -236,7 +236,7 @@ public class MSNListener implements MsnContactListListener, MsnMessageListener, 
             if (msnContact.isInList(MsnList.FL) && msnContact.getEmail() != null) {
                 final MSNBuddy buddy = new MSNBuddy(getSession().getBuddyManager(), msnContact);
                 getSession().getBuddyManager().storeBuddy(buddy);
-                if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.avatars", true)) {
+                if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway.msn.avatars", true)) {
                     final MsnObject msnAvatar = msnContact.getAvatar();
                     if (msnAvatar != null && (buddy.getAvatar() == null || !buddy.getAvatar().getLegacyIdentifier().equals(msnAvatar.getSha1c()))) {
                         try {
@@ -295,7 +295,7 @@ public class MSNListener implements MsnContactListListener, MsnMessageListener, 
                 final MSNBuddy buddy = getSession().getBuddyManager().getBuddy(getSession().getTransport().convertIDToJID(friend.getEmail().toString()));
                 buddy.setPresenceAndStatus(((MSNTransport)getSession().getTransport()).convertMSNStatusToXMPP(friend.getStatus()), friend.getPersonalMessage());
                 buddy.setMsnContact(friend);
-                if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.avatars", true)) {
+                if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway.msn.avatars", true)) {
                     final MsnObject msnAvatar = friend.getAvatar();
                     if (msnAvatar != null && (buddy.getAvatar() == null || !buddy.getAvatar().getLegacyIdentifier().equals(msnAvatar.getSha1c()))) {
                         try {

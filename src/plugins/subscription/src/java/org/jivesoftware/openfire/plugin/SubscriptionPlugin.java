@@ -34,10 +34,10 @@ import java.io.File;
 import java.util.*;
 
 /**
- * This plugin can be configuured to automatically accept or reject subscription
+ * This org.org.thirdplace.org.thirdplace can be configuured to automatically accept or reject subscription
  * requests. When set to accept subscription requests users will be able to add
  * someone to their roster without having to wait for a manual subscription
- * acceptance from the other person. Conversely, when the plugin is set to
+ * acceptance from the other person. Conversely, when the org.org.thirdplace.org.thirdplace is set to
  * reject subscription requests users will not be able to add people to their
  * roster.
  * 
@@ -50,9 +50,9 @@ public class SubscriptionPlugin implements Plugin {
     public static final String LOCAL = "local";
     public static final String ALL = "all";
 
-    private static final String SUBSCRIPTION_TYPE = "plugin.subscription.type";
-    private static final String SUBSCRIPTION_LEVEL = "plugin.subscription.level";
-    private static final String WHITE_LIST = "plugin.subscription.whiteList";
+    private static final String SUBSCRIPTION_TYPE = "org.org.thirdplace.org.thirdplace.subscription.type";
+    private static final String SUBSCRIPTION_LEVEL = "org.org.thirdplace.org.thirdplace.subscription.level";
+    private static final String WHITE_LIST = "org.org.thirdplace.org.thirdplace.subscription.whiteList";
     
     private List<String> whiteList = new ArrayList<String>();
 
@@ -216,7 +216,7 @@ public class SubscriptionPlugin implements Plugin {
             // (http://www.igniterealtime.org/issues/browse/SPARK-300).
             // Unfortunately, this is a bit of a hack and can easily be defeated
             // if a user changes their resource when using Spark.
-            if (JiveGlobals.getBooleanProperty("plugin.subscription.sparkCheck", false)) {
+            if (JiveGlobals.getBooleanProperty("org.org.thirdplace.org.thirdplace.subscription.sparkCheck", false)) {
                 String resource = fromJID.getResource();
                 if (resource != null && resource.equalsIgnoreCase("Spark")) {
                     presence.setType(Presence.Type.unsubscribed);

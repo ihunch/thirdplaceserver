@@ -11,7 +11,7 @@
      Map<String, String> colorMap = new HashMap<String, String>();
 %>
 <%
-    // Get handle on the Monitoring plugin
+    // Get handle on the Monitoring org.thirdplace
     MonitoringPlugin plugin = (MonitoringPlugin)XMPPServer.getInstance().getPluginManager().getPlugin(
         "monitoring");
 

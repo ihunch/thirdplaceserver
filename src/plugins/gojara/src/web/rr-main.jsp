@@ -45,25 +45,25 @@
 
 	Map<String, String> errors = new HashMap<String, String>();
 	if (save) {
-		for (String property : JiveGlobals.getPropertyNames("plugin.remoteroster.jids")) {
+		for (String property : JiveGlobals.getPropertyNames("org.hangout.org.thirdplace.remoteroster.jids")) {
 			JiveGlobals.deleteProperty(property);
 		}
 		if (componentsEnabled != null) {
 			for (int i = 0; i < componentsEnabled.length; i++) {
-				JiveGlobals.setProperty("plugin.remoteroster.jids." + componentsEnabled[i], "true");
+				JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.jids." + componentsEnabled[i], "true");
 				String group = request.getParameter("input_group." + componentsEnabled[i]);
 				if (group != null) {
 					_pmanager.setGroupForGateway(componentsEnabled[i], group);
 				}
 			}
 		}
-		JiveGlobals.setProperty("plugin.remoteroster.persistent", (persistentRoster ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.blockPresences", (blockPresences ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.sparkDiscoInfo", (sparkDiscoInfo ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.iqLastFilter", (iqLastFilter ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.mucFilter", (mucFilter ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.gajimBroadcast", (gajimBroadcast ? "true" : "false"));
-		JiveGlobals.setProperty("plugin.remoteroster.ignoreSubdomains", (ignnoreSubdomains ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.persistent", (persistentRoster ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.blockPresences", (blockPresences ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.sparkDiscoInfo", (sparkDiscoInfo ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.iqLastFilter", (iqLastFilter ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.mucFilter", (mucFilter ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.gajimBroadcast", (gajimBroadcast ? "true" : "false"));
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.ignoreSubdomains", (ignnoreSubdomains ? "true" : "false"));
 		response.sendRedirect("rr-main.jsp?success=true");
 		return;
 	}
@@ -162,7 +162,7 @@
 					<tr>
 						<td class="gatewayCheckbox"><input type="checkbox" name="enabledComponents[]"
 							value="<%=componentSession.getExternalComponent().getInitialSubdomain()%>"
-							<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.jids."
+							<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.jids."
 						+ componentSession.getExternalComponent().getInitialSubdomain(), false) ? "checked=\"checked\""
 						: ""%> />
 						</td>
@@ -234,7 +234,7 @@
 				<table class="logtable">
 					<tfoot>
 						<tr id="logfoot">
-							<td colspan="2">Packages being logged for <%=JiveGlobals.getIntProperty("plugin.remoteroster.log.cleaner.minutes", 60)%>
+							<td colspan="2">Packages being logged for <%=JiveGlobals.getIntProperty("org.hangout.org.thirdplace.remoteroster.log.cleaner.minutes", 60)%>
 								minutes
 							</td>
 							<td><a style="float: right;"
@@ -299,7 +299,7 @@
            <tbody>
 				<tr>
 					<td><input type="checkbox" name="persistentEnabled" id="GO1" value="true"
-						<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.persistent", false) ? "checked=\"checked\"" : ""%> />
+						<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.persistent", false) ? "checked=\"checked\"" : ""%> />
 
 					</td>
 					<td><label for="GO1">Enable persistent Roster</label></td>
@@ -313,7 +313,7 @@
 				</tr>
 				<tr>
 					<td><input type="checkbox" name="mucFilter" id="GO2" value="true"
-						<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.mucFilter", false) ? "checked=\"checked\"" : ""%> />
+						<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.mucFilter", false) ? "checked=\"checked\"" : ""%> />
 					</td>
 					<td><label for="GO2">Only allow internal Jabber Conferences</label></td>
 				</tr>
@@ -327,7 +327,7 @@
 				
 				<tr>
 					<td><input type="checkbox" name="ignoreSubdomains" id="GO3" value="true"
-						<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.ignoreSubdomains", true) ? "checked=\"checked\"" : ""%> />
+						<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.ignoreSubdomains", true) ? "checked=\"checked\"" : ""%> />
 					</td>
 					<td><label for="GO2">Do not add Subdomains to Roster</label></td>
 				</tr>
@@ -358,7 +358,7 @@
 								<tbody>
 									<tr>
 										<td><input type="checkbox" name="sparkDiscoInfo" id="SDI" value="true"
-											<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.sparkDiscoInfo", false) ? "checked=\"checked\""
+											<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.sparkDiscoInfo", false) ? "checked=\"checked\""
 					: ""%> />
 
 										</td>
@@ -373,7 +373,7 @@
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="iqLastFilter" id="SDI2" value="true"
-											<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.iqLastFilter", false) ? "checked=\"checked\""
+											<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.iqLastFilter", false) ? "checked=\"checked\""
 					: ""%> />
 
 										</td>
@@ -389,7 +389,7 @@
 									
 									<tr>
 										<td><input type="checkbox" name="blockPresences" id="SDI3" value="true"
-											<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.blockPresences", true) ? "checked=\"checked\""
+											<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.blockPresences", true) ? "checked=\"checked\""
 					: ""%> />
 
 										</td>
@@ -416,7 +416,7 @@
 								<tbody>
 									<tr>
 										<td><input type="checkbox" name="gajimBroadcast" id="gajimBroadcast" value="true"
-											<%=JiveGlobals.getBooleanProperty("plugin.remoteroster.gajimBroadcast", false) ? "checked=\"checked\""
+											<%=JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.remoteroster.gajimBroadcast", false) ? "checked=\"checked\""
 					: ""%> />
 										</td>
 										<td><label for="gajimBroadcast">Push available presence on startup</label></td>

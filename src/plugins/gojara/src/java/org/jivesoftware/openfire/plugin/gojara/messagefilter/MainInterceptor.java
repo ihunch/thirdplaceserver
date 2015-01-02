@@ -161,7 +161,7 @@ public class MainInterceptor implements PacketInterceptor {
 					packetProcessors.get("sparkIQRegistered").process(packet, to, to, from);
 				}
 				// JABBER:IQ:LAST - Autoresponse Feature
-				else if (JiveGlobals.getBooleanProperty("plugin.remoteroster.iqLastFilter", false)
+				else if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.remoteroster.iqLastFilter", false)
 						&& query.getNamespaceURI().equals("jabber:iq:last")) {
 
 					String to_s = searchJIDforSubdomain(to);
@@ -176,7 +176,7 @@ public class MainInterceptor implements PacketInterceptor {
 			}
 			// NONPERSISTANT Feature
 			else {
-				if (!JiveGlobals.getBooleanProperty("plugin.remoteroster.persistent", false)) {
+				if (!JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.remoteroster.persistent", false)) {
 					if (packet instanceof Presence && activeTransports.contains(from))
 						packetProcessors.get("handleNonPersistant").process(packet, from, to, from);
 				}
@@ -242,7 +242,7 @@ public class MainInterceptor implements PacketInterceptor {
 				if (query.getNamespaceURI().equals("http://jabber.org/protocol/disco#items"))
 					packetProcessors.get("whitelistProcessor").process(packet, "", to, from);
 				// DISCO#INFO - MUC-Filter-Feature
-				else if (JiveGlobals.getBooleanProperty("plugin.remoteroster.mucFilter", false)
+				else if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.remoteroster.mucFilter", false)
 						&& query.getNamespaceURI().equals("http://jabber.org/protocol/disco#info") && from.length() > 0
 						&& activeTransports.contains(from))
 					packetProcessors.get("mucfilterProcessor").process(packet, from, to, from);
@@ -251,7 +251,7 @@ public class MainInterceptor implements PacketInterceptor {
 				// 50processors for every edge case we handle...
 				// If roster is persistent and we dont block presences no need to do this since presences are being
 				// pushed by OF anyways
-				else if (JiveGlobals.getBooleanProperty("plugin.remoteroster.gajimBroadcast", false)) {
+				else if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.remoteroster.gajimBroadcast", false)) {
 					if (to.contains("Gajim") && query.getNamespaceURI().equals("jabber:iq:roster") && iqPacket.getType().equals(IQ.Type.result)) {
 						List<Node> nodes = XpathHelper.findNodesInDocument(iqPacket.getElement().getDocument(), "//roster:item");
 						for (Node n : nodes) {
@@ -264,7 +264,7 @@ public class MainInterceptor implements PacketInterceptor {
 					}
 				}
 
-			} else if (JiveGlobals.getBooleanProperty("plugin.remoteroster.blockPresences", true) && packet instanceof Presence) {
+			} else if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.remoteroster.blockPresences", true) && packet instanceof Presence) {
 				/*
 				 * We block Presences to users of a subdomain (except transport itself) so OF/S2 wont log you in
 				 * automatically if you have a subdomain user in your roster. This prevents some clients from logging

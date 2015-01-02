@@ -48,12 +48,12 @@
                         String desc) {
             // Allow XMPP setting to be overridden.
             // TODO: Make this more generic.
-            if (gatewayType.equals(TransportType.xmpp) && JiveGlobals.getProperty("plugin.gateway.xmpp.overrideservice") != null) {
-                desc = JiveGlobals.getProperty("plugin.gateway.xmpp.overrideservice");
+            if (gatewayType.equals(TransportType.xmpp) && JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway.xmpp.overrideservice") != null) {
+                desc = JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway.xmpp.overrideservice");
             }
             this.description = desc;
             this.gatewayType = gatewayType;
-            this.fulljid = JiveGlobals.getProperty("plugin.gateway." + gatewayType.toString() + ".subdomain", gatewayType.toString()) + "." + XMPPServer.getInstance().getServerInfo().getXMPPDomain();
+            this.fulljid = JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway." + gatewayType.toString() + ".subdomain", gatewayType.toString()) + "." + XMPPServer.getInstance().getServerInfo().getXMPPDomain();
             this.gwEnabled = plugin.serviceEnabled(gatewayType.toString());
             this.out = out;
             getConnectHostAndPort();
@@ -88,8 +88,8 @@
                 groupPermText = joinedString;
                 groupPermEntry = joinedString;
             }
-            globalPermSetting = JiveGlobals.getIntProperty("plugin.gateway." + this.gatewayType.toString() + ".registration", 1);
-            globalPermStrict = JiveGlobals.getBooleanProperty("plugin.gateway." + this.gatewayType.toString() + ".registrationstrict", false);
+            globalPermSetting = JiveGlobals.getIntProperty("org.hangout.org.thirdplace.gateway." + this.gatewayType.toString() + ".registration", 1);
+            globalPermStrict = JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway." + this.gatewayType.toString() + ".registrationstrict", false);
         }
 
         void getConnectHostAndPort() {

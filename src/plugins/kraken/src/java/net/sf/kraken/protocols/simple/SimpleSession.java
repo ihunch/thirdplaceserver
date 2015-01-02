@@ -120,7 +120,7 @@ public class SimpleSession extends TransportSession<SimpleBuddy> {
 
 		seqNum   = 1L;
 		
-		sipHost = JiveGlobals.getProperty("plugin.gateway.simple.connecthost", "");
+		sipHost = JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway.simple.connecthost", "");
 		sipPort = ((SimpleTransport) transport).generateListenerPort();
 		
 		// Initialize the SipFactory

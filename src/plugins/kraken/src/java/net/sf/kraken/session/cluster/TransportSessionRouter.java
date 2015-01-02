@@ -50,14 +50,14 @@ public class TransportSessionRouter implements ClusterEventListener {
     public Cache<String, byte[]> sessionLocations;
 
     /**
-     * The instance of the kraken plugin we are attached to.
+     * The instance of the kraken org.hangout.org.thirdplace we are attached to.
      */
     private WeakReference<KrakenPlugin> pluginRef;
 
     /**
-     * Creates a transport session router instance associated with the plugin.
+     * Creates a transport session router instance associated with the org.hangout.org.thirdplace.
      *
-     * @param plugin Kraken plugin instance we are associated with.
+     * @param plugin Kraken org.hangout.org.thirdplace instance we are associated with.
      */
     public TransportSessionRouter(KrakenPlugin plugin) {
         pluginRef = new WeakReference<KrakenPlugin>(plugin);
@@ -73,7 +73,7 @@ public class TransportSessionRouter implements ClusterEventListener {
     }
 
     /**
-     * Retrieves the reference to the plugin we are associated with.
+     * Retrieves the reference to the org.hangout.org.thirdplace we are associated with.
      *
      * @return KrakenPlugin instance.
      */

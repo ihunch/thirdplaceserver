@@ -44,7 +44,7 @@ public class PermissionManager {
 	 * @return name of the group, or "" if there is no group
 	 */
 	public String getGroupForGateway(String gateway) {
-		return JiveGlobals.getProperty("plugin.remoteroster.permissiongroup." + gateway, "");
+		return JiveGlobals.getProperty("org.hangout.org.thirdplace.remoteroster.permissiongroup." + gateway, "");
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class PermissionManager {
 	 *            groupname that exists in openfire
 	 */
 	public void setGroupForGateway(String gateway, String group) {
-		JiveGlobals.setProperty("plugin.remoteroster.permissiongroup." + gateway, group);
+		JiveGlobals.setProperty("org.hangout.org.thirdplace.remoteroster.permissiongroup." + gateway, group);
 	}
 
 	/**

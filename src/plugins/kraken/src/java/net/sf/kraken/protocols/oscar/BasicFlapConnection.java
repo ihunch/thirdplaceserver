@@ -188,7 +188,7 @@ public abstract class BasicFlapConnection extends AbstractFlapConnection {
                     ExtraInfoData data = i.getExtraData();
 
                     final byte[] pendingAvatar = getMainSession().getSsiHierarchy().getPendingAvatarData();
-                    if (JiveGlobals.getBooleanProperty("plugin.gateway."+getMainSession().getTransport().getType()+".avatars", true) && (data.getFlags() & ExtraInfoData.FLAG_UPLOAD_ICON) != 0 && pendingAvatar != null) {
+                    if (JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway."+getMainSession().getTransport().getType()+".avatars", true) && (data.getFlags() & ExtraInfoData.FLAG_UPLOAD_ICON) != 0 && pendingAvatar != null) {
                         Log.debug("OSCAR: Server has indicated that it wants our icon.");
                         request(new UploadIconCmd(ByteBlock.wrap(pendingAvatar)), new SnacRequestAdapter() {
                             @Override
@@ -272,7 +272,7 @@ public abstract class BasicFlapConnection extends AbstractFlapConnection {
                             }
                         }
                     }
-                    else if (i.getType() == ExtraInfoBlock.TYPE_ICONHASH && JiveGlobals.getBooleanProperty("plugin.gateway."+getMainSession().getTransport().getType()+".avatars", true)) {
+                    else if (i.getType() == ExtraInfoBlock.TYPE_ICONHASH && JiveGlobals.getBooleanProperty("org.org.thirdplace.plugin.gateway."+getMainSession().getTransport().getType()+".avatars", true)) {
                         try {
                             OSCARBuddy oscarBuddy = getMainSession().getBuddyManager().getBuddy(getMainSession().getTransport().convertIDToJID(info.getScreenname()));
                             Avatar curAvatar = oscarBuddy.getAvatar();

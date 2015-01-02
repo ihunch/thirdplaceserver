@@ -73,7 +73,6 @@ class JingleNodesComponent extends AbstractComponent {
     @Override
     protected IQ handleIQGet(IQ iq) throws Exception {
         final IQ reply = IQ.createResultIQ(iq);
-
         final Element element = iq.getChildElement();
         final String namespace = element.getNamespaceURI();
 

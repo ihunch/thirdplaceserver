@@ -216,7 +216,7 @@ public class ClusterManager {
 
     /**
      * Triggers event indicating that this JVM is no longer part of the cluster. This could
-     * happen when disabling clustering support or removing the enterprise plugin that provides
+     * happen when disabling clustering support or removing the enterprise org.thirdplace that provides
      * clustering support.<p>
      *
      * Moreover, if we were in a "split brain" scenario (ie. separated cluster islands) and the
@@ -238,7 +238,7 @@ public class ClusterManager {
 
     /**
      * Triggers event indicating that another JVM is no longer part of the cluster. This could
-     * happen when disabling clustering support or removing the enterprise plugin that provides
+     * happen when disabling clustering support or removing the enterprise org.thirdplace that provides
      * clustering support.
      *
      * @param nodeID    nodeID assigned to the JVM when joining the cluster.

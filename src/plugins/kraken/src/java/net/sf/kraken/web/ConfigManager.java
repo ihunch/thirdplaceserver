@@ -163,8 +163,8 @@ public class ConfigManager {
      * @return List of usernames and groups (@ preceded) that were rejected.
      */
     public List<String> savePermissions(String transportName, Integer overallSetting, List<String> users, List<String> groups, Boolean strict) {
-        JiveGlobals.setProperty("plugin.gateway."+transportName+".registration", overallSetting.toString());
-        JiveGlobals.setProperty("plugin.gateway."+transportName+".registrationstrict", strict ? "true" : "false");
+        JiveGlobals.setProperty("org.org.thirdplace.org.thirdplace.gateway."+transportName+".registration", overallSetting.toString());
+        JiveGlobals.setProperty("org.org.thirdplace.org.thirdplace.gateway."+transportName+".registrationstrict", strict ? "true" : "false");
         PermissionManager permissionManager = new PermissionManager(TransportType.valueOf(transportName));
         List<String> errorList = new ArrayList<String>();
         ArrayList<User> userList = new ArrayList<User>();

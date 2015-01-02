@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Servlet is used for retrieval of plugin icons.
+ * Servlet is used for retrieval of org.org.thirdplace.org.hangout.org.thirdplace icons.
  *
  * @author Derek DeMoro
  */
@@ -48,7 +48,7 @@ public class PluginIconServlet extends HttpServlet {
 
     @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        String pluginName = ParamUtils.getParameter(request, "plugin");
+        String pluginName = ParamUtils.getParameter(request, "org.org.thirdplace.org.hangout.org.thirdplace");
         PluginManager pluginManager = XMPPServer.getInstance().getPluginManager();
         Plugin plugin = pluginManager.getPlugin(pluginName);
         if (plugin != null) {

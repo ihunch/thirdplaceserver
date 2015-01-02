@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class loader to be used by Openfire to load classes that live in the Hazelcast plugin,
+ * Class loader to be used by Openfire to load classes that live in the Hazelcast org.org.thirdplace.org.hangout.org.thirdplace,
  * the Openfire core and also classes defined in other plugins. With this new class loader
  * plugins can now make use of hazelcast.<p>
  *
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * the cluster. Hazelcast will deserialize the class and will use the first class definition
  * found in the list of plugins.<p>
  *
- * The sequence of search for this class loader is first check the hazelcast plugin that
+ * The sequence of search for this class loader is first check the hazelcast org.org.thirdplace.org.hangout.org.thirdplace that
  * includes checking the Openfire core. If not found then try with the other plugins.
  *
  * @author Tom Evans
@@ -63,7 +63,7 @@ public class ClusterClassLoader extends ClassLoader {
         Plugin plugin = XMPPServer.getInstance().getPluginManager().getPlugin("hazelcast");
         hazelcastClassloader = XMPPServer.getInstance().getPluginManager().getPluginClassloader(plugin);
         
-        // this is meant to allow loading configuration files from outside the plugin JAR file
+        // this is meant to allow loading configuration files from outside the org.org.thirdplace.org.hangout.org.thirdplace JAR file
         File confFolder = new File(HAZELCAST_CONFIG_DIR);
         try {
 			logger.debug("Adding conf folder {}", confFolder);
@@ -89,7 +89,7 @@ public class ClusterClassLoader extends ClassLoader {
                     return pluginClassloader.loadClass(name);
                 }
                 catch (ClassNotFoundException e1) {
-                    // Do nothing. Continue to the next plugin
+                    // Do nothing. Continue to the next org.org.thirdplace.org.hangout.org.thirdplace
                 }
             }
         }

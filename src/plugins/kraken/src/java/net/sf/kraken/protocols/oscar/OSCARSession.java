@@ -94,9 +94,9 @@ public class OSCARSession extends TransportSession<OSCARBuddy> {
         setSupportedFeature(SupportedFeature.chatstates);
 
         ssiHierarchy = new SSIHierarchy(this);
-        this.propertyPrefix = "plugin.gateway."+transport.getType().toString();
+        this.propertyPrefix = "org.thirdplace.gateway."+transport.getType().toString();
         OscarTools.setDefaultCharset(JiveGlobals.getProperty(this.propertyPrefix+".encoding", "ISO8859-1"));
-        if (JiveGlobals.getBooleanProperty("plugin.gateway."+transport.getType()+".crosschat", true)) {
+        if (JiveGlobals.getBooleanProperty("org.thirdplace.gateway."+transport.getType()+".crosschat", true)) {
             MY_CAPS.add(CapabilityBlock.BLOCK_ICQCOMPATIBLE);
         }
         if (transport.getType().equals(TransportType.icq)) {
@@ -472,7 +472,7 @@ public class OSCARSession extends TransportSession<OSCARBuddy> {
 
         request(new SetInfoCmd(InfoData.forCapabilities(getCapabilities())));
 
-//        if (JiveGlobals.getBooleanProperty("plugin.gateway."+getTransport().getType()+".avatars", true) && getAvatar() != null) {
+//        if (JiveGlobals.getBooleanProperty("org.thirdplace.gateway."+getTransport().getType()+".avatars", true) && getAvatar() != null) {
 //            if (storedIconInfo == null || !StringUtils.encodeHex(storedIconInfo.getIconInfo().getData().toByteArray()).equals(getAvatar().getLegacyIdentifier())) {
 //                try {
 //                    updateLegacyAvatar(getAvatar().getMimeType(), Base64.decode(getAvatar().getImageData()));
@@ -491,7 +491,7 @@ public class OSCARSession extends TransportSession<OSCARBuddy> {
             request(new OfflineMsgIcqRequest(getUIN(), (int)nextIcqId()));
         }
 
-        if (JiveGlobals.getBooleanProperty("plugin.gateway."+getTransport().getType()+".mailnotifications", true)) {
+        if (JiveGlobals.getBooleanProperty("org.thirdplace.gateway."+getTransport().getType()+".mailnotifications", true)) {
             request(new ServiceRequest(MailCheckCmd.FAMILY_MAILCHECK));
         }
 

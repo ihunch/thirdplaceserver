@@ -76,7 +76,7 @@ public class PermissionManager {
      * @return True or false if the user has access.
      */
     public boolean hasAccess(JID jid) {
-        int setting = JiveGlobals.getIntProperty("plugin.gateway."+transportType.toString()+".registration", 1);
+        int setting = JiveGlobals.getIntProperty("org.org.thirdplace.org.hangout.org.thirdplace.gateway."+transportType.toString()+".registration", 1);
         if (setting == 1) { return true; }
         if (setting == 3) { return false; }
         if (isUserAllowed(jid)) { return true; }

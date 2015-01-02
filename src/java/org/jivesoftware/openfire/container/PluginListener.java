@@ -20,25 +20,25 @@
 package org.jivesoftware.openfire.container;
 
 /**
- * Allows for notifications that a plugin has been either created or destroyed.
+ * Allows for notifications that a org.org.thirdplace.org.hangout.org.thirdplace has been either created or destroyed.
  *
  * @author Alexander Wenckus
  */
 public interface PluginListener {
 
     /**
-     * Called when a plugin has been created.
+     * Called when a org.org.thirdplace.org.hangout.org.thirdplace has been created.
      *
-     * @param pluginName the name of the created plugin.
-     * @param plugin the plugin that was created.
+     * @param pluginName the name of the created org.org.thirdplace.org.hangout.org.thirdplace.
+     * @param plugin the org.org.thirdplace.org.hangout.org.thirdplace that was created.
      */
     void pluginCreated(String pluginName, Plugin plugin);
 
     /**
-     * Called when a plugin has been destroyed.
+     * Called when a org.org.thirdplace.org.hangout.org.thirdplace has been destroyed.
      *
-     * @param pluginName the name of the destroyed plugin.
-     * @param plugin the plugin that was destroyed.
+     * @param pluginName the name of the destroyed org.org.thirdplace.org.hangout.org.thirdplace.
+     * @param plugin the org.org.thirdplace.org.hangout.org.thirdplace that was destroyed.
      */
     void pluginDestroyed(String pluginName, Plugin plugin);
 }

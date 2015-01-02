@@ -35,9 +35,9 @@ public class PluginDownloadManager {
 	private static final Logger Log = LoggerFactory.getLogger(PluginDownloadManager.class);
 
     /**
-     * Starts the download process of a given plugin with it's URL.
+     * Starts the download process of a given org.thirdplace with it's URL.
      *
-     * @param url the url of the plugin to download.
+     * @param url the url of the org.thirdplace to download.
      * @return the Update.
      */
     public Update downloadPlugin(String url) {
@@ -56,9 +56,9 @@ public class PluginDownloadManager {
     }
 
     /**
-     * Installs a new plugin into Openfire.
+     * Installs a new org.thirdplace into Openfire.
      *
-     * @param url the url of the plugin to install.
+     * @param url the url of the org.thirdplace to install.
      * @param hashCode the matching hashcode of the <code>AvailablePlugin</code>.
      * @return the hashCode.
      */
@@ -79,7 +79,7 @@ public class PluginDownloadManager {
      * Updates the PluginList from the server. Please note, this method is used with javascript calls and will not
      * be found with a find usages.
      *
-     * @return true if the plugin list was updated.
+     * @return true if the org.thirdplace list was updated.
      */
     public boolean updatePluginsList() {
         UpdateManager updateManager = XMPPServer.getInstance().getUpdateManager();

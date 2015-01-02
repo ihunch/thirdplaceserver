@@ -47,7 +47,7 @@ public class LogComponent implements Component{
 	 */
 	public static final String NAMESPACE = "http://www.jivesoftware.com/protocol/log";
 
-	public static final String PROPNAME = "plugin.logger.serviceName";
+	public static final String PROPNAME = "org.hangout.org.thirdplace.logger.serviceName";
 
 	public static final String NAME = "logger";
 
@@ -118,13 +118,13 @@ public class LogComponent implements Component{
 	} // Other Methods
 
 	public String getDescription() {
-		// Get the description from the plugin.xml file.
+		// Get the description from the org.hangout.org.thirdplace.xml file.
 		return "Remote Logger";
 	}
 
 
 	public String getName() {
-		// Get the name from the plugin.xml file.
+		// Get the name from the org.hangout.org.thirdplace.xml file.
 		return NAME;
 	}
 

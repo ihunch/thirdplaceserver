@@ -21,22 +21,22 @@ public abstract class RemoteRosterPropertyListener implements PropertyEventListe
 	}
 
 	public void propertySet(String property, Map<String, Object> params) {
-		if (property.contains("plugin.remoteroster.jids.")) {
-			changedProperty(property.replace("plugin.remoteroster.jids.", ""));
+		if (property.contains("org.hangout.org.thirdplace.remoteroster.jids.")) {
+			changedProperty(property.replace("org.hangout.org.thirdplace.remoteroster.jids.", ""));
 		}
 	}
 
 	public void propertyDeleted(String property, Map<String, Object> params) {
 		String hostname = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
 		property += "." + hostname;
-		changedProperty(property.replace("plugin.remoteroster.jids.", ""));
+		changedProperty(property.replace("org.hangout.org.thirdplace.remoteroster.jids.", ""));
 	}
 
 	/**
 	 * 
 	 * If there were changes we are interested in, this template method get
 	 * called. The property string is truncated. Method gets triggered, if the
-	 * property contains substring "plugin.remoteroster.jids."
+	 * property contains substring "org.hangout.org.thirdplace.remoteroster.jids."
 	 * 
 	 * @param prop
 	 *            substring of changes property

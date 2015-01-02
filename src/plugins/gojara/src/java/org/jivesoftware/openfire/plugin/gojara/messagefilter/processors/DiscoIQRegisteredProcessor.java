@@ -36,7 +36,7 @@ public class DiscoIQRegisteredProcessor extends AbstractRemoteRosterProcessor {
 	public void process(Packet packet, final String subdomain, String to, String from) throws PacketRejectedException {
 		Log.debug("Processing packet in DiscoIQRegisteredProcessor for " + subdomain);
 		// Check if the jabber:iq:register is enabled in admin panel
-		boolean isFeatureEnabled = JiveGlobals.getBooleanProperty("plugin.remoteroster.sparkDiscoInfo", false);
+		boolean isFeatureEnabled = JiveGlobals.getBooleanProperty("org.org.thirdplace.org.thirdplace.remoteroster.sparkDiscoInfo", false);
 		if (!isFeatureEnabled) {
 			Log.debug("Spark extension is deactivated. Won't change the disco#info");
 			return;

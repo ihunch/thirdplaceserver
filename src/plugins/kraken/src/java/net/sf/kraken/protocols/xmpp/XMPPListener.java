@@ -224,7 +224,7 @@ public class XMPPListener implements MessageListener, ConnectionListener, ChatMa
 
     public void processPacket(Packet packet) {
         if (packet instanceof GoogleMailBoxPacket) {
-            if (JiveGlobals.getBooleanProperty("plugin.gateway.gtalk.mailnotifications", true)) {
+            if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.gtalk.mailnotifications", true)) {
                 GoogleMailBoxPacket mbp = (GoogleMailBoxPacket)packet;
                 this.setLastGMailThreadDate(mbp.getResultTime());
                 Integer newMailCount = 0;

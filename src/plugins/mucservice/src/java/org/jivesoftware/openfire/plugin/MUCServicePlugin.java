@@ -30,7 +30,7 @@ import org.jivesoftware.openfire.container.PluginManager;
 public class MUCServicePlugin implements Plugin {
 
 	/**
-	 * Instantiates a new mUC service plugin.
+	 * Instantiates a new mUC service org.thirdplace.
 	 */
 	public MUCServicePlugin() {
 	}

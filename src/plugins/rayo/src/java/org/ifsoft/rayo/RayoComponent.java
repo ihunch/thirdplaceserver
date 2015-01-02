@@ -2420,7 +2420,7 @@ public class RayoComponent 	extends 	AbstractComponent
 	private IQHandler redirectIQHandler = null;
 	private IQHandler dtmfIQHandler = null;
 
-	private void createIQHandlers()
+	private void  createIQHandlers()
 	{
 		XMPPServer server = XMPPServer.getInstance();
 

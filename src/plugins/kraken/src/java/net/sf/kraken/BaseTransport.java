@@ -95,8 +95,8 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
     public void setup(TransportType type, String description, TransportSessionRouter sessionRouter) {
         // Allow XMPP setting to be overridden.
         // TODO: Make this more generic.
-        if (type.equals(TransportType.xmpp) && JiveGlobals.getProperty("plugin.gateway.xmpp.overridename") != null) {
-            description = JiveGlobals.getProperty("plugin.gateway.xmpp.overridename");
+        if (type.equals(TransportType.xmpp) && JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway.xmpp.overridename") != null) {
+            description = JiveGlobals.getProperty("org.hangout.org.thirdplace.gateway.xmpp.overridename");
         }
         this.description = description;
         this.transportType = type;
@@ -274,7 +274,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
                 else {
                     // Checking for XEP-0022 message events
                     Element eEvent = packet.getChildElement("x", NameSpace.XEVENT);
-                    if (eEvent != null && JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+                    if (eEvent != null && JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
                         if (eEvent.element("composing") != null) {
                             session.sendChatState(to, ChatStateType.composing);
                         }
@@ -355,7 +355,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
                     reply.add(p);
                     return reply;
                 }
-                if (JiveGlobals.getBooleanProperty("plugin.gateway."+getType()+".registrationstrict", false) && !permissionManager.hasAccess(from)) {
+                if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway."+getType()+".registrationstrict", false) && !permissionManager.hasAccess(from)) {
                     Log.debug("Attempt to log in by restricted account: "+from);
                     Presence p = new Presence();
                     p.setTo(from);
@@ -862,7 +862,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         if (username.indexOf("/") > -1) {
             username = username.substring(0, username.indexOf("/"));
         }
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.tweak.percenthack", false)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.tweak.percenthack", false)) {
             return new JID(username.replace('@', '%').replace(" ", ""), this.jid.getDomain(), null);
         }
         else {
@@ -877,7 +877,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
      * @return THe legacy username as a String.
      */
     public String convertJIDToID(JID jid) {
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.tweak.percenthack", false)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.tweak.percenthack", false)) {
             return jid.getNode().replace('%', '@');
         }
         else {
@@ -955,7 +955,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         SessionEventDispatcher.addListener(this);
         VCardEventDispatcher.addListener(this);
         InterceptorManager.getInstance().addInterceptor(this);
-        if (!JiveGlobals.getBooleanProperty("plugin.gateway.tweak.noprobeonstart", false)) {
+        if (!JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.tweak.noprobeonstart", false)) {
             // Probe all registered users [if they are logged in] to auto-log them in
             // TODO: Do we need to account for local vs other node sessions?
             for (ClientSession session : SessionManager.getInstance().getSessions()) {
@@ -1182,7 +1182,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
                     Log.debug("Creating new roster item " + contactjid + " for: "
                             + userjid + ". No existing item was found.");
                     final RosterItem gwitem =
-                            roster.createRosterItem(contactjid, false, contactjid.getNode() == null || JiveGlobals.getBooleanProperty("plugin.gateway.tweak.persistentroster", false));
+                            roster.createRosterItem(contactjid, false, contactjid.getNode() == null || JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.tweak.persistentroster", false));
                     gwitem.setSubStatus(subtype);
                     gwitem.setAskStatus(asktype);
                     gwitem.setNickname(nickname);
@@ -1601,7 +1601,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         if (type.equals(Message.Type.chat) || type.equals(Message.Type.normal)) {
             chatStateEventSource.isActive(from, to);
             m.addChildElement("active", NameSpace.CHATSTATES);
-            if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+            if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
                 Element xEvent = m.addChildElement("x", "jabber:x:event");
     //            xEvent.addElement("id");
                 xEvent.addElement("composing");
@@ -1815,7 +1815,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         m.setType(Message.Type.chat);
         m.setTo(to);
         m.setFrom(from);
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
             Element xEvent = m.addChildElement("x", "jabber:x:event");
             xEvent.addElement("id");
             xEvent.addElement("composing");
@@ -1838,7 +1838,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         m.setType(Message.Type.chat);
         m.setTo(to);
         m.setFrom(from);
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
             Element xEvent = m.addChildElement("x", "jabber:x:event");
             xEvent.addElement("id");
         }
@@ -1860,7 +1860,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         m.setType(Message.Type.chat);
         m.setTo(to);
         m.setFrom(from);
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
             Element xEvent = m.addChildElement("x", "jabber:x:event");
             xEvent.addElement("id");
         }
@@ -1882,7 +1882,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         m.setType(Message.Type.chat);
         m.setTo(to);
         m.setFrom(from);
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
             Element xEvent = m.addChildElement("x", "jabber:x:event");
             xEvent.addElement("id");
         }
@@ -1911,7 +1911,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
         m.setType(Message.Type.chat);
         m.setTo(to);
         m.setFrom(from);
-        if (JiveGlobals.getBooleanProperty("plugin.gateway.globsl.messageeventing", true)) {
+        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.globsl.messageeventing", true)) {
             final Element xEvent = m.addChildElement("x", "jabber:x:event");
             xEvent.addElement("id");
         }
@@ -1925,7 +1925,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
      * @see org.jivesoftware.openfire.roster.RosterEventListener#addingContact(org.jivesoftware.openfire.roster.Roster, org.jivesoftware.openfire.roster.RosterItem, boolean)
      */
     public boolean addingContact(Roster roster, RosterItem item, boolean persistent) {
-        if (item.getJid().getDomain().equals(this.getJID().toString()) && item.getJid().getNode() != null && !JiveGlobals.getBooleanProperty("plugin.gateway.tweak.persistentroster", false)) {
+        if (item.getJid().getDomain().equals(this.getJID().toString()) && item.getJid().getNode() != null && !JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.tweak.persistentroster", false)) {
             return false;
         }
         return persistent;
@@ -2166,7 +2166,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
      */
     public void vCardCreated(String username, Element vcardElem) {
         if (vcardElem != null) {
-            if (JiveGlobals.getBooleanProperty("plugin.gateway."+getType()+".avatars", true)) {
+            if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway."+getType()+".avatars", true)) {
                 Element photoElem = vcardElem.element("PHOTO");
                 if (photoElem != null) {
                     Element typeElem = photoElem.element("TYPE");
@@ -2205,7 +2205,7 @@ public abstract class BaseTransport<B extends TransportBuddy> implements Compone
      */
     public void vCardUpdated(String username, Element vcardElem) {
         if (vcardElem != null) {
-            if (JiveGlobals.getBooleanProperty("plugin.gateway."+getType()+".avatars", true)) {
+            if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway."+getType()+".avatars", true)) {
                 Element photoElem = vcardElem.element("PHOTO");
                 if (photoElem != null) {
                     Element typeElem = photoElem.element("TYPE");

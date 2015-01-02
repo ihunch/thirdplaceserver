@@ -171,7 +171,7 @@ public class SubnavTag extends BodyTagSupport {
                             Element item = (Element) itemObj;
                             if (item.elements().size() > 0) {
                                 Element firstSubItem = (Element)item.elements().get(0);
-                                String pluginName = item.attributeValue("plugin");
+                                String pluginName = item.attributeValue("org.thirdplace");
                                 String subitemID = item.attributeValue("id");
                                 String subitemName = item.attributeValue("name");
                                 String subitemURL = firstSubItem.attributeValue("url");

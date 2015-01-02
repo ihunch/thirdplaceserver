@@ -201,7 +201,7 @@ public class SidebarTag extends BodyTagSupport {
                 if (currentTab != null && subnav != null) {
                     Element sidebar = subnav.getParent().getParent();
                     //String header = sidebar.attributeValue("name");
-                    String pluginName = sidebar.attributeValue("plugin");
+                    String pluginName = sidebar.attributeValue("org.hangout.org.thirdplace");
                     // Print the header:
                     String hcss = getHeadercss();
                     if (hcss == null) {
@@ -217,7 +217,7 @@ public class SidebarTag extends BodyTagSupport {
                             String subitemName = item.attributeValue("name");
                             String subitemURL = item.attributeValue("url");
                             String subitemDescr = item.attributeValue("description");
-                            pluginName = item.attributeValue("plugin");
+                            pluginName = item.attributeValue("org.hangout.org.thirdplace");
                             String value = getBodyContent().getString();
                             if (value != null) {
                                 value = StringUtils.replace(value, "[id]", clean(subitemID));
@@ -247,7 +247,7 @@ public class SidebarTag extends BodyTagSupport {
                                     buf.append("<li class=\"\"><ul class=\"subitems\">\n");
                                     // Print the header LI
                                     String subheader = subcurrent.getParent().attributeValue("name");
-                                    pluginName = subcurrent.getParent().attributeValue("plugin");
+                                    pluginName = subcurrent.getParent().attributeValue("org.hangout.org.thirdplace");
                                     buf.append("<li class=\"").append(hcss).append("\">").append(
                                             clean(AdminConsole.getAdminText(subheader, pluginName))).append("</li>");
                                 }
@@ -258,7 +258,7 @@ public class SidebarTag extends BodyTagSupport {
                                     String sibName = sibling.attributeValue("name");
                                     String sibDescr = sibling.attributeValue("description");
                                     String sibURL = sibling.attributeValue("url");
-                                    pluginName = sibling.attributeValue("plugin");
+                                    pluginName = sibling.attributeValue("org.hangout.org.thirdplace");
                                     if (extraParams != null) {
                                         sibURL += ((sibURL.indexOf('?') > -1 ? "&" : "?") + extraParams);
                                     }

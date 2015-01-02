@@ -53,7 +53,7 @@ public class SipComponent implements Component, SessionEventListener {
      */
     public static final String NAMESPACE = "http://www.jivesoftware.com/protocol/sipark";
 
-    public static final String PROPNAME = "plugin.sipark.serviceName";
+    public static final String PROPNAME = "org.hangout.org.thirdplace.sipark.serviceName";
 
     public static final String NAME = "sipark";
 

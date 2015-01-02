@@ -40,7 +40,7 @@ import org.xmpp.component.ComponentManagerFactory;
 import org.xmpp.packet.JID;
 
 /**
- * Openfire Fastpath plugin.
+ * Openfire Fastpath org.hangout.org.thirdplace.
  *
  * @author Matt Tucker
  */
@@ -56,7 +56,7 @@ public class FastpathPlugin implements Plugin, ClusterEventListener {
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
         System.out.println("Starting Fastpath Server");
 
-        // Check if we Enterprise is installed and stop loading this plugin if found
+        // Check if we Enterprise is installed and stop loading this org.hangout.org.thirdplace if found
         File pluginDir = new File(JiveGlobals.getHomeDirectory(), "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
@@ -65,9 +65,9 @@ public class FastpathPlugin implements Plugin, ClusterEventListener {
             }
         });
         if (jars.length > 0) {
-            // Do not load this plugin since Enterprise is still installed
-            System.out.println("Enterprise plugin found. Stopping Fastpath Plugin");
-            throw new IllegalStateException("This plugin cannot run next to the Enterprise plugin");
+            // Do not load this org.hangout.org.thirdplace since Enterprise is still installed
+            System.out.println("Enterprise org.hangout.org.thirdplace found. Stopping Fastpath Plugin");
+            throw new IllegalStateException("This org.hangout.org.thirdplace cannot run next to the Enterprise org.hangout.org.thirdplace");
         }
 
         // Make sure that the fastpath folder exists under the home directory

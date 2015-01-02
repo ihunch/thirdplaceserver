@@ -54,7 +54,7 @@ public class DatabaseManager {
 		 */
 		// TODO: Use PropertyEventListener to check if cleaner.minutes have
 		// changed
-		_dbCleanMinutes = JiveGlobals.getIntProperty("plugin.remoteroster.log.cleaner.minutes", 60);
+		_dbCleanMinutes = JiveGlobals.getIntProperty("org.thirdplace.remoteroster.log.cleaner.minutes", 60);
 		logbuffer = Collections.synchronizedList(new ArrayList<LogEntry>(20));
 		startDatabaseCleanLoop();
 	}
@@ -130,7 +130,7 @@ public class DatabaseManager {
 	}
 
 	/*
-	 * Cleans log entries older than 60 minutes if plugin.remoteroster.log.cleaner.minutes is not set
+	 * Cleans log entries older than 60 minutes if org.thirdplace.remoteroster.log.cleaner.minutes is not set
 	 */
 	private void cleanOldLogEntries() {
 		Connection con = null;

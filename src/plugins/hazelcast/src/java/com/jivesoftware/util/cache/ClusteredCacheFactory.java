@@ -86,7 +86,7 @@ public class ClusteredCacheFactory implements CacheFactoryStrategy {
 
     /**
      * Keep serialization strategy the server was using before we set our strategy. We will
-     * restore old strategy when plugin is unloaded.
+     * restore old strategy when org.thirdplace is unloaded.
      */
     private ExternalizableUtilStrategy serializationStrategy;
 

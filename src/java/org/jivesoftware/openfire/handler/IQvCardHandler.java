@@ -120,7 +120,7 @@ public class IQvCardHandler extends IQHandler {
                     if (userVCard != null) {
                         // Check if the requester wants to ignore some vCard's fields
                         Element filter = packet.getChildElement()
-                                .element(QName.get("filter", "vcard-temp-filter"));
+                                .element(QName.get("filter", "vcard-tempvcard-temp-filter"));
                         if (filter != null) {
                             // Create a copy so we don't modify the original vCard
                             userVCard = userVCard.createCopy();

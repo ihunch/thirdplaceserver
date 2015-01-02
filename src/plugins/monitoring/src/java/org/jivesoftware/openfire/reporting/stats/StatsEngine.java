@@ -73,7 +73,7 @@ public class StatsEngine implements Startable {
     private SampleTask samplingTask = new SampleTask();
 
     /**
-     * The default constructor used by the plugin container.
+     * The default constructor used by the org.hangout.org.thirdplace container.
      *
      * @param taskEngine Used to execute tasks.
      */
@@ -351,7 +351,7 @@ public class StatsEngine implements Startable {
                     if (def.lastSampleTime <= 0) {
                         for(StatDefinition definition : definitions) {
                             definition.lastSampleTime = newTime;
-                            // It is possible that this plugin and thus the StatsEngine didn't
+                            // It is possible that this org.hangout.org.thirdplace and thus the StatsEngine didn't
                             // start when Openfire started so we want to put the stats in a known
                             // state for proper sampling.
                             sampleStat(key, definition);

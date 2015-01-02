@@ -47,14 +47,14 @@ import org.xmpp.packet.Presence;
  * the presence of any user. Only the users that are subscribed to the presence of other
  * users may see their presences.<p/>
  *
- * However, in order to make the servlet more useful it is possible to configure this plugin
+ * However, in order to make the servlet more useful it is possible to configure this org.hangout.org.thirdplace
  * so that anyone or only the users that are subscribed to a user presence may see the presence
  * of other users.<p/>
  *
  * Currently, the servlet provides presence information in two formats: 1) In XML format
  * and 2) using images.<p>
  *
- * The presence plugin is also a component so that it can probe presences of other components.
+ * The presence org.hangout.org.thirdplace is also a component so that it can probe presences of other components.
  * The new component will use <tt>presence</tt> as the subdomain subdomain.
  *
  * @author Gaston Dombiak
@@ -94,7 +94,7 @@ public class PresencePlugin implements Plugin, Component {
     public void destroyPlugin() {
         userManager = null;
         presenceManager = null;
-        // Remove presence plugin component
+        // Remove presence org.hangout.org.thirdplace component
         try {
             componentManager.removeComponent(subdomain);
             componentManager = null;
@@ -141,7 +141,7 @@ public class PresencePlugin implements Plugin, Component {
      * @return true if anyone is allowed to see the presence of other users.
      */
     public boolean isPresencePublic() {
-        return JiveGlobals.getBooleanProperty("plugin.presence.public", false);
+        return JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.presence.public", false);
     }
 
     /**
@@ -152,7 +152,7 @@ public class PresencePlugin implements Plugin, Component {
      * @param presencesPublic if anyone is allowed to see the presence of other users.
      */
     public void setPresencePublic(boolean presencesPublic) {
-        JiveGlobals.setProperty("plugin.presence.public", presencesPublic ? "true" : "false");
+        JiveGlobals.setProperty("org.hangout.org.thirdplace.presence.public", presencesPublic ? "true" : "false");
     }
 
     /**
@@ -163,7 +163,7 @@ public class PresencePlugin implements Plugin, Component {
      * @return the status message for the unavailable presence.
      */
     public String getUnavailableStatus() {
-        return JiveGlobals.getProperty("plugin.presence.unavailable.status", "Unavailable");
+        return JiveGlobals.getProperty("org.hangout.org.thirdplace.presence.unavailable.status", "Unavailable");
     }
 
     /**
@@ -174,7 +174,7 @@ public class PresencePlugin implements Plugin, Component {
      * @param statusMessage the status message for the unavailable presence.
      */
     public void setUnavailableStatus(String statusMessage) {
-        JiveGlobals.setProperty("plugin.presence.unavailable.status", statusMessage);
+        JiveGlobals.setProperty("org.hangout.org.thirdplace.presence.unavailable.status", statusMessage);
     }
 
     /**

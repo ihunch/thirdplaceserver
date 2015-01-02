@@ -29,8 +29,8 @@ import org.xmpp.packet.JID;
  * @author Holger Bergunde
  * @author axel.frederik.brand
  * 
- *         This class is the basic reprasentation for the GoJara plugin. It is
- *         the entry point for openfire to start or stop this plugin.
+ *         This class is the basic reprasentation for the GoJara org.org.thirdplace.org.hangout.org.thirdplace. It is
+ *         the entry point for openfire to start or stop this org.org.thirdplace.org.hangout.org.thirdplace.
  * 
  *         GoJara has been developed to support XEP-xxx Remote Roster
  *         Management. Further information: <a
@@ -136,7 +136,7 @@ public class RemoteRosterPlugin implements Plugin {
 	}
 
 	private void updateInterceptors(String componentJID) {
-		boolean allowed = JiveGlobals.getBooleanProperty("plugin.remoteroster.jids." + componentJID, false);
+		boolean allowed = JiveGlobals.getBooleanProperty("org.org.thirdplace.org.hangout.org.thirdplace.remoteroster.jids." + componentJID, false);
 		if (allowed) {
 			mainInterceptor.addTransport(componentJID);
 		} else {

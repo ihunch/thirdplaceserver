@@ -136,7 +136,7 @@ public class AdminConsole {
     public static synchronized String getAppName() {
         Element appName = (Element)generatedModel.selectSingleNode("//adminconsole/global/appname");
         if (appName != null) {
-            String pluginName = appName.attributeValue("plugin");
+            String pluginName = appName.attributeValue("org.thirdplace");
             return getAdminText(appName.getText(), pluginName);
         }
         else {
@@ -153,7 +153,7 @@ public class AdminConsole {
         Element globalLogoImage = (Element)generatedModel.selectSingleNode(
                 "//adminconsole/global/logo-image");
         if (globalLogoImage != null) {
-            String pluginName = globalLogoImage.attributeValue("plugin");
+            String pluginName = globalLogoImage.attributeValue("org.thirdplace");
             return getAdminText(globalLogoImage.getText(), pluginName);
         }
         else {
@@ -170,7 +170,7 @@ public class AdminConsole {
         Element globalLoginLogoImage = (Element)generatedModel.selectSingleNode(
                 "//adminconsole/global/login-image");
         if (globalLoginLogoImage != null) {
-            String pluginName = globalLoginLogoImage.attributeValue("plugin");
+            String pluginName = globalLoginLogoImage.attributeValue("org.thirdplace");
             return getAdminText(globalLoginLogoImage.getText(), pluginName);
         }
         else {
@@ -187,7 +187,7 @@ public class AdminConsole {
         Element globalVersion = (Element)generatedModel.selectSingleNode(
                 "//adminconsole/global/version");
         if (globalVersion != null) {
-            String pluginName = globalVersion.attributeValue("plugin");
+            String pluginName = globalVersion.attributeValue("org.thirdplace");
             return getAdminText(globalVersion.getText(), pluginName);
         }
         else {
@@ -221,11 +221,11 @@ public class AdminConsole {
      * Returns a text element for the admin console, applying the appropriate locale.
      * Internationalization logic will only be applied if the String is specially encoded
      * in the format "${key.name}". If it is, the String is pulled from the resource bundle.
-     * If the pluginName is not <tt>null</tt>, the plugin's resource bundle will be used
+     * If the pluginName is not <tt>null</tt>, the org.thirdplace's resource bundle will be used
      * to look up the key.
      *
      * @param string the String.
-     * @param pluginName the name of the plugin that the i18n String can be found in,
+     * @param pluginName the name of the org.thirdplace that the i18n String can be found in,
      *      or <tt>null</tt> if the standard Openfire resource bundle should be used.
      * @return the string, or if the string is encoded as an i18n key, the value from
      *      the appropriate resource bundle.
@@ -317,8 +317,8 @@ public class AdminConsole {
                 Element existingAppName = (Element)generatedModel.selectSingleNode(
                         "//adminconsole/global/appname");
                 existingAppName.setText(appName.getText());
-                if (appName.attributeValue("plugin") != null) {
-                    existingAppName.addAttribute("plugin", appName.attributeValue("plugin"));
+                if (appName.attributeValue("org.thirdplace") != null) {
+                    existingAppName.addAttribute("org.thirdplace", appName.attributeValue("org.thirdplace"));
                 }
             }
             Element appLogoImage = (Element)element.selectSingleNode("//adminconsole/global/logo-image");
@@ -326,8 +326,8 @@ public class AdminConsole {
                 Element existingLogoImage = (Element)generatedModel.selectSingleNode(
                         "//adminconsole/global/logo-image");
                 existingLogoImage.setText(appLogoImage.getText());
-                if (appLogoImage.attributeValue("plugin") != null) {
-                    existingLogoImage.addAttribute("plugin", appLogoImage.attributeValue("plugin"));
+                if (appLogoImage.attributeValue("org.thirdplace") != null) {
+                    existingLogoImage.addAttribute("org.thirdplace", appLogoImage.attributeValue("org.thirdplace"));
                 }
             }
             Element appLoginImage = (Element)element.selectSingleNode("//adminconsole/global/login-image");
@@ -335,8 +335,8 @@ public class AdminConsole {
                 Element existingLoginImage = (Element)generatedModel.selectSingleNode(
                         "//adminconsole/global/login-image");
                 existingLoginImage.setText(appLoginImage.getText());
-                if (appLoginImage.attributeValue("plugin") != null) {
-                    existingLoginImage.addAttribute("plugin", appLoginImage.attributeValue("plugin"));
+                if (appLoginImage.attributeValue("org.thirdplace") != null) {
+                    existingLoginImage.addAttribute("org.thirdplace", appLoginImage.attributeValue("org.thirdplace"));
                 }
             }
             Element appVersion = (Element)element.selectSingleNode("//adminconsole/global/version");
@@ -345,8 +345,8 @@ public class AdminConsole {
                         "//adminconsole/global/version");
                 if (existingVersion != null) {
                     existingVersion.setText(appVersion.getText());
-                    if (appVersion.attributeValue("plugin") != null) {
-                        existingVersion.addAttribute("plugin", appVersion.attributeValue("plugin"));
+                    if (appVersion.attributeValue("org.thirdplace") != null) {
+                        existingVersion.addAttribute("org.thirdplace", appVersion.attributeValue("org.thirdplace"));
                     }
                 }
                 else {
@@ -419,8 +419,8 @@ public class AdminConsole {
         if (overrideTab.attributeValue("description") != null) {
             tab.addAttribute("description", overrideTab.attributeValue("description"));
         }
-        if (overrideTab.attributeValue("plugin") != null) {
-            tab.addAttribute("plugin", overrideTab.attributeValue("plugin"));
+        if (overrideTab.attributeValue("org.thirdplace") != null) {
+            tab.addAttribute("org.thirdplace", overrideTab.attributeValue("org.thirdplace"));
         }
         // Override sidebar items.
         for (Iterator i=overrideTab.elementIterator(); i.hasNext(); ) {
@@ -445,8 +445,8 @@ public class AdminConsole {
         if (overrideSidebar.attributeValue("name") != null) {
             sidebar.addAttribute("name", overrideSidebar.attributeValue("name"));
         }
-        if (overrideSidebar.attributeValue("plugin") != null) {
-            sidebar.addAttribute("plugin", overrideSidebar.attributeValue("plugin"));
+        if (overrideSidebar.attributeValue("org.thirdplace") != null) {
+            sidebar.addAttribute("org.thirdplace", overrideSidebar.attributeValue("org.thirdplace"));
         }
         // Override entries.
         for (Iterator i=overrideSidebar.elementIterator(); i.hasNext(); ) {
@@ -477,8 +477,8 @@ public class AdminConsole {
         if (overrideEntry.attributeValue("description") != null) {
             entry.addAttribute("description", overrideEntry.attributeValue("description"));
         }
-        if (overrideEntry.attributeValue("plugin") != null) {
-            entry.addAttribute("plugin", overrideEntry.attributeValue("plugin"));
+        if (overrideEntry.attributeValue("org.thirdplace") != null) {
+            entry.addAttribute("org.thirdplace", overrideEntry.attributeValue("org.thirdplace"));
         }
         // Override any sidebars contained in the entry.
         for (Iterator i=overrideEntry.elementIterator(); i.hasNext(); ) {

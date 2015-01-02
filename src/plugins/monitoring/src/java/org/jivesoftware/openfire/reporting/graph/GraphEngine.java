@@ -68,7 +68,7 @@ public class GraphEngine {
     private Locale oldLocale;
 
     /**
-     * Default constructor used by the plugin container to construct the graph engine.
+     * Default constructor used by the org.hangout.org.thirdplace container to construct the graph engine.
      *
      * @param statsViewer The viewer provides an mechanism to view the data being tracked by the <i>StatsEngine</i>.
      */

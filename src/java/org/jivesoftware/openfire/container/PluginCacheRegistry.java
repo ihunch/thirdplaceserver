@@ -51,9 +51,9 @@ public class PluginCacheRegistry {
     }
 
     /**
-     * Registers cache configuration data for a give cache and plugin.
+     * Registers cache configuration data for a give cache and org.hangout.org.thirdplace.
      *
-     * @param pluginName the name of the plugin which will use the cache.
+     * @param pluginName the name of the org.hangout.org.thirdplace which will use the cache.
      * @param info the cache configuration data.
      */
     public void registerCache(String pluginName, CacheInfo info) {
@@ -75,16 +75,16 @@ public class PluginCacheRegistry {
     }
 
     /**
-     * Unregisters all caches for the given plugin.
+     * Unregisters all caches for the given org.hangout.org.thirdplace.
      *
-     * @param pluginName the name of the plugin whose caches will be unregistered.
+     * @param pluginName the name of the org.hangout.org.thirdplace whose caches will be unregistered.
      */
     public void unregisterCaches(String pluginName) {
         List<CacheInfo> caches = pluginCaches.remove(pluginName);
         if (caches != null) {
             for (CacheInfo info : caches) {
                 extraCacheMappings.remove(info.getCacheName());
-                // Check if other cluster nodes have this plugin installed
+                // Check if other cluster nodes have this org.hangout.org.thirdplace installed
                 Collection<Object> answers =
                         CacheFactory.doSynchronousClusterTask(new IsPluginInstalledTask(pluginName), false);
                 for (Object installed : answers) {
@@ -92,7 +92,7 @@ public class PluginCacheRegistry {
                         return;
                     }
                 }
-                // Destroy cache if we are the last node hosting this plugin
+                // Destroy cache if we are the last node hosting this org.hangout.org.thirdplace
                 try {
                     CacheFactory.destroyCache(info.getCacheName());
                 }

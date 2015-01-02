@@ -113,7 +113,7 @@ public class IQRegisterHandler extends IQHandler implements ServerFeaturesProvid
 
             // Create the registration form to include in the probeResult. The form will include
             // the basic information plus name and visibility of name and email.
-            // TODO Future versions could allow plugin modules to add new fields to the form 
+            // TODO Future versions could allow org.hangout.org.thirdplace modules to add new fields to the form
             final DataForm registrationForm = new DataForm(DataForm.Type.form);
             registrationForm.setTitle("XMPP Client Registration");
             registrationForm.addInstruction("Please provide the following information");
