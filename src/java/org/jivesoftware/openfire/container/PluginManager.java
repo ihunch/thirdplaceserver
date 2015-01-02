@@ -82,7 +82,7 @@ public class PluginManager {
     private Map<Plugin, PluginClassLoader> classloaders;
     private Map<Plugin, File> pluginDirs;
     /**
-     * Keep track of org.hangout.org.thirdplace names and their unzipped files. This list is updated when org.hangout.org.thirdplace
+     * Keep track of plugin names and their unzipped files. This list is updated when plugin
      * is exploded and not when is loaded.
      */
     private Map<String, File> pluginFiles;
@@ -96,9 +96,9 @@ public class PluginManager {
     private Set<PluginManagerListener> pluginManagerListeners = new CopyOnWriteArraySet<PluginManagerListener>();
 
     /**
-     * Constructs a new org.hangout.org.thirdplace manager.
+     * Constructs a new plugin manager.
      *
-     * @param pluginDir the org.hangout.org.thirdplace directory.
+     * @param pluginDir the plugin directory.
      */
     public PluginManager(File pluginDir) {
         this.pluginDirectory = pluginDir;
@@ -114,7 +114,7 @@ public class PluginManager {
     }
 
     /**
-     * Starts plugins and the org.hangout.org.thirdplace monitoring service.
+     * Starts plugins and the plugin monitoring service.
      */
     public void start() {
         executor = new ScheduledThreadPoolExecutor(1);
@@ -132,7 +132,7 @@ public class PluginManager {
      * Shuts down all running plugins.
      */
     public void shutdown() {
-        // Stop the org.hangout.org.thirdplace monitoring service.
+        // Stop the plugin monitoring service.
         if (executor != null) {
             executor.shutdown();
         }
@@ -155,15 +155,15 @@ public class PluginManager {
     }
 
     /**
-     * Installs or updates an existing org.hangout.org.thirdplace.
+     * Installs or updates an existing plugin.
      *
-     * @param in the input stream that contains the new org.hangout.org.thirdplace definition.
-     * @param pluginFilename the filename of the org.hangout.org.thirdplace to create or update.
-     * @return true if the org.hangout.org.thirdplace was successfully installed or updated.
+     * @param in the input stream that contains the new plugin definition.
+     * @param pluginFilename the filename of the plugin to create or update.
+     * @return true if the plugin was successfully installed or updated.
      */
     public boolean installPlugin(InputStream in, String pluginFilename) {
         if (in == null || pluginFilename == null || pluginFilename.length() < 1) {
-            Log.error("Error installing org.hangout.org.thirdplace: Input stream was null or pluginFilename was null or had no length.");
+            Log.error("Error installing plugin: Input stream was null or pluginFilename was null or had no length.");
             return false;
         }
         try {
@@ -174,7 +174,7 @@ public class PluginManager {
             if (index != -1) {
                 pluginFilename = pluginFilename.substring(index+1);
             }
-            // Absolute path to the org.hangout.org.thirdplace file
+            // Absolute path to the plugin file
             String absolutePath = pluginDirectory + File.separator + pluginFilename;
             // Save input stream contents to a temp file
             OutputStream out = new FileOutputStream(absolutePath + ".part");
@@ -187,21 +187,21 @@ public class PluginManager {
             new File(absolutePath).delete();
             // Rename temp file to .jar
             new File(absolutePath + ".part").renameTo(new File(absolutePath));
-            // Ask the org.hangout.org.thirdplace monitor to update the org.hangout.org.thirdplace immediately.
+            // Ask the plugin monitor to update the plugin immediately.
             pluginMonitor.run();
         }
         catch (IOException e) {
-            Log.error("Error installing new version of org.hangout.org.thirdplace: " + pluginFilename, e);
+            Log.error("Error installing new version of plugin: " + pluginFilename, e);
             return false;
         }
         return true;
     }
 
     /**
-     * Returns true if the specified filename, that belongs to a org.hangout.org.thirdplace, exists.
+     * Returns true if the specified filename, that belongs to a plugin, exists.
      *
-     * @param pluginFilename the filename of the org.hangout.org.thirdplace to create or update.
-     * @return true if the specified filename, that belongs to a org.hangout.org.thirdplace, exists.
+     * @param pluginFilename the filename of the plugin to create or update.
+     * @return true if the specified filename, that belongs to a plugin, exists.
      */
     public boolean isPluginDownloaded(String pluginFilename) {
         return new File(pluginDirectory + File.separator + pluginFilename).exists();
@@ -217,32 +217,32 @@ public class PluginManager {
     }
 
     /**
-     * Returns a org.hangout.org.thirdplace by name or <tt>null</tt> if a org.hangout.org.thirdplace with that name does not
-     * exist. The name is the name of the directory that the org.hangout.org.thirdplace is in such as
+     * Returns a plugin by name or <tt>null</tt> if a plugin with that name does not
+     * exist. The name is the name of the directory that the plugin is in such as
      * "broadcast".
      *
-     * @param name the name of the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace.
+     * @param name the name of the plugin.
+     * @return the plugin.
      */
     public Plugin getPlugin(String name) {
         return plugins.get(name);
     }
 
     /**
-     * Returns the org.hangout.org.thirdplace's directory.
+     * Returns the plugin's directory.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's directory.
+     * @param plugin the plugin.
+     * @return the plugin's directory.
      */
     public File getPluginDirectory(Plugin plugin) {
         return pluginDirs.get(plugin);
     }
 
     /**
-     * Returns the JAR or WAR file that created the org.hangout.org.thirdplace.
+     * Returns the JAR or WAR file that created the plugin.
      *
-     * @param name the name of the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace JAR or WAR file.
+     * @param name the name of the plugin.
+     * @return the plugin JAR or WAR file.
      */
     public File getPluginFile(String name) {
         return pluginFiles.get(name);
@@ -273,30 +273,30 @@ public class PluginManager {
      * <p/>
      * </ul>
      *
-     * @param pluginDir the org.hangout.org.thirdplace directory.
+     * @param pluginDir the plugin directory.
      */
     private void loadPlugin(File pluginDir) {
-        // Only load the admin org.hangout.org.thirdplace during setup mode.
+        // Only load the admin plugin during setup mode.
         if (XMPPServer.getInstance().isSetupMode() && !(pluginDir.getName().equals("admin"))) {
             return;
         }
-        Log.debug("PluginManager: Loading org.hangout.org.thirdplace " + pluginDir.getName());
+        Log.debug("PluginManager: Loading plugin " + pluginDir.getName());
         Plugin plugin;
         try {
-            File pluginConfig = new File(pluginDir, "org.hangout.org.thirdplace.xml");
+            File pluginConfig = new File(pluginDir, "plugin.xml");
             if (pluginConfig.exists()) {
                 SAXReader saxReader = new SAXReader();
                 saxReader.setEncoding("UTF-8");
                 Document pluginXML = saxReader.read(pluginConfig);
 
-                // See if the org.hangout.org.thirdplace specifies a version of Openfire
+                // See if the plugin specifies a version of Openfire
                 // required to run.
                 Element minServerVersion = (Element)pluginXML.selectSingleNode("/plugin/minServerVersion");
                 if (minServerVersion != null) {
                     Version requiredVersion = new Version(minServerVersion.getTextTrim());
                     Version currentVersion = XMPPServer.getInstance().getServerInfo().getVersion();
                     if (requiredVersion.isNewerThan(currentVersion)) {
-                        String msg = "Ignoring org.hangout.org.thirdplace " + pluginDir.getName() + ": requires " +
+                        String msg = "Ignoring plugin " + pluginDir.getName() + ": requires " +
                             "server version " + requiredVersion;
                         Log.warn(msg);
                         System.out.println(msg);
@@ -306,8 +306,8 @@ public class PluginManager {
 
                 PluginClassLoader pluginLoader;
 
-                // Check to see if this is a child org.hangout.org.thirdplace of another org.hangout.org.thirdplace. If it is, we
-                // re-use the parent org.hangout.org.thirdplace's class loader so that the plugins can interact.
+                // Check to see if this is a child plugin of another plugin. If it is, we
+                // re-use the parent plugin's class loader so that the plugins can interact.
                 Element parentPluginNode = (Element)pluginXML.selectSingleNode("/plugin/parentPlugin");
 
                 String pluginName = pluginDir.getName();
@@ -333,26 +333,26 @@ public class PluginManager {
 
                     }
                     else {
-                        // See if the parent org.hangout.org.thirdplace exists but just hasn't been loaded yet.
-                        // This can only be the case if this org.hangout.org.thirdplace name is alphabetically before
+                        // See if the parent plugin exists but just hasn't been loaded yet.
+                        // This can only be the case if this plugin name is alphabetically before
                         // the parent.
                         if (pluginName.compareTo(parentPlugin) < 0) {
                             // See if the parent exists.
                             File file = new File(pluginDir.getParentFile(), parentPlugin + ".jar");
                             if (file.exists()) {
-                                // Silently return. The child org.hangout.org.thirdplace will get loaded up on the next
-                                // org.hangout.org.thirdplace load run after the parent.
+                                // Silently return. The child plugin will get loaded up on the next
+                                // plugin load run after the parent.
                                 return;
                             }
                             else {
                                 file = new File(pluginDir.getParentFile(), parentPlugin + ".war");
                                 if (file.exists()) {
-                                    // Silently return. The child org.hangout.org.thirdplace will get loaded up on the next
-                                    // org.hangout.org.thirdplace load run after the parent.
+                                    // Silently return. The child plugin will get loaded up on the next
+                                    // plugin load run after the parent.
                                     return;
                                 }
                                 else {
-                                    String msg = "Ignoring org.hangout.org.thirdplace " + pluginName + ": parent org.hangout.org.thirdplace " +
+                                    String msg = "Ignoring plugin " + pluginName + ": parent plugin " +
                                         parentPlugin + " not present.";
                                     Log.warn(msg);
                                     System.out.println(msg);
@@ -361,7 +361,7 @@ public class PluginManager {
                             }
                         }
                         else {
-                            String msg = "Ignoring org.hangout.org.thirdplace " + pluginName + ": parent org.hangout.org.thirdplace " +
+                            String msg = "Ignoring plugin " + pluginName + ": parent plugin " +
                                 parentPlugin + " not present.";
                             Log.warn(msg);
                             System.out.println(msg);
@@ -369,13 +369,13 @@ public class PluginManager {
                         }
                     }
                 }
-                // This is not a child org.hangout.org.thirdplace, so create a new class loader.
+                // This is not a child plugin, so create a new class loader.
                 else {
                     pluginLoader = new PluginClassLoader();
                     pluginLoader.addDirectory(pluginDir, classesDir != null);
                 }
 
-                // Check to see if development mode is turned on for the org.hangout.org.thirdplace. If it is,
+                // Check to see if development mode is turned on for the plugin. If it is,
                 // configure dev mode.
 
                 PluginDevEnvironment dev = null;
@@ -387,7 +387,7 @@ public class PluginManager {
                     if (webRoot != null) {
                         File webRootDir = new File(webRoot);
                         if (!webRootDir.exists()) {
-                            // Ok, let's try it relative from this org.hangout.org.thirdplace dir?
+                            // Ok, let's try it relative from this plugin dir?
                             webRootDir = new File(pluginDir, webRoot);
                         }
 
@@ -399,7 +399,7 @@ public class PluginManager {
                     if (classesDir != null) {
                         File classes = new File(classesDir);
                         if (!classes.exists()) {
-                            // ok, let's try it relative from this org.hangout.org.thirdplace dir?
+                            // ok, let's try it relative from this plugin dir?
                             classes = new File(pluginDir, classesDir);
                         }
 
@@ -424,7 +424,7 @@ public class PluginManager {
                 plugins.put(pluginName, plugin);
                 pluginDirs.put(plugin, pluginDir);
 
-                // If this is a child org.hangout.org.thirdplace, register it as such.
+                // If this is a child plugin, register it as such.
                 if (parentPluginNode != null) {
                     String parentPlugin = parentPluginNode.getTextTrim();
                     List<String> childrenPlugins = parentPluginMap.get(plugins.get(parentPlugin));
@@ -438,11 +438,11 @@ public class PluginManager {
                 }
                 else {
                     // Only register the class loader in the case of this not being
-                    // a child org.hangout.org.thirdplace.
+                    // a child plugin.
                     classloaders.put(plugin, pluginLoader);
                 }
 
-                // Check the org.hangout.org.thirdplace's database schema (if it requires one).
+                // Check the plugin's database schema (if it requires one).
                 if (!DbConnectionManager.getSchemaManager().checkPluginSchema(plugin)) {
                     // The schema was not there and auto-upgrade failed.
                     Log.error(pluginName + " - " +
@@ -451,7 +451,7 @@ public class PluginManager {
                             LocaleUtils.getLocalizedString("upgrade.database.failure"));
                 }
 
-                // Load any JSP's defined by the org.hangout.org.thirdplace.
+                // Load any JSP's defined by the plugin.
                 File webXML = new File(pluginDir, "web" + File.separator + "WEB-INF" +
                     File.separator + "web.xml");
                 if (webXML.exists()) {
@@ -468,10 +468,10 @@ public class PluginManager {
                     pluginDevelopment.put(plugin, dev);
                 }
 
-                // Configure caches of the org.hangout.org.thirdplace
+                // Configure caches of the plugin
                 configureCaches(pluginDir, pluginName);
 
-                // Init the org.hangout.org.thirdplace.
+                // Init the plugin.
                 ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
                 Thread.currentThread().setContextClassLoader(pluginLoader);
                 plugin.initializePlugin(this, pluginDir);
@@ -483,32 +483,32 @@ public class PluginManager {
                     Element appName = (Element)adminElement.selectSingleNode(
                         "/plugin/adminconsole/global/appname");
                     if (appName != null) {
-                        // Set the org.hangout.org.thirdplace name so that the proper i18n String can be loaded.
-                        appName.addAttribute("org.hangout.org.thirdplace", pluginName);
+                        // Set the plugin name so that the proper i18n String can be loaded.
+                        appName.addAttribute("plugin", pluginName);
                     }
                     // If global images are specified, override their URL.
                     Element imageEl = (Element)adminElement.selectSingleNode(
                         "/plugin/adminconsole/global/logo-image");
                     if (imageEl != null) {
                         imageEl.setText("plugins/" + pluginName + "/" + imageEl.getText());
-                        // Set the org.hangout.org.thirdplace name so that the proper i18n String can be loaded.
-                        imageEl.addAttribute("org.hangout.org.thirdplace", pluginName);
+                        // Set the plugin name so that the proper i18n String can be loaded.
+                        imageEl.addAttribute("plugin", pluginName);
                     }
                     imageEl = (Element)adminElement.selectSingleNode("/plugin/adminconsole/global/login-image");
                     if (imageEl != null) {
                         imageEl.setText("plugins/" + pluginName + "/" + imageEl.getText());
-                        // Set the org.hangout.org.thirdplace name so that the proper i18n String can be loaded.
-                        imageEl.addAttribute("org.hangout.org.thirdplace", pluginName);
+                        // Set the plugin name so that the proper i18n String can be loaded.
+                        imageEl.addAttribute("plugin", pluginName);
                     }
                     // Modify all the URL's in the XML so that they are passed through
-                    // the org.hangout.org.thirdplace servlet correctly.
+                    // the plugin servlet correctly.
                     List urls = adminElement.selectNodes("//@url");
                     for (Object url : urls) {
                         Attribute attr = (Attribute)url;
                         attr.setValue("plugins/" + pluginName + "/" + attr.getValue());
                     }
                     // In order to internationalize the names and descriptions in the model,
-                    // we add a "org.hangout.org.thirdplace" attribute to each tab, sidebar, and item so that
+                    // we add a "plugin" attribute to each tab, sidebar, and item so that
                     // the the renderer knows where to load the i18n Strings from.
                     String[] elementNames = new String [] { "tab", "sidebar", "item" };
                     for (String elementName : elementNames) {
@@ -519,7 +519,7 @@ public class PluginManager {
                             // override i18n settings.
                             if (element.attribute("name") != null ||
                                     element.attribute("value") != null) {
-                                element.addAttribute("org.hangout.org.thirdplace", pluginName);
+                                element.addAttribute("plugin", pluginName);
                             }
                         }
                     }
@@ -529,11 +529,11 @@ public class PluginManager {
                 firePluginCreatedEvent(pluginName, plugin);
             }
             else {
-                Log.warn("Plugin " + pluginDir + " could not be loaded: no org.hangout.org.thirdplace.xml file found");
+                Log.warn("Plugin " + pluginDir + " could not be loaded: no plugin.xml file found");
             }
         }
         catch (Throwable e) {
-            Log.error("Error loading org.hangout.org.thirdplace: " + pluginDir, e);
+            Log.error("Error loading plugin: " + pluginDir, e);
         }
     }
 
@@ -564,20 +564,20 @@ public class PluginManager {
     }
 
     /**
-     * Unloads a org.hangout.org.thirdplace. The {@link Plugin#destroyPlugin()} method will be called and then
-     * any resources will be released. The name should be the name of the org.hangout.org.thirdplace directory
-     * and not the name as given by the org.hangout.org.thirdplace meta-data. This method only removes
-     * the org.hangout.org.thirdplace but does not delete the org.hangout.org.thirdplace JAR file. Therefore, if the org.hangout.org.thirdplace JAR
-     * still exists after this method is called, the org.hangout.org.thirdplace will be started again the next
-     * time the org.hangout.org.thirdplace monitor process runs. This is useful for "restarting" plugins.
+     * Unloads a plugin. The {@link Plugin#destroyPlugin()} method will be called and then
+     * any resources will be released. The name should be the name of the plugin directory
+     * and not the name as given by the plugin meta-data. This method only removes
+     * the plugin but does not delete the plugin JAR file. Therefore, if the plugin JAR
+     * still exists after this method is called, the plugin will be started again the next
+     * time the plugin monitor process runs. This is useful for "restarting" plugins.
      * <p>
-     * This method is called automatically when a org.hangout.org.thirdplace's JAR file is deleted.
+     * This method is called automatically when a plugin's JAR file is deleted.
      * </p>
      *
-     * @param pluginName the name of the org.hangout.org.thirdplace to unload.
+     * @param pluginName the name of the plugin to unload.
      */
     public void unloadPlugin(String pluginName) {
-        Log.debug("PluginManager: Unloading org.hangout.org.thirdplace " + pluginName);
+        Log.debug("PluginManager: Unloading plugin " + pluginName);
 
         Plugin plugin = plugins.get(pluginName);
         if (plugin != null) {
@@ -590,7 +590,7 @@ public class PluginManager {
                         parentPluginMap.get(plugin).toArray(new String[parentPluginMap.get(plugin).size()]);
                 parentPluginMap.remove(plugin);
                 for (String childPlugin : childPlugins) {
-                    Log.debug("Unloading child org.hangout.org.thirdplace: " + childPlugin);
+                    Log.debug("Unloading child plugin: " + childPlugin);
                     childPluginMap.remove(plugins.get(childPlugin));
                     unloadPlugin(childPlugin);
                 }
@@ -608,10 +608,10 @@ public class PluginManager {
                 PluginServlet.unregisterServlets(customWebXML);
             }
 
-            // Wrap destroying the org.hangout.org.thirdplace in a try/catch block. Otherwise, an exception raised
-            // in the destroy org.hangout.org.thirdplace process will disrupt the whole unloading process. It's still
-            // possible that classloader destruction won't work in the case that destroying the org.hangout.org.thirdplace
-            // fails. In that case, Openfire may need to be restarted to fully cleanup the org.hangout.org.thirdplace
+            // Wrap destroying the plugin in a try/catch block. Otherwise, an exception raised
+            // in the destroy plugin process will disrupt the whole unloading process. It's still
+            // possible that classloader destruction won't work in the case that destroying the plugin
+            // fails. In that case, Openfire may need to be restarted to fully cleanup the plugin
             // resources.
             try {
                 plugin.destroyPlugin();
@@ -621,33 +621,33 @@ public class PluginManager {
             }
         }
 
-        // Remove references to the org.hangout.org.thirdplace so it can be unloaded from memory
-        // If org.hangout.org.thirdplace still fails to be removed then we will add references back
-        // Anyway, for a few seconds admins may not see the org.hangout.org.thirdplace in the admin console
+        // Remove references to the plugin so it can be unloaded from memory
+        // If plugin still fails to be removed then we will add references back
+        // Anyway, for a few seconds admins may not see the plugin in the admin console
         // and in a subsequent refresh it will appear if failed to be removed
         plugins.remove(pluginName);
         File pluginFile = pluginDirs.remove(plugin);
         PluginClassLoader pluginLoader = classloaders.remove(plugin);
 
-        // try to close the cached jar files from the org.hangout.org.thirdplace class loader
+        // try to close the cached jar files from the plugin class loader
         if (pluginLoader != null) {
         	pluginLoader.unloadJarFiles();
         } else {
-        	Log.warn("No org.hangout.org.thirdplace loader found for " + pluginName);
+        	Log.warn("No plugin loader found for " + pluginName);
         }
 
-        // Try to remove the folder where the org.hangout.org.thirdplace was exploded. If this works then
-        // the org.hangout.org.thirdplace was successfully removed. Otherwise, some objects created by the
-        // org.hangout.org.thirdplace are still in memory.
+        // Try to remove the folder where the plugin was exploded. If this works then
+        // the plugin was successfully removed. Otherwise, some objects created by the
+        // plugin are still in memory.
         File dir = new File(pluginDirectory, pluginName);
-        // Give the org.hangout.org.thirdplace 2 seconds to unload.
+        // Give the plugin 2 seconds to unload.
         try {
             Thread.sleep(2000);
             // Ask the system to clean up references.
             System.gc();
             int count = 0;
             while (!deleteDir(dir) && count++ < 5) {
-                Log.warn("Error unloading org.hangout.org.thirdplace " + pluginName + ". " + "Will attempt again momentarily.");
+                Log.warn("Error unloading plugin " + pluginName + ". " + "Will attempt again momentarily.");
                 Thread.sleep(8000);
                 // Ask the system to clean up references.
                 System.gc();
@@ -657,11 +657,11 @@ public class PluginManager {
         }
 
         if (plugin != null && !dir.exists()) {
-            // Unregister org.hangout.org.thirdplace caches
+            // Unregister plugin caches
             PluginCacheRegistry.getInstance().unregisterCaches(pluginName);
 
-            // See if this is a child org.hangout.org.thirdplace. If it is, we should unload
-            // the parent org.hangout.org.thirdplace as well.
+            // See if this is a child plugin. If it is, we should unload
+            // the parent plugin as well.
             if (childPluginMap.containsKey(plugin)) {
                 String parentPluginName = childPluginMap.get(plugin);
                 Plugin parentPlugin = plugins.get(parentPluginName);
@@ -670,7 +670,7 @@ public class PluginManager {
                 childrenPlugins.remove(pluginName);
                 childPluginMap.remove(plugin);
 
-                // When the parent org.hangout.org.thirdplace implements PluginListener, its pluginDestroyed() method
+                // When the parent plugin implements PluginListener, its pluginDestroyed() method
                 // isn't called if it dies first before its child. Athough the parent will die anyway,
                 // it's proper if the parent "gets informed first" about the dying child when the
                 // child is the one being killed first.
@@ -684,7 +684,7 @@ public class PluginManager {
             firePluginDestroyedEvent(pluginName, plugin);
         }
         else if (plugin != null) {
-            // Restore references since we failed to remove the org.hangout.org.thirdplace
+            // Restore references since we failed to remove the plugin
             plugins.put(pluginName, plugin);
             pluginDirs.put(plugin, pluginFile);
             classloaders.put(plugin, pluginLoader);
@@ -698,9 +698,9 @@ public class PluginManager {
     }
 
     /**
-     * Loads a class from the classloader of a org.hangout.org.thirdplace.
+     * Loads a class from the classloader of a plugin.
      *
-     * @param plugin the org.hangout.org.thirdplace.
+     * @param plugin the plugin.
      * @param className the name of the class to load.
      * @return the class.
      * @throws ClassNotFoundException if the class was not found.
@@ -714,27 +714,27 @@ public class PluginManager {
     }
 
     /**
-     * Returns a org.hangout.org.thirdplace's dev environment if development mode is enabled for
-     * the org.hangout.org.thirdplace.
+     * Returns a plugin's dev environment if development mode is enabled for
+     * the plugin.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace dev environment, or <tt>null</tt> if development
-     *         mode is not enabled for the org.hangout.org.thirdplace.
+     * @param plugin the plugin.
+     * @return the plugin dev environment, or <tt>null</tt> if development
+     *         mode is not enabled for the plugin.
      */
     public PluginDevEnvironment getDevEnvironment(Plugin plugin) {
         return pluginDevelopment.get(plugin);
     }
 
     /**
-     * Returns the name of a org.hangout.org.thirdplace. The value is retrieved from the org.hangout.org.thirdplace.xml file
-     * of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt> will be returned.
-     * Note that this value is distinct from the name of the org.hangout.org.thirdplace directory.
+     * Returns the name of a plugin. The value is retrieved from the plugin.xml file
+     * of the plugin. If the value could not be found, <tt>null</tt> will be returned.
+     * Note that this value is distinct from the name of the plugin directory.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's name.
+     * @param plugin the plugin.
+     * @return the plugin's name.
      */
     public String getName(Plugin plugin) {
-        String name = getElementValue(plugin, "/org.hangout.org.thirdplace/name");
+        String name = getElementValue(plugin, "/plugin/name");
         String pluginName = pluginDirs.get(plugin).getName();
         if (name != null) {
             return AdminConsole.getAdminText(name, pluginName);
@@ -745,72 +745,72 @@ public class PluginManager {
     }
 
     /**
-     * Returns the description of a org.hangout.org.thirdplace. The value is retrieved from the org.hangout.org.thirdplace.xml file
-     * of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt> will be returned.
+     * Returns the description of a plugin. The value is retrieved from the plugin.xml file
+     * of the plugin. If the value could not be found, <tt>null</tt> will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's description.
+     * @param plugin the plugin.
+     * @return the plugin's description.
      */
     public String getDescription(Plugin plugin) {
         String pluginName = pluginDirs.get(plugin).getName();
-        return AdminConsole.getAdminText(getElementValue(plugin, "/org.hangout.org.thirdplace/description"), pluginName);
+        return AdminConsole.getAdminText(getElementValue(plugin, "/plugin/description"), pluginName);
     }
 
     /**
-     * Returns the author of a org.hangout.org.thirdplace. The value is retrieved from the org.hangout.org.thirdplace.xml file
-     * of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt> will be returned.
+     * Returns the author of a plugin. The value is retrieved from the plugin.xml file
+     * of the plugin. If the value could not be found, <tt>null</tt> will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's author.
+     * @param plugin the plugin.
+     * @return the plugin's author.
      */
     public String getAuthor(Plugin plugin) {
-        return getElementValue(plugin, "/org.hangout.org.thirdplace/author");
+        return getElementValue(plugin, "/plugin/author");
     }
 
     /**
-     * Returns the version of a org.hangout.org.thirdplace. The value is retrieved from the org.hangout.org.thirdplace.xml file
-     * of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt> will be returned.
+     * Returns the version of a plugin. The value is retrieved from the plugin.xml file
+     * of the plugin. If the value could not be found, <tt>null</tt> will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's version.
+     * @param plugin the plugin.
+     * @return the plugin's version.
      */
     public String getVersion(Plugin plugin) {
-        return getElementValue(plugin, "/org.hangout.org.thirdplace/version");
+        return getElementValue(plugin, "/plugin/version");
     }
 
      /**
-     * Returns the minimum server version this org.hangout.org.thirdplace can run within. The value is retrieved from the org.hangout.org.thirdplace.xml file
-     * of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt> will be returned.
+     * Returns the minimum server version this plugin can run within. The value is retrieved from the plugin.xml file
+     * of the plugin. If the value could not be found, <tt>null</tt> will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's version.
+     * @param plugin the plugin.
+     * @return the plugin's version.
      */
     public String getMinServerVersion(Plugin plugin) {
-        return getElementValue(plugin, "/org.hangout.org.thirdplace/minServerVersion");
+        return getElementValue(plugin, "/plugin/minServerVersion");
     }
 
     /**
-     * Returns the database schema key of a org.hangout.org.thirdplace, if it exists. The value is retrieved
-     * from the org.hangout.org.thirdplace.xml file of the org.hangout.org.thirdplace. If the value could not be found, <tt>null</tt>
+     * Returns the database schema key of a plugin, if it exists. The value is retrieved
+     * from the plugin.xml file of the plugin. If the value could not be found, <tt>null</tt>
      * will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's database schema key or <tt>null</tt> if it doesn't exist.
+     * @param plugin the plugin.
+     * @return the plugin's database schema key or <tt>null</tt> if it doesn't exist.
      */
     public String getDatabaseKey(Plugin plugin) {
-        return getElementValue(plugin, "/org.hangout.org.thirdplace/databaseKey");
+        return getElementValue(plugin, "/plugin/databaseKey");
     }
 
     /**
-     * Returns the database schema version of a org.hangout.org.thirdplace, if it exists. The value is retrieved
-     * from the org.hangout.org.thirdplace.xml file of the org.hangout.org.thirdplace. If the value could not be found, <tt>-1</tt>
+     * Returns the database schema version of a plugin, if it exists. The value is retrieved
+     * from the plugin.xml file of the plugin. If the value could not be found, <tt>-1</tt>
      * will be returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's database schema version or <tt>-1</tt> if it doesn't exist.
+     * @param plugin the plugin.
+     * @return the plugin's database schema version or <tt>-1</tt> if it doesn't exist.
      */
     public int getDatabaseVersion(Plugin plugin) {
-        String versionString = getElementValue(plugin, "/org.hangout.org.thirdplace/databaseVersion");
+        String versionString = getElementValue(plugin, "/plugin/databaseVersion");
         if (versionString != null) {
             try {
                 return Integer.parseInt(versionString.trim());
@@ -823,19 +823,19 @@ public class PluginManager {
     }
 
     /**
-     * Returns the license agreement type that the org.hangout.org.thirdplace is governed by. The value
-     * is retrieved from the org.hangout.org.thirdplace.xml file of the org.hangout.org.thirdplace. If the value could not be
+     * Returns the license agreement type that the plugin is governed by. The value
+     * is retrieved from the plugin.xml file of the plugin. If the value could not be
      * found, {@link License#other} is returned.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the org.hangout.org.thirdplace's license agreement.
+     * @param plugin the plugin.
+     * @return the plugin's license agreement.
      */
     public License getLicense(Plugin plugin) {
-        String licenseString = getElementValue(plugin, "/org.hangout.org.thirdplace/licenseType");
+        String licenseString = getElementValue(plugin, "/plugin/licenseType");
         if (licenseString != null) {
             try {
                 // Attempt to load the get the license type. We lower-case and
-                // trim the license type to give org.hangout.org.thirdplace author's a break. If the
+                // trim the license type to give plugin author's a break. If the
                 // license type is not recognized, we'll log the error and default
                 // to "other".
                 return License.valueOf(licenseString.toLowerCase().trim());
@@ -848,10 +848,10 @@ public class PluginManager {
     }
 
     /**
-     * Returns the classloader of a org.hangout.org.thirdplace.
+     * Returns the classloader of a plugin.
      *
-     * @param plugin the org.hangout.org.thirdplace.
-     * @return the classloader of the org.hangout.org.thirdplace.
+     * @param plugin the plugin.
+     * @return the classloader of the plugin.
      */
     public PluginClassLoader getPluginClassloader(Plugin plugin) {
         return classloaders.get(plugin);
@@ -859,9 +859,9 @@ public class PluginManager {
 
     /**
      * Returns the value of an element selected via an xpath expression from
-     * a Plugin's org.hangout.org.thirdplace.xml file.
+     * a Plugin's plugin.xml file.
      *
-     * @param plugin the org.hangout.org.thirdplace.
+     * @param plugin the plugin.
      * @param xpath  the xpath expression.
      * @return the value of the element selected by the xpath expression.
      */
@@ -871,7 +871,7 @@ public class PluginManager {
             return null;
         }
         try {
-            File pluginConfig = new File(pluginDir, "org.hangout.org.thirdplace.xml");
+            File pluginConfig = new File(pluginDir, "plugin.xml");
             if (pluginConfig.exists()) {
                 SAXReader saxReader = new SAXReader();
                 saxReader.setEncoding("UTF-8");
@@ -889,43 +889,43 @@ public class PluginManager {
     }
 
     /**
-     * An enumberation for org.hangout.org.thirdplace license agreement types.
+     * An enumberation for plugin license agreement types.
      */
     @SuppressWarnings({"UnnecessarySemicolon"})  // Support for QDox Parser
     public enum License {
 
         /**
-         * The org.hangout.org.thirdplace is distributed using a commercial license.
+         * The plugin is distributed using a commercial license.
          */
         commercial,
 
         /**
-         * The org.hangout.org.thirdplace is distributed using the GNU Public License (GPL).
+         * The plugin is distributed using the GNU Public License (GPL).
          */
         gpl,
 
         /**
-         * The org.hangout.org.thirdplace is distributed using the Apache license.
+         * The plugin is distributed using the Apache license.
          */
         apache,
 
         /**
-         * The org.hangout.org.thirdplace is for internal use at an organization only and is not re-distributed.
+         * The plugin is for internal use at an organization only and is not re-distributed.
          */
         internal,
 
         /**
-         * The org.hangout.org.thirdplace is distributed under another license agreement not covered by
+         * The plugin is distributed under another license agreement not covered by
          * one of the other choices. The license agreement should be detailed in the
-         * org.hangout.org.thirdplace Readme.
+         * plugin Readme.
          */
         other;
     }
 
     /**
-     * A service that monitors the org.hangout.org.thirdplace directory for plugins. It periodically
-     * checks for new org.hangout.org.thirdplace JAR files and extracts them if they haven't already
-     * been extracted. Then, any new org.hangout.org.thirdplace directories are loaded.
+     * A service that monitors the plugin directory for plugins. It periodically
+     * checks for new plugin JAR files and extracts them if they haven't already
+     * been extracted. Then, any new plugin directories are loaded.
      */
     private class PluginMonitor implements Runnable {
 
@@ -941,7 +941,7 @@ public class PluginManager {
         private boolean executed = false;
 
         /**
-         * True when it's the first time the org.hangout.org.thirdplace monitor process runs. This is helpful for
+         * True when it's the first time the plugin monitor process runs. This is helpful for
          * bootstrapping purposes.
          */
         private boolean firstRun = true;
@@ -956,7 +956,7 @@ public class PluginManager {
             }
             try {
                 running = true;
-                // Look for extra org.hangout.org.thirdplace directories specified as a system property.
+                // Look for extra plugin directories specified as a system property.
                 String pluginDirs = System.getProperty("pluginDirs");
                 if (pluginDirs != null) {
                     StringTokenizer st = new StringTokenizer(pluginDirs, ", ");
@@ -985,13 +985,13 @@ public class PluginManager {
                         jarFile.getName().length() - 4).toLowerCase();
                     // See if the JAR has already been exploded.
                     File dir = new File(pluginDirectory, pluginName);
-                    // Store the JAR/WAR file that created the org.hangout.org.thirdplace folder
+                    // Store the JAR/WAR file that created the plugin folder
                     pluginFiles.put(pluginName, jarFile);
                     // If the JAR hasn't been exploded, do so.
                     if (!dir.exists()) {
                         unzipPlugin(pluginName, jarFile, dir);
                     }
-                    // See if the JAR is newer than the directory. If so, the org.hangout.org.thirdplace
+                    // See if the JAR is newer than the directory. If so, the plugin
                     // needs to be unloaded and then reloaded.
                     else if (jarFile.lastModified() > dir.lastModified()) {
                         // If this is the first time that the monitor process is running, then
@@ -1006,7 +1006,7 @@ public class PluginManager {
                         else {
                             unloadPlugin(pluginName);
                         }
-                        // If the delete operation was a success, unzip the org.hangout.org.thirdplace.
+                        // If the delete operation was a success, unzip the plugin.
                         if (!dir.exists()) {
                             unzipPlugin(pluginName, jarFile, dir);
                         }
@@ -1019,7 +1019,7 @@ public class PluginManager {
                     }
                 });
 
-                // Sort the list of directories so that the "admin" org.hangout.org.thirdplace is always
+                // Sort the list of directories so that the "admin" plugin is always
                 // first in the list.
                 Arrays.sort(dirs, new Comparator<File>() {
                     public int compare(File file1, File file2) {
@@ -1042,7 +1042,7 @@ public class PluginManager {
                 }
 
                 // See if any currently running plugins need to be unloaded
-                // due to the JAR file being deleted (ignore admin org.hangout.org.thirdplace).
+                // due to the JAR file being deleted (ignore admin plugin).
                 // Build a list of plugins to delete first so that the plugins
                 // keyset isn't modified as we're iterating through it.
                 List<String> toDelete = new ArrayList<String>();
@@ -1063,7 +1063,7 @@ public class PluginManager {
 
                 // Load all plugins that need to be loaded.
                 for (File dirFile : dirs) {
-                    // If the org.hangout.org.thirdplace hasn't already been started, start it.
+                    // If the plugin hasn't already been started, start it.
                     if (dirFile.exists() && !plugins.containsKey(dirFile.getName())) {
                         loadPlugin(dirFile);
                     }
@@ -1089,24 +1089,24 @@ public class PluginManager {
         }
 
         /**
-         * Unzips a org.hangout.org.thirdplace from a JAR file into a directory. If the JAR file
-         * isn't a org.hangout.org.thirdplace, this method will do nothing.
+         * Unzips a plugin from a JAR file into a directory. If the JAR file
+         * isn't a plugin, this method will do nothing.
          *
-         * @param pluginName the name of the org.hangout.org.thirdplace.
+         * @param pluginName the name of the plugin.
          * @param file the JAR file
-         * @param dir the directory to extract the org.hangout.org.thirdplace to.
+         * @param dir the directory to extract the plugin to.
          */
         private void unzipPlugin(String pluginName, File file, File dir) {
             try {
                 ZipFile zipFile = new JarFile(file);
-                // Ensure that this JAR is a org.hangout.org.thirdplace.
-                if (zipFile.getEntry("org.hangout.org.thirdplace.xml") == null) {
+                // Ensure that this JAR is a plugin.
+                if (zipFile.getEntry("plugin.xml") == null) {
                     return;
                 }
                 dir.mkdir();
                 // Set the date of the JAR file to the newly created folder
                 dir.setLastModified(file.lastModified());
-                Log.debug("PluginManager: Extracting org.hangout.org.thirdplace: " + pluginName);
+                Log.debug("PluginManager: Extracting plugin: " + pluginName);
                 for (Enumeration e = zipFile.entries(); e.hasMoreElements();) {
                     JarEntry entry = (JarEntry)e.nextElement();
                     File entryFile = new File(dir, entry.getName());
@@ -1173,7 +1173,7 @@ public class PluginManager {
         }
         boolean deleted = !dir.exists() || dir.delete();
         if (deleted) {
-            // Remove the JAR/WAR file that created the org.hangout.org.thirdplace folder
+            // Remove the JAR/WAR file that created the plugin folder
             pluginFiles.remove(dir.getName());
         }
         return deleted;

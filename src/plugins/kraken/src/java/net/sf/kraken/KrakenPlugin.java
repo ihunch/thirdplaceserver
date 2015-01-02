@@ -36,10 +36,10 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Kraken org.thirdplace, which provides connectivity to IM networks that
+ * Kraken plugin, which provides connectivity to IM networks that
  * don't support the XMPP protocol. 
  *
- * The entire org.thirdplace is referred to as the gateway, while individual
+ * The entire plugin is referred to as the gateway, while individual
  * IM network mappings are referred to as transports.
  *
  * @author Daniel Henninger
@@ -67,7 +67,7 @@ public class KrakenPlugin implements Plugin {
         this.pluginDirectory = pluginDirectory;
         this.pluginManager = manager;
         
-        // Check if the IM Gateway org.thirdplace is installed and stop loading this org.thirdplace if found
+        // Check if the IM Gateway plugin is installed and stop loading this plugin if found
         File pluginDir = new File(JiveGlobals.getHomeDirectory(), "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
@@ -76,9 +76,9 @@ public class KrakenPlugin implements Plugin {
             }
         });
         if (jars.length > 0) {
-            // Do not load this org.thirdplace since the original IM Gateway org.thirdplace is still installed
-            System.out.println("IM Gateway org.thirdplace found. Stopping Kraken");
-            throw new IllegalStateException("This org.thirdplace cannot run next to the IM Gateway org.thirdplace");
+            // Do not load this plugin since the original IM Gateway plugin is still installed
+            System.out.println("IM Gateway plugin found. Stopping Kraken");
+            throw new IllegalStateException("This plugin cannot run next to the IM Gateway plugin");
         }
 
         transports = new Hashtable<String,TransportInstance>();
@@ -171,9 +171,9 @@ public class KrakenPlugin implements Plugin {
     }
 
     /**
-     * Returns the org.thirdplace manager handling the org.thirdplace.
+     * Returns the plugin manager handling the plugin.
      *
-     * @return org.thirdplace manager in question.
+     * @return plugin manager in question.
      */
     public PluginManager getPluginManager() {
         return pluginManager;

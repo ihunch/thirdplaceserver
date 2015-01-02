@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
 
-    <!-- Main org.thirdplace class -->
+    <!-- Main plugin class -->
     <class>org.jivesoftware.openfire.plugin.ContentFilterPlugin</class>
     
     <!-- Plugin meta-data -->

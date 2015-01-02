@@ -117,7 +117,7 @@ public class ClusterListener implements MembershipListener, LifecycleListener {
     /**
      * Flag that indicates if the listener has done all clean up work when noticed that the
      * cluster has been stopped. This will force Openfire to wait until all clean
-     * up (e.g. changing caches implementations) is done before destroying the org.hangout.org.thirdplace.
+     * up (e.g. changing caches implementations) is done before destroying the plugin.
      */
     private boolean done = true;
 

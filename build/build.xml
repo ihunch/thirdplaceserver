@@ -1294,18 +1294,6 @@
         <antcall target="openfireHome"/>
     </target>
 
-    <target name="plugin thirdplace" description="build thirdplace">
-        <mkdir dir="${plugin.dest.dir}"/>
-
-        <delete dir="${plugin.dev.dest.dir}/thirdplace"/>
-        <delete file="${plugin.dev.dest.dir}/thirdplace.jar"/>
-        <delete file="${plugin.dest.dir}/thirdplace.jar"/>
-        <buildplugin plugin="thirdplace" pluginsrc="${plugin.src.dir}"/>
-
-        <!-- Update/create target/openfire directory -->
-        <antcall target="openfireHome"/>
-    </target>
-
     <!-- buildplugin (MACRO) =================================================================== -->
     <macrodef name="buildplugin">
         <attribute name="plugin"/>

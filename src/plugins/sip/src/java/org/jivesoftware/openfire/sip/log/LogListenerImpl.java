@@ -35,7 +35,7 @@ import org.xmpp.packet.IQ;
 
 /**
  * Implements a LogListener.
- * Log every call events of SIP users that are using Spark SIP org.hangout.org.thirdplace
+ * Log every call events of SIP users that are using Spark SIP plugin
  *
  * @author Thiago Rocha Camargo
  */

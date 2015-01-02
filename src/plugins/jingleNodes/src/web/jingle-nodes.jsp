@@ -34,7 +34,7 @@
     boolean update = request.getParameter("update") != null;
     String errorMessage = null;
 
-    // Get handle on the Monitoring org.hangout.org.thirdplace
+    // Get handle on the Monitoring plugin
     JingleNodesPlugin plugin = (JingleNodesPlugin) XMPPServer.getInstance().getPluginManager().getPlugin("jinglenodes");
 
     if (update) {

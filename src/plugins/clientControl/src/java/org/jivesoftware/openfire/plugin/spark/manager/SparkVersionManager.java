@@ -63,18 +63,18 @@ public class SparkVersionManager implements Component {
     }
 
     /**
-     * Returns the name of this org.hangout.org.thirdplace.
+     * Returns the name of this plugin.
      *
-     * @return the name of this org.hangout.org.thirdplace.
+     * @return the name of this plugin.
      */
     public String getName() {
         return "Spark Version Manager";
     }
 
     /**
-     * Returns a brief description of this org.hangout.org.thirdplace.
+     * Returns a brief description of this plugin.
      *
-     * @return a brief description of this org.hangout.org.thirdplace.
+     * @return a brief description of this plugin.
      */
     public String getDescription() {
         return "Allow admins to control the updating of the Spark IM Client.";

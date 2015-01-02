@@ -57,7 +57,7 @@ public class UserServicePluginNG {
 	}
 
 	/**
-	 * Instantiates a new user service org.hangout.org.thirdplace ng.
+	 * Instantiates a new user service plugin ng.
 	 */
 	private UserServicePluginNG() {
 		server = XMPPServer.getInstance();

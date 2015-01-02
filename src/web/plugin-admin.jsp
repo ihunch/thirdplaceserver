@@ -66,10 +66,10 @@
     }
 
     if (downloadRequested) {
-        // Download and install new version of org.hangout.org.thirdplace
+        // Download and install new version of plugin
         updateManager.downloadPlugin(url);
         // Log the event
-        webManager.logEvent("downloaded org.hangout.org.thirdplace from "+url, null);
+        webManager.logEvent("downloaded plugin from "+url, null);
     }
 
     if (deletePlugin != null) {
@@ -82,8 +82,8 @@
         pluginJar.delete();
         pluginManager.unloadPlugin(pluginDir.getName());
         // Log the event
-        webManager.logEvent("deleted org.hangout.org.thirdplace "+deletePlugin, null);
-        response.sendRedirect("org.hangout.org.thirdplace-admin.jsp?deletesuccess=true");
+        webManager.logEvent("deleted plugin "+deletePlugin, null);
+        response.sendRedirect("plugin-admin.jsp?deletesuccess=true");
         return;
     }
 
@@ -93,8 +93,8 @@
             if (reloadPlugin.equals(pluginDir.getName())) {
                 pluginManager.unloadPlugin(reloadPlugin);
                 // Log the event
-                webManager.logEvent("reloaded org.hangout.org.thirdplace "+reloadPlugin, null);
-                response.sendRedirect("org.hangout.org.thirdplace-admin.jsp?reloadsuccess=true");
+                webManager.logEvent("reloaded plugin "+reloadPlugin, null);
+                response.sendRedirect("plugin-admin.jsp?reloadsuccess=true");
                 return;
             }
         }
@@ -121,11 +121,11 @@
                     if (is != null) {
                         installed = XMPPServer.getInstance().getPluginManager().installPlugin(is, fileName);
                         if (!installed) {
-                            Log.error("Plugin manager failed to install org.hangout.org.thirdplace: " + fileName);
+                            Log.error("Plugin manager failed to install plugin: " + fileName);
                         }
                         is.close();
                         // Log the event
-                        webManager.logEvent("uploaded org.hangout.org.thirdplace "+fileName, null);
+                        webManager.logEvent("uploaded plugin "+fileName, null);
                     }
                     else {
                         Log.error("Unable to open file stream for uploaded file: " + fileName);
@@ -137,20 +137,20 @@
             }
         }
         catch (FileUploadException e) {
-            Log.error("Unable to upload org.hangout.org.thirdplace file.", e);
+            Log.error("Unable to upload plugin file.", e);
         }
         if (installed) {
-            response.sendRedirect("org.hangout.org.thirdplace-admin.jsp?uploadsuccess=true");
+            response.sendRedirect("plugin-admin.jsp?uploadsuccess=true");
             return;
         } else {
-            response.sendRedirect("org.hangout.org.thirdplace-admin.jsp?uploadsuccess=false");
+            response.sendRedirect("plugin-admin.jsp?uploadsuccess=false");
             return;
         }
     }
 %>
 
 <% if (showReadme) {
-    String pluginName = ParamUtils.getParameter(request, "org.hangout.org.thirdplace");
+    String pluginName = ParamUtils.getParameter(request, "plugin");
     Plugin plugin = pluginManager.getPlugin(pluginName);
     StringBuilder readmeString = new StringBuilder();
     if (plugin != null) {
@@ -186,7 +186,7 @@
     }
 %>
 <% if (showChangelog) {
-    String pluginName = ParamUtils.getParameter(request, "org.hangout.org.thirdplace");
+    String pluginName = ParamUtils.getParameter(request, "plugin");
     Plugin plugin = pluginManager.getPlugin(pluginName);
     StringBuilder changelogString = new StringBuilder();
     if (plugin != null) {
@@ -482,7 +482,7 @@ else if ("false".equals(request.getParameter("uploadsuccess"))) { %>
 
 
 <%
-    // If only the admin org.hangout.org.thirdplace is installed, show "none".
+    // If only the admin plugin is installed, show "none".
     if (plugins.size() == 1) {
 %>
 <tr>
@@ -494,7 +494,7 @@ else if ("false".equals(request.getParameter("uploadsuccess"))) { %>
     int count = 0;
     for (Plugin plugin : plugins) {
         String dirName = pluginManager.getPluginDirectory(plugin).getName();
-        // Skip the admin org.hangout.org.thirdplace.
+        // Skip the admin plugin.
         if (!"admin".equals(dirName)) {
             count++;
             String pluginName = pluginManager.getName(plugin);
@@ -506,7 +506,7 @@ else if ("false".equals(request.getParameter("uploadsuccess"))) { %>
             if (!icon.exists()) {
                 icon = new File(pluginDir, "logo_small.gif");
             }
-            // Check if there is an update for this org.hangout.org.thirdplace
+            // Check if there is an update for this plugin
             Update update = updateManager.getPluginUpdate(pluginName, pluginVersion);
 %>
 
@@ -557,7 +557,7 @@ else if ("false".equals(request.getParameter("uploadsuccess"))) { %>
                 ><img src="images/refresh-16x16.gif" width="16" height="16" border="0" alt="<fmt:message key="global.refresh" />"></a>
     </td>
     <td width="1%" align="center" valign="top" class="<%= update != null ? "update-right" : "line-bottom-border"%>">
-        <a href="#" onclick="if (confirm('<fmt:message key="plugin.admin.confirm" />')) { location.replace('org.hangout.org.thirdplace-admin.jsp?deleteplugin=<%= dirName %>'); } "
+        <a href="#" onclick="if (confirm('<fmt:message key="plugin.admin.confirm" />')) { location.replace('plugin-admin.jsp?deleteplugin=<%= dirName %>'); } "
            title="<fmt:message key="global.click_delete" />"
                 ><img src="images/delete-16x16.gif" width="16" height="16" border="0" alt="<fmt:message key="global.delete" />"></a>
     </td>
@@ -569,8 +569,8 @@ else if ("false".equals(request.getParameter("uploadsuccess"))) { %>
 <%
     String updateURL = update.getURL();
     if (updateURL.endsWith(".jar") || updateURL.endsWith(".zip") || updateURL.endsWith(".war")) {
-        // Change it so that the server downloads and installs the new version of the org.hangout.org.thirdplace
-        updateURL = "org.hangout.org.thirdplace-admin.jsp?download=true&url=" + updateURL;
+        // Change it so that the server downloads and installs the new version of the plugin
+        updateURL = "plugin-admin.jsp?download=true&url=" + updateURL;
     }
 %>
 <tr id="<%= update.hashCode() %>-row">

@@ -69,7 +69,7 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 		userManager = server.getUserManager();
 		rosterManager = server.getRosterManager();
 
-		secret = JiveGlobals.getProperty("org.hangout.org.thirdplace.userservice.secret", "");
+		secret = JiveGlobals.getProperty("plugin.userservice.secret", "");
 		// If no secret key has been assigned to the user service yet, assign a
 		// random one.
 		if (secret.equals("")) {
@@ -78,14 +78,14 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 		}
 
 		// See if the service is enabled or not.
-		enabled = JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.userservice.enabled", false);
+		enabled = JiveGlobals.getBooleanProperty("plugin.userservice.enabled", false);
 
 		// See if the HTTP Basic Auth is enabled or not.
-		httpBasicAuth = JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.userservice.httpAuth.enabled", false);
+		httpBasicAuth = JiveGlobals.getBooleanProperty("plugin.userservice.httpAuth.enabled", false);
 
 		// Get the list of IP addresses that can use this service. An empty list
 		// means that this filter is disabled.
-		allowedIPs = StringUtils.stringToCollection(JiveGlobals.getProperty("org.hangout.org.thirdplace.userservice.allowedIPs", ""));
+		allowedIPs = StringUtils.stringToCollection(JiveGlobals.getProperty("plugin.userservice.allowedIPs", ""));
 
 		// Listen to system property events
 		PropertyEventDispatcher.addListener(this);
@@ -397,7 +397,7 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 	 *            the secret key.
 	 */
 	public void setSecret(String secret) {
-		JiveGlobals.setProperty("org.hangout.org.thirdplace.userservice.secret", secret);
+		JiveGlobals.setProperty("plugin.userservice.secret", secret);
 		this.secret = secret;
 	}
 
@@ -406,7 +406,7 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 	}
 
 	public void setAllowedIPs(Collection<String> allowedIPs) {
-		JiveGlobals.setProperty("org.hangout.org.thirdplace.userservice.allowedIPs", StringUtils.collectionToString(allowedIPs));
+		JiveGlobals.setProperty("plugin.userservice.allowedIPs", StringUtils.collectionToString(allowedIPs));
 		this.allowedIPs = allowedIPs;
 	}
 
@@ -429,7 +429,7 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-		JiveGlobals.setProperty("org.hangout.org.thirdplace.userservice.enabled", enabled ? "true" : "false");
+		JiveGlobals.setProperty("plugin.userservice.enabled", enabled ? "true" : "false");
 	}
 
 	public boolean isHttpBasicAuth() {
@@ -438,29 +438,29 @@ public class UserServicePlugin implements Plugin, PropertyEventListener {
 
 	public void setHttpBasicAuth(boolean httpBasicAuth) {
 		this.httpBasicAuth = httpBasicAuth;
-		JiveGlobals.setProperty("org.hangout.org.thirdplace.userservice.httpAuth.enabled", httpBasicAuth ? "true" : "false");
+		JiveGlobals.setProperty("plugin.userservice.httpAuth.enabled", httpBasicAuth ? "true" : "false");
 	}
 
 	public void propertySet(String property, Map<String, Object> params) {
-		if (property.equals("org.hangout.org.thirdplace.userservice.secret")) {
+		if (property.equals("plugin.userservice.secret")) {
 			this.secret = (String) params.get("value");
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.enabled")) {
+		} else if (property.equals("plugin.userservice.enabled")) {
 			this.enabled = Boolean.parseBoolean((String) params.get("value"));
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.allowedIPs")) {
+		} else if (property.equals("plugin.userservice.allowedIPs")) {
 			this.allowedIPs = StringUtils.stringToCollection((String) params.get("value"));
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.httpAuth.enabled")) {
+		} else if (property.equals("plugin.userservice.httpAuth.enabled")) {
 			this.httpBasicAuth = Boolean.parseBoolean((String) params.get("value"));
 		}
 	}
 
 	public void propertyDeleted(String property, Map<String, Object> params) {
-		if (property.equals("org.hangout.org.thirdplace.userservice.secret")) {
+		if (property.equals("plugin.userservice.secret")) {
 			this.secret = "";
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.enabled")) {
+		} else if (property.equals("plugin.userservice.enabled")) {
 			this.enabled = false;
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.allowedIPs")) {
+		} else if (property.equals("plugin.userservice.allowedIPs")) {
 			this.allowedIPs = Collections.emptyList();
-		} else if (property.equals("org.hangout.org.thirdplace.userservice.httpAuth.enabled")) {
+		} else if (property.equals("plugin.userservice.httpAuth.enabled")) {
 			this.httpBasicAuth = false;
 		}
 	}

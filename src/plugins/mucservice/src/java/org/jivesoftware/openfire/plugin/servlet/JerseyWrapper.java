@@ -48,7 +48,7 @@ public class JerseyWrapper extends ServletContainer {
 		prc = new PackagesResourceConfig(SCAN_PACKAGE_DEFAULT);
 		prc.setPropertiesAndFeatures(config);
 		prc.getProperties().put("com.sun.jersey.spi.container.ContainerRequestFilters",
-				"org.jivesoftware.openfire.org.thirdplace.servlet.AuthFilter");
+				"org.jivesoftware.openfire.plugin.servlet.AuthFilter");
 		prc.getClasses().add(MUCRoomService.class);
 		prc.getClasses().add(MUCRoomOwnersService.class);
 		prc.getClasses().add(MUCRoomAdminsService.class);

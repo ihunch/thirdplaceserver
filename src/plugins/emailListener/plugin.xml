@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Plugin configuration for the broadcast org.hangout.org.thirdplace.
+  Plugin configuration for the broadcast plugin.
 -->
 <plugin>
     <class>org.jivesoftware.openfire.plugin.EmailListenerPlugin</class>

@@ -28,7 +28,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * Task that will be run in each cluster node to learn if the specified org.org.thirdplace.plugin
+ * Task that will be run in each cluster node to learn if the specified plugin
  * is installed or not.
  *
  * @author Gaston Dombiak

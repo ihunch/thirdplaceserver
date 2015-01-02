@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The admin console org.org.thirdplace.org.hangout.org.thirdplace. It starts a Jetty instance on the configured
+ * The admin console plugin. It starts a Jetty instance on the configured
  * port and loads the admin console web application.
  *
  * @author Matt Tucker

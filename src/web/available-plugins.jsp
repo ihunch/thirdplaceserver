@@ -52,10 +52,10 @@
     });
 
     if (downloadRequested) {
-        // Download and install new org.org.thirdplace.org.hangout.org.thirdplace
+        // Download and install new plugin
         updateManager.downloadPlugin(url);
         // Log the event
-        webManager.logEvent("downloaded new org.org.thirdplace.org.hangout.org.thirdplace from "+url, null);
+        webManager.logEvent("downloaded new plugin from "+url, null);
     }
 
 %>
@@ -261,7 +261,7 @@
 <tbody>
 
 <%
-    // If only the admin org.org.thirdplace.org.hangout.org.thirdplace is installed, show "none".
+    // If only the admin plugin is installed, show "none".
     if (plugins.isEmpty()) {
 %>
 <tr>
@@ -410,7 +410,7 @@
         <%  }
         else { %>
 
-        <span id="<%= plugin.hashCode() %>-image"><a href="javascript:downloadPlugin('<%=StringUtils.escapeForXML(updateURL) %>', '<%= org.thirdplace.hashCode() %>')"><img src="images/add-16x16.gif" width="16" height="16" border="0"
+        <span id="<%= plugin.hashCode() %>-image"><a href="javascript:downloadPlugin('<%=StringUtils.escapeForXML(updateURL) %>', '<%= plugin.hashCode() %>')"><img src="images/add-16x16.gif" width="16" height="16" border="0"
                                                                                                                                         alt="<fmt:message key="plugin.available.download" />"></a></span>
         <% } %>
     </td>

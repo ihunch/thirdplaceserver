@@ -106,7 +106,7 @@ public class YahooListener implements SessionListener {
      * @see org.openymsg.network.event.SessionAdapter#newMailReceived(org.openymsg.network.event.SessionNewMailEvent)
      */
     public void newMailReceived(SessionNewMailEvent event) {
-        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.yahoo.mailnotifications", true) && (emailInitialized || event.getMailCount() > 0)) {
+        if (JiveGlobals.getBooleanProperty("plugin.gateway.yahoo.mailnotifications", true) && (emailInitialized || event.getMailCount() > 0)) {
             if (!emailInitialized) {
                 getSession().getTransport().sendMessage(
                         getSession().getJID(),

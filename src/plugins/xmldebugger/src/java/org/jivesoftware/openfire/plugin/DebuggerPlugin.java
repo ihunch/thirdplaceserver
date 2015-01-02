@@ -34,10 +34,10 @@ import org.jivesoftware.util.PropertyEventDispatcher;
 import org.jivesoftware.util.PropertyEventListener;
 
 /**
- * Debugger org.org.thirdplace.org.hangout.org.thirdplace that prints XML traffic to stdout. By default it will only print
+ * Debugger plugin that prints XML traffic to stdout. By default it will only print
  * raw XML traffic (by using a MINA filter). To turn on printing of interpreted XML
- * (i.e. parsed XML) just enable the system property <tt>org.org.thirdplace.org.hangout.org.thirdplace.debugger.interpretedAllowed</tt>.
- * There is no need to restart the org.org.thirdplace.org.hangout.org.thirdplace or the server.
+ * (i.e. parsed XML) just enable the system property <tt>plugin.debugger.interpretedAllowed</tt>.
+ * There is no need to restart the plugin or the server.
  *
  * @author Gaston Dombiak
  */
@@ -76,7 +76,7 @@ public class DebuggerPlugin implements Plugin, PropertyEventListener {
         }
 
         interpretedPrinter = new InterpretedXMLPrinter();
-        if (JiveGlobals.getBooleanProperty("org.org.thirdplace.org.hangout.org.thirdplace.debugger.interpretedAllowed")) {
+        if (JiveGlobals.getBooleanProperty("plugin.debugger.interpretedAllowed")) {
             // Add the packet interceptor that prints interpreted XML
             InterceptorManager.getInstance().addInterceptor(interpretedPrinter);
         }
@@ -146,7 +146,7 @@ public class DebuggerPlugin implements Plugin, PropertyEventListener {
     }
 
     public void propertySet(String property, Map<String, Object> params) {
-        if (property.equals("org.org.thirdplace.org.hangout.org.thirdplace.debugger.interpretedAllowed")) {
+        if (property.equals("plugin.debugger.interpretedAllowed")) {
             if (Boolean.parseBoolean((String) params.get("value"))) {
                 InterceptorManager.getInstance().addInterceptor(interpretedPrinter);
             }
@@ -157,7 +157,7 @@ public class DebuggerPlugin implements Plugin, PropertyEventListener {
     }
 
     public void propertyDeleted(String property, Map<String, Object> params) {
-        if (property.equals("org.org.thirdplace.org.hangout.org.thirdplace.debugger.interpretedAllowed")) {
+        if (property.equals("plugin.debugger.interpretedAllowed")) {
             InterceptorManager.getInstance().removeInterceptor(interpretedPrinter);
         }
     }

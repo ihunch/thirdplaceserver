@@ -47,7 +47,7 @@ public class Update {
     private String changelog;
 
     /**
-     * Flag that indicates if the org.thirdplace was downloaded. This flag only makes sense for
+     * Flag that indicates if the plugin was downloaded. This flag only makes sense for
      * plugins since we currently do not support download new openfire releases.
      */
     private boolean downloaded;
@@ -62,7 +62,7 @@ public class Update {
     /**
      * Returns the name of the component that is outdated. When the server is the
      * outdated component then a "Openfire" will be returned. Otherwise, the name of
-     * the outdated org.thirdplace is returned.
+     * the outdated plugin is returned.
      *
      * @return the name of the component that is outdated.
      */
@@ -98,22 +98,22 @@ public class Update {
     }
 
     /**
-     * Returns true if the org.thirdplace was downloaded. Once a org.thirdplace has been downloaded
+     * Returns true if the plugin was downloaded. Once a plugin has been downloaded
      * it may take a couple of seconds to be installed. This flag only makes sense for
      * plugins since we currently do not support download new openfire releases.
      *
-     * @return true if the org.thirdplace was downloaded.
+     * @return true if the plugin was downloaded.
      */
     public boolean isDownloaded() {
         return downloaded;
     }
 
     /**
-     * Sets if the org.thirdplace was downloaded. Once a org.thirdplace has been downloaded
+     * Sets if the plugin was downloaded. Once a plugin has been downloaded
      * it may take a couple of seconds to be installed. This flag only makes sense for
      * plugins since we currently do not support download new openfire releases.
      *
-     * @param downloaded true if the org.thirdplace was downloaded.
+     * @param downloaded true if the plugin was downloaded.
      */
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;

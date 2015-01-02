@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Plugin configuration for the sessions debugger org.org.thirdplace.org.thirdplace.
+  Plugin configuration for the sessions debugger plugin.
 -->
 <plugin>
     <class>org.jivesoftware.openfire.plugin.DebuggerPlugin</class>

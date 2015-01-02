@@ -29,7 +29,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	@Context
 	private HttpServletRequest httpRequest;
 
-	/** The org.org.thirdplace.org.hangout.org.thirdplace. */
+	/** The plugin. */
 	private UserServicePlugin plugin = (UserServicePlugin) XMPPServer.getInstance().getPluginManager()
 			.getPlugin("userservice");
 

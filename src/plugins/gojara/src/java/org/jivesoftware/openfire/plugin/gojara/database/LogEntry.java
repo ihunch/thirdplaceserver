@@ -1,7 +1,7 @@
 package org.jivesoftware.openfire.plugin.gojara.database;
 
 /**
- * This class represents a log entry for the GoJara org.hangout.org.thirdplace
+ * This class represents a log entry for the GoJara plugin
  * 
  * @author Holger Bergunde
  */

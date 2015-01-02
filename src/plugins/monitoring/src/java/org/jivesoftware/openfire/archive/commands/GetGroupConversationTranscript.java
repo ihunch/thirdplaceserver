@@ -100,7 +100,7 @@ public class GetGroupConversationTranscript extends AdHocCommand {
     @Override
 	public void execute(SessionData data, Element command) {
         Element note = command.addElement("note");
-        // Get handle on the Monitoring org.hangout.org.thirdplace
+        // Get handle on the Monitoring plugin
         MonitoringPlugin plugin = (MonitoringPlugin) XMPPServer.getInstance().getPluginManager()
                 .getPlugin(MonitoringConstants.NAME);
         ConversationManager conversationManager =

@@ -16,14 +16,14 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
 /**
- * MotD (Message of the Day) org.hangout.org.thirdplace.
+ * MotD (Message of the Day) plugin.
  * 
  * @author <a href="mailto:ryan@version2software.com">Ryan Graham</a>
  */
 public class MotDPlugin implements Plugin {
-   private static final String SUBJECT = "org.hangout.org.thirdplace.motd.subject";
-   private static final String MESSAGE = "org.hangout.org.thirdplace.motd.message";
-   private static final String ENABLED = "org.hangout.org.thirdplace.motd.enabled";
+   private static final String SUBJECT = "plugin.motd.subject";
+   private static final String MESSAGE = "plugin.motd.message";
+   private static final String ENABLED = "plugin.motd.enabled";
 
    private JID serverAddress;
    private MessageRouter router;

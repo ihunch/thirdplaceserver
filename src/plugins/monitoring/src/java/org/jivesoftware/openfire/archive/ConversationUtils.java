@@ -69,7 +69,7 @@ public class ConversationUtils {
      * @return the status the rebuilding (0 - 100) where 100 is complete.
      */
     public int getBuildProgress() {
-        // Get handle on the Monitoring org.hangout.org.thirdplace
+        // Get handle on the Monitoring plugin
         MonitoringPlugin plugin =
             (MonitoringPlugin)XMPPServer.getInstance().getPluginManager().getPlugin(
             		MonitoringConstants.NAME);
@@ -93,7 +93,7 @@ public class ConversationUtils {
         // Create ConversationInfo bean
         ConversationInfo info = new ConversationInfo();
 
-        // Get handle on the Monitoring org.hangout.org.thirdplace
+        // Get handle on the Monitoring plugin
         MonitoringPlugin plugin =
             (MonitoringPlugin)XMPPServer.getInstance().getPluginManager().getPlugin(
             		MonitoringConstants.NAME);

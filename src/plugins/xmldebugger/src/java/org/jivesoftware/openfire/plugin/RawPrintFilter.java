@@ -45,7 +45,7 @@ public class RawPrintFilter extends IoFilterAdapter {
 
     public RawPrintFilter(String prefix) {
         this.prefix = prefix;
-        this.enabled = JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.xmldebugger." + prefix.toLowerCase(), true);
+        this.enabled = JiveGlobals.getBooleanProperty("plugin.xmldebugger." + prefix.toLowerCase(), true);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class RawPrintFilter extends IoFilterAdapter {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        JiveGlobals.setProperty("org.hangout.org.thirdplace.xmldebugger." + prefix.toLowerCase(), Boolean.toString(enabled));
+        JiveGlobals.setProperty("plugin.xmldebugger." + prefix.toLowerCase(), Boolean.toString(enabled)); 
     }
 
     public void shutdown() {

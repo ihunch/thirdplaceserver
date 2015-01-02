@@ -43,7 +43,7 @@ import org.xmpp.packet.Packet;
 import org.xmpp.packet.Presence;
 
 /**
- * Content filter org.hangout.org.thirdplace.
+ * Content filter plugin.
  * 
  * @author Conor Hayes
  */
@@ -57,33 +57,33 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
      * every time there is a content match, otherwise no notification will be
      * sent. Then default value is false.
      */
-    public static final String VIOLATION_NOTIFICATION_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.violation.notification.enabled";
+    public static final String VIOLATION_NOTIFICATION_ENABLED_PROPERTY = "plugin.contentFilter.violation.notification.enabled";
 
     /**
      * The expected value is a user name. The default value is "admin".
      */
-    public static final String VIOLATION_NOTIFICATION_CONTACT_PROPERTY = "org.hangout.org.thirdplace.contentFilter.violation.notification.contact";
+    public static final String VIOLATION_NOTIFICATION_CONTACT_PROPERTY = "plugin.contentFilter.violation.notification.contact";
 
     /**
      * The expected value is a boolean, if true the user identified by the value
      * of the property #VIOLATION_NOTIFICATION_CONTACT_PROPERTY, will also
      * receive a copy of the offending packet. The default value is false.
      */
-    public static final String VIOLATION_INCLUDE_ORIGNAL_PACKET_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.violation.notification.include.original.enabled";
+    public static final String VIOLATION_INCLUDE_ORIGNAL_PACKET_ENABLED_PROPERTY = "plugin.contentFilter.violation.notification.include.original.enabled";
 
     /**
      * The expected value is a boolean, if true the user identified by the value
      * of the property #VIOLATION_NOTIFICATION_CONTACT_PROPERTY, will receive
      * notification by IM. The default value is true.
      */
-    public static final String VIOLATION_NOTIFICATION_BY_IM_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.violation.notification.by.im.enabled";
+    public static final String VIOLATION_NOTIFICATION_BY_IM_ENABLED_PROPERTY = "plugin.contentFilter.violation.notification.by.im.enabled";
 
     /**
      * The expected value is a boolean, if true the user identified by the value
      * of the property #VIOLATION_NOTIFICATION_CONTACT_PROPERTY, will receive
      * notification by email. The default value is false.
      */
-    public static final String VIOLATION_NOTIFICATION_BY_EMAIL_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.violation.notification.by.email.enabled";
+    public static final String VIOLATION_NOTIFICATION_BY_EMAIL_ENABLED_PROPERTY = "plugin.contentFilter.violation.notification.by.email.enabled";
 
     /**
      * The expected value is a boolean, if true the sender will be notified when
@@ -91,36 +91,36 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
      * rejected,i.e. the sender will not know that the message was rejected and
      * the receiver will not get the message. The default value is false.
      */
-    public static final String REJECTION_NOTIFICATION_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.rejection.notification.enabled";
+    public static final String REJECTION_NOTIFICATION_ENABLED_PROPERTY = "plugin.contentFilter.rejection.notification.enabled";
 
     /**
      * The expected value is a string, containing the desired message for the
      * sender notification.
      */
-    public static final String REJECTION_MSG_PROPERTY = "org.hangout.org.thirdplace.contentFilter.rejection.msg";
+    public static final String REJECTION_MSG_PROPERTY = "plugin.contentFilter.rejection.msg";
 
     /**
      * The expected value is a boolean, if true the value of #PATTERNS_PROPERTY
      * will be used for pattern matching.
      */
-    public static final String PATTERNS_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.patterns.enabled";
+    public static final String PATTERNS_ENABLED_PROPERTY = "plugin.contentFilter.patterns.enabled";
 
     /**
      * The expected value is a comma separated string of regular expressions.
      */
-    public static final String PATTERNS_PROPERTY = "org.hangout.org.thirdplace.contentFilter.patterns";
+    public static final String PATTERNS_PROPERTY = "plugin.contentFilter.patterns";
 
     /**
      * The expected value is a boolean, if true Presence packets will be
      * filtered
      */
-    public static final String FILTER_STATUS_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.filter.status.enabled";
+    public static final String FILTER_STATUS_ENABLED_PROPERTY = "plugin.contentFilter.filter.status.enabled";
 
     /**
      * The expected value is a boolean, if true the value of #MASK_PROPERTY will
      * be used to mask matching content.
      */
-    public static final String MASK_ENABLED_PROPERTY = "org.hangout.org.thirdplace.contentFilter.mask.enabled";
+    public static final String MASK_ENABLED_PROPERTY = "plugin.contentFilter.mask.enabled";
 
     /**
      * The expected value is a string. If this property is set any matching
@@ -128,7 +128,7 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
      * content mask means that property #SENDER_NOTIFICATION_ENABLED_PROPERTY is
      * ignored. The default value is "**".
      */
-    public static final String MASK_PROPERTY = "org.hangout.org.thirdplace.contentFilter.mask";
+    public static final String MASK_PROPERTY = "plugin.contentFilter.mask";
     
     /**
      * The expected value is a boolean, if false packets whose contents matches one
@@ -136,7 +136,7 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
      * be accepted and may be optionally masked. The default value is false.
      * @see #MASK_ENABLED_PROPERTY
      */
-    public static final String ALLOW_ON_MATCH_PROPERTY = "org.hangout.org.thirdplace.contentFilter.allow.on.match";
+    public static final String ALLOW_ON_MATCH_PROPERTY = "plugin.contentFilter.allow.on.match";
 
     /**
      * the hook into the inteceptor chain
@@ -149,7 +149,7 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
     private MessageRouter messageRouter;
 
     /**
-     * delegate that does the real work of this org.hangout.org.thirdplace
+     * delegate that does the real work of this plugin
      */
     private ContentFilter contentFilter;
 
@@ -233,7 +233,7 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
     }
 
     /**
-     * Restores the org.hangout.org.thirdplace defaults.
+     * Restores the plugin defaults.
      */
     public void reset() {
         setViolationNotificationEnabled(false);
@@ -407,7 +407,7 @@ public class ContentFilterPlugin implements Plugin, PacketInterceptor {
     }
 
     public void initializePlugin(PluginManager pManager, File pluginDirectory) {
-        // configure this org.hangout.org.thirdplace
+        // configure this plugin
         initFilter();
 
         // register with interceptor manager

@@ -112,11 +112,11 @@ public class SchemaManager {
     }
 
     /**
-     * Checks the org.org.thirdplace.plugin's database schema (if one is required) to ensure that it's
+     * Checks the plugin's database schema (if one is required) to ensure that it's
      * installed and up to date. If the schema isn't present or up to date, an automatic
      * update will be attempted.
      *
-     * @param plugin the org.org.thirdplace.plugin.
+     * @param plugin the plugin.
      * @return true if database schema checked out fine, or was automatically installed
      *      or updated successfully, or if it isn't needed. False will only be returned
      *      if there is an error.
@@ -125,7 +125,7 @@ public class SchemaManager {
         final PluginManager pluginManager = XMPPServer.getInstance().getPluginManager();
         String schemaKey = pluginManager.getDatabaseKey(plugin);
         int schemaVersion = pluginManager.getDatabaseVersion(plugin);
-        // If the schema key or database version aren't defined, then the org.org.thirdplace.plugin doesn't
+        // If the schema key or database version aren't defined, then the plugin doesn't
         // need database tables.
         if (schemaKey == null || schemaVersion == -1) {
             return true;

@@ -33,57 +33,57 @@ import java.io.File;
  *
  * Plugins live in the <tt>plugins</tt> directory of <tt>home</tt>. Plugins
  * that are packaged as JAR files will be automatically expanded into directories. A
- * org.hangout.org.thirdplace directory should have the following structure:
+ * plugin directory should have the following structure:
  *
  * <pre>[pluginDir]
- *    |-- org.hangout.org.thirdplace.xml
+ *    |-- plugin.xml
  *    |-- classes/
  *    |-- lib/</pre>
  *
  * The <tt>classes</tt> and <tt>lib</tt> directory are optional. Any files in the
- * <tt>classes</tt> directory will be added to the classpath of the org.hangout.org.thirdplace, as well
- * as any JAR files in the <tt>lib</tt> directory. The <tt>org.hangout.org.thirdplace.xml</tt> file is
+ * <tt>classes</tt> directory will be added to the classpath of the plugin, as well
+ * as any JAR files in the <tt>lib</tt> directory. The <tt>plugin.xml</tt> file is
  * required, and specifies the className of the Plugin implementation. The XML file
  * should resemble the following XML:
  *
  * <pre>
  * &lt;?xml version="1.0" encoding="UTF-8"?&gt;
- * &lt;org.hangout.org.thirdplace&gt;
+ * &lt;plugin&gt;
  *     &lt;class&gt;org.example.YourPlugin&lt;/class&gt;
  *     &lt;name&gt;Example Plugin&lt;/name&gt;
- *     &lt;description&gt;This is an example org.hangout.org.thirdplace.&lt;/description&gt;
+ *     &lt;description&gt;This is an example plugin.&lt;/description&gt;
  *     &lt;author&gt;Foo Inc.&lt;/author&gt;
  *     &lt;version&gt;1.0&lt;/version&gt;
  *     &lt;minServerVersion&gt;3.0.0&lt;/minServerVersion&gt;
  *     &lt;licenseType&gt;gpl&lt;/licenseType&gt;
- * &lt;/org.hangout.org.thirdplace&gt;</pre>
+ * &lt;/plugin&gt;</pre>
  * <p>
- * Each org.hangout.org.thirdplace will be loaded in its own class loader, unless the org.hangout.org.thirdplace is configured
- * with a parent org.hangout.org.thirdplace.</p>
+ * Each plugin will be loaded in its own class loader, unless the plugin is configured
+ * with a parent plugin.</p>
  *
  * Please see the Plugin Developer Guide (available with the
- * Openfire documentation) for additional details about org.hangout.org.thirdplace development.
+ * Openfire documentation) for additional details about plugin development.
  *
  * @author Matt Tucker
  */
 public interface Plugin {
 
     /**
-     * Initializes the org.hangout.org.thirdplace.
+     * Initializes the plugin.
      *
-     * @param manager the org.hangout.org.thirdplace manager.
-     * @param pluginDirectory the directory where the org.hangout.org.thirdplace is located.
+     * @param manager the plugin manager.
+     * @param pluginDirectory the directory where the plugin is located.
      */
     public void initializePlugin(PluginManager manager, File pluginDirectory);
 
     /**
-     * Destroys the org.hangout.org.thirdplace.<p>
+     * Destroys the plugin.<p>
      *
      * Implementations of this method must release all resources held
-     * by the org.hangout.org.thirdplace such as file handles, database or network connections,
+     * by the plugin such as file handles, database or network connections,
      * and references to core Openfire classes. In other words, a
      * garbage collection executed after this method is called must be able
-     * to clean up all org.hangout.org.thirdplace classes.
+     * to clean up all plugin classes.
      */
     public void destroyPlugin();
 

@@ -543,10 +543,10 @@ public class CacheFactory {
      * @return Synchronized time for all cluster members
      */
     public static long getClusterTime() {
-    	// use try/catch here for backward compatibility with older org.org.thirdplace.plugin(s)
+    	// use try/catch here for backward compatibility with older plugin(s)
     	try { return cacheFactoryStrategy.getClusterTime(); }
     	catch (AbstractMethodError ame) {
-    		log.warn("Cluster time not available; check for update to hazelcast/clustering org.org.thirdplace.plugin");
+    		log.warn("Cluster time not available; check for update to hazelcast/clustering plugin");
     		return localCacheFactoryStrategy.getClusterTime();
     	}
     }
@@ -636,7 +636,7 @@ public class CacheFactory {
         PluginClassLoader pluginLoader = pluginManager.getPluginClassloader(plugin);
         if (pluginLoader != null) {
         	if (log.isDebugEnabled()) {
-        		StringBuffer pluginLoaderDetails = new StringBuffer("Clustering org.org.thirdplace.plugin class loader: ");
+        		StringBuffer pluginLoaderDetails = new StringBuffer("Clustering plugin class loader: ");
         		pluginLoaderDetails.append(pluginLoader.getClass().getName());
         		for (URL url : pluginLoader.getURLs()) {
         			pluginLoaderDetails.append("\n\t").append(url.toExternalForm());

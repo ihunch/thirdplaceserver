@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A helper class to read cache configuration data for a org.org.thirdplace.org.hangout.org.thirdplace and register the defined caches with
+ * A helper class to read cache configuration data for a plugin and register the defined caches with
  * the cache factory. Definitions should look something like this:
  * <pre>
  * {@code

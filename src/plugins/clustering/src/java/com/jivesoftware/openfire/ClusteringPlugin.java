@@ -35,7 +35,7 @@ import org.jivesoftware.util.Log;
 import com.tangosol.net.CacheFactory;
 
 /**
- * Clustering Enterprise org.thirdplace.
+ * Clustering Enterprise plugin.
  *
  * @author Matt Tucker
  */
@@ -46,7 +46,7 @@ public class ClusteringPlugin implements Plugin {
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
         System.out.println("Starting Clustering Plugin");
 
-        // Check if we Enterprise is installed and stop loading this org.thirdplace if found
+        // Check if we Enterprise is installed and stop loading this plugin if found
         File pluginDir = new File(JiveGlobals.getHomeDirectory(), "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
@@ -55,9 +55,9 @@ public class ClusteringPlugin implements Plugin {
             }
         });
         if (jars.length > 0) {
-            // Do not load this org.thirdplace since Enterprise is still installed
-            System.out.println("Conflicting org.thirdplace found. Stopping Clustering Plugin");
-            throw new IllegalStateException("This org.thirdplace cannot run with the Enterprise or Hazelcast org.thirdplace");
+            // Do not load this plugin since Enterprise is still installed
+            System.out.println("Conflicting plugin found. Stopping Clustering Plugin");
+            throw new IllegalStateException("This plugin cannot run with the Enterprise or Hazelcast plugin");
         }
 
         // Make sure that the enteprise folder exists under the home directory
@@ -67,7 +67,7 @@ public class ClusteringPlugin implements Plugin {
             enterpriseDir.mkdirs();
         }
 
-        // Check if Coherence libs are installed and stop loading this org.thirdplace if NOT found
+        // Check if Coherence libs are installed and stop loading this plugin if NOT found
 //        File libDir = new File(JiveGlobals.getHomeDirectory(), "lib");
 //        jars = libDir.listFiles(new FileFilter() {
 //            public boolean accept(File pathname) {
@@ -76,7 +76,7 @@ public class ClusteringPlugin implements Plugin {
 //            }
 //        });
 //        if (jars.length == 0) {
-//            // Do not load this org.thirdplace since Coherence libs are not installed
+//            // Do not load this plugin since Coherence libs are not installed
 //            System.out.println("Coherence libs not found. Stopping Clustering Plugin. Copy tangosol.jar, " +
 //                    "coherence.jar and coherence-work.jar files to [OPENFIRE_HOME]/lib and restart the server.");
 //            throw new IllegalStateException("Coherence libs not found. Stopping Clustering Plugin. Copy " +
@@ -99,12 +99,12 @@ public class ClusteringPlugin implements Plugin {
 
         try {
             // Add openfireHome/enterprise dir to pluginclassloader
-            // Add enterprise org.thirdplace dir to pluginclassloader
+            // Add enterprise plugin dir to pluginclassloader
             URL url = new File(pluginDirectory + File.separator).toURL();
             manager.getPluginClassloader(manager.getPlugin(pluginDirectory.getName())).addURLFile(url);
         }
         catch (MalformedURLException e) {
-            Log.error("Error adding openfireHome/enterprise to the classpath of the enterprise org.thirdplace", e);
+            Log.error("Error adding openfireHome/enterprise to the classpath of the enterprise plugin", e);
         }
         CacheFactory.getClusterConfig();
         ClusterManager.startup();

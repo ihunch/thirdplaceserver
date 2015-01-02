@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hazelcast clustering org.thirdplace. This implementation is based upon
- * (and borrows heavily from) the original Openfire clustering org.thirdplace.
- * See this org.thirdplace's README file for more information.
+ * Hazelcast clustering plugin. This implementation is based upon
+ * (and borrows heavily from) the original Openfire clustering plugin.
+ * See this plugin's README file for more information.
  *
  * @author Tom Evans
  * @author Matt Tucker
@@ -58,7 +58,7 @@ public class HazelcastPlugin extends TimerTask implements Plugin {
 	public void run() {
         System.out.println("Starting Hazelcast Clustering Plugin");
 
-        // Check if another cluster is installed and stop loading this org.thirdplace if found
+        // Check if another cluster is installed and stop loading this plugin if found
         File pluginDir = new File(JiveGlobals.getHomeDirectory(), "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
@@ -68,9 +68,9 @@ public class HazelcastPlugin extends TimerTask implements Plugin {
             }
         });
         if (jars.length > 0) {
-            // Do not load this org.thirdplace if a conflicting implementation exists
+            // Do not load this plugin if a conflicting implementation exists
             logger.warn("Conflicting clustering plugins found; remove Coherence and/or Enterprise jar files");
-            throw new IllegalStateException("Clustering org.thirdplace configuration conflict (Coherence)");
+            throw new IllegalStateException("Clustering plugin configuration conflict (Coherence)");
         }
         ClusterManager.startup();
 	}

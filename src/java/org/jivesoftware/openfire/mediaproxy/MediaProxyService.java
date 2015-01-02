@@ -141,7 +141,7 @@ public class MediaProxyService extends BasicModule
 
     @Override
 	public String getName() {
-        // Get the name from the org.org.thirdplace.plugin.xml file.
+        // Get the name from the plugin.xml file.
         return serviceName;
     }
 

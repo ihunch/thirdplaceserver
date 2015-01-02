@@ -829,7 +829,7 @@ public class WorkgroupManager implements Component {
     }
 
     public String getDescription() {
-        return "Workgroup org.hangout.org.thirdplace for Live Assistance.";
+        return "Workgroup plugin for Live Assistance.";
     }
 
     public void initialize(JID jid, ComponentManager componentManager) throws ComponentException {

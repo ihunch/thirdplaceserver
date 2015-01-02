@@ -582,7 +582,7 @@ public abstract class BaseMUCTransport<B extends TransportBuddy> implements Comp
         if (packet.getTo().getNode() == null) {
             // A request for a list of rooms
             IQ result = IQ.createResultIQ(packet);
-            if (JiveGlobals.getBooleanProperty("org.org.thirdplace.org.thirdplace.gateway."+getTransport().getType()+".roomlist", false)) {
+            if (JiveGlobals.getBooleanProperty("plugin.gateway."+getTransport().getType()+".roomlist", false)) {
                 try {
                     TransportSession<B> session = getTransport().getSessionManager().getSession(from);
                     if (session.isLoggedIn()) {
@@ -926,7 +926,7 @@ public abstract class BaseMUCTransport<B extends TransportBuddy> implements Comp
      * @return The legacy username as a JID.
      */
     public JID convertIDToJID(String roomname, String username) {
-        if (JiveGlobals.getBooleanProperty("org.org.thirdplace.org.thirdplace.gateway.tweak.percenthack", false)) {
+        if (JiveGlobals.getBooleanProperty("plugin.gateway.tweak.percenthack", false)) {
             return new JID(roomname.replace('@', '%').replace(" ", ""), this.jid.getDomain(), username);
         }
         else {

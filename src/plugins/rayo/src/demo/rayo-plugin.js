@@ -42,7 +42,7 @@ Strophe.addConnectionPlugin('rayo',
 
 		this._connection.addHandler(this._handlePresence.bind(this), null,"presence", null, null, null);   
 		
-		console.log('Rayo org.thirdplace initialised');
+		console.log('Rayo plugin initialised');		
 	},
 
 	phone: function(callbacks)
@@ -77,7 +77,7 @@ Strophe.addConnectionPlugin('rayo',
 
 	digit: function(callId, key)
 	{
-		//console.log("Rayo org.thirdplace digit " + callId + " " + key);
+		//console.log("Rayo plugin digit " + callId + " " + key);
 		
 		var that = this;		
 		var iq = $iq({to: callId + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c("dtmf", {xmlns: Strophe.NS.RAYO_CORE, tones: key});  
@@ -94,7 +94,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	join: function(mixer, headers)
 	{
-		//console.log('Rayo org.thirdplace join ' + mixer);
+		//console.log('Rayo plugin join ' + mixer);
 		//console.log(headers)		
 		
 		if (this._isOffhook()) this._onhook();
@@ -120,7 +120,7 @@ Strophe.addConnectionPlugin('rayo',
 
 	leave: function(mixer)
 	{
-		//console.log('Rayo org.thirdplace leave ' + mixer);
+		//console.log('Rayo plugin leave ' + mixer);		
 		
 		var that = this;
 		var iq = $iq({to: mixer + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c("unjoin", {xmlns: Strophe.NS.RAYO_CORE, "mixer-name": mixer});  
@@ -208,7 +208,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	say: function(callId, message)
 	{
-		//console.log('Rayo org.thirdplace say ' + callId + " " + message);
+		//console.log('Rayo plugin say ' + callId + " " + message);
 		
 		var that = this;		
 		var iq = $iq({to: callId + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c( "say", {xmlns: Strophe.NS.RAYO_SAY}).t(message);  
@@ -265,7 +265,7 @@ Strophe.addConnectionPlugin('rayo',
 	record: function(callId, fileName)
 	{
 		var to = "file:" + fileName + ".au";
-		console.log('Rayo org.thirdplace record ' + callId + " " + to);
+		console.log('Rayo plugin record ' + callId + " " + to);
 		
 		var that = this;		
 		var iq = $iq({to: callId + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c("record", {xmlns: Strophe.NS.RAYO_RECORD, to: to});  
@@ -283,7 +283,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	private: function(callId, flag)
 	{
-		//console.log('Rayo org.thirdplace private ' + callId + " " + flag);
+		//console.log('Rayo plugin private ' + callId + " " + flag);
 		
 		var that = this;		
 		var iq = $iq({to: callId + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c( flag ? "private" : "public", {xmlns: Strophe.NS.RAYO_HANDSET});  
@@ -301,7 +301,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	mute: function(callId, flag)
 	{
-		//console.log('Rayo org.thirdplace mute ' + callId + " " + flag);
+		//console.log('Rayo plugin mute ' + callId + " " + flag);		
 
 		var that = this;		
 		var iq = $iq({to: callId + "@" + this._connection.domain, from: this._connection.jid, type: "get"}).c( flag ? "mute" : "unmute", {xmlns: Strophe.NS.RAYO_HANDSET});  
@@ -319,7 +319,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	answer: function(callId, mixer, headers, callFrom)
 	{
-		//console.log('Rayo org.thirdplace accept ' + callId + " " + mixer);
+		//console.log('Rayo plugin accept ' + callId + " " + mixer);
 
 		var that = this;
 		
@@ -364,7 +364,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	dial: function(from, to, headers)
 	{
-		//console.log('Rayo org.thirdplace dial ' + from + " " + to);
+		//console.log('Rayo plugin dial ' + from + " " + to);
 		//console.log(headers)
 				
 		var that = this;
@@ -381,7 +381,7 @@ Strophe.addConnectionPlugin('rayo',
 		
 	voicebridge: function(mixer, from, to, headers)
 	{
-		console.log('Rayo org.thirdplace voicebridge ' + mixer);
+		console.log('Rayo plugin voicebridge ' + mixer);	
 		
 		var that = this;		
 
@@ -405,7 +405,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	_dial: function(mixer, from, to, headers)
 	{
-		//console.log('Rayo org.thirdplace _dial ' + from + " " + to);
+		//console.log('Rayo plugin _dial ' + from + " " + to);
 		//console.log(headers)
 				
 		var that = this;
@@ -478,7 +478,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	_offhook: function(mixer, headers, action) 
 	{
-		//console.log('Rayo org.thirdplace offhook ' + mixer);
+		//console.log('Rayo plugin offhook ' + mixer);
 		//console.log(headers);
 		
 		var that = this;
@@ -527,7 +527,7 @@ Strophe.addConnectionPlugin('rayo',
 	
 	_offhook1: function(mixer, headers, action)
 	{
-		//console.log('Rayo org.thirdplace _offhook1 ' + mixer);
+		//console.log('Rayo plugin _offhook1 ' + mixer);
 
 		var that = this;
 		
@@ -584,7 +584,7 @@ Strophe.addConnectionPlugin('rayo',
 
 	_offhook2: function(mixer, headers, action)
 	{
-		//console.log('Rayo org.thirdplace _offhook2 ' + this.cryptoSuite + " " + this.localCrypto + " " + this.remoteCrypto + " " + mixer);
+		//console.log('Rayo plugin _offhook2 ' + this.cryptoSuite + " " + this.localCrypto + " " + this.remoteCrypto + " " + mixer);
 		
 		var that = this;
 		var stereo = (headers && headers.stereo_pan) ? headers.stereo_pan : (that.callbacks.stereo_pan ? that.callbacks.stereo_pan : "0");
@@ -620,7 +620,7 @@ Strophe.addConnectionPlugin('rayo',
 
 	_onhook: function()
 	{
-		//console.log('Rayo org.thirdplace onhook ' + this.handsetId);
+		//console.log('Rayo plugin onhook ' + this.handsetId);
 		
 		that = this;	
 		var server = this.handsetId + "@" + this._connection.domain;
@@ -641,7 +641,7 @@ Strophe.addConnectionPlugin('rayo',
 
 	_handlePresence: function(presence) 
 	{
-		//console.log('Rayo org.thirdplace handlePresence');
+		//console.log('Rayo plugin handlePresence');
 		//console.log(presence);
 		
 		var that = this;

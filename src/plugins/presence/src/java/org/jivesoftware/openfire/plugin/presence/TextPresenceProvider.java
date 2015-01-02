@@ -58,7 +58,7 @@ class TextPresenceProvider extends PresenceInfoProvider {
                     presence.setStatus(status);
                 }
                 else {
-                    presence.setStatus(JiveGlobals.getProperty("org.hangout.org.thirdplace.presence.unavailable.status",
+                    presence.setStatus(JiveGlobals.getProperty("plugin.presence.unavailable.status",
                                                                "Unavailable"));
                 }
             }

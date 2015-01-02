@@ -89,7 +89,7 @@ public class EmailConnection extends ServiceConnection {
         }
         else if (cmd instanceof MailUpdate) {
             MailUpdate mu = (MailUpdate)cmd;
-            if (JiveGlobals.getBooleanProperty("org.thirdplace.gateway."+getMainSession().getTransport().getType()+".mailnotifications", true) && lastMailCount < mu.getUnreadCount()) {
+            if (JiveGlobals.getBooleanProperty("plugin.gateway."+getMainSession().getTransport().getType()+".mailnotifications", true) && lastMailCount < mu.getUnreadCount()) {
                 Integer diff = mu.getUnreadCount() - lastMailCount;
                 if (diff > 0) {
                     getMainSession().getTransport().sendMessage(

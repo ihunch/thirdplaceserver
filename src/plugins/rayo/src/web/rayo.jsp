@@ -34,7 +34,7 @@
     boolean update = request.getParameter("update") != null;
     String errorMessage = null;
 
-    // Get handle on the Monitoring org.org.thirdplace.org.hangout.org.thirdplace
+    // Get handle on the Monitoring plugin
     RayoPlugin plugin = (RayoPlugin) XMPPServer.getInstance().getPluginManager().getPlugin("rayo");
 
     if (update) {

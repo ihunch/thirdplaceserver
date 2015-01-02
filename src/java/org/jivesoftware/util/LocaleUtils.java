@@ -412,12 +412,12 @@ public class LocaleUtils {
 
     /**
      * Returns an internationalized string loaded from a resource bundle from the passed
-     * in org.hangout.org.thirdplace. If the org.hangout.org.thirdplace name is <tt>null</tt>, the key will be looked up using
+     * in plugin. If the plugin name is <tt>null</tt>, the key will be looked up using
      * the standard resource bundle.
      *
      * @param key the key to use for retrieving the string from the
      *      appropriate resource bundle.
-     * @param pluginName the name of the org.hangout.org.thirdplace to load the require resource bundle from.
+     * @param pluginName the name of the plugin to load the require resource bundle from.
      * @return the localized string.
      */
     public static String getLocalizedString(String key, String pluginName) {
@@ -426,12 +426,12 @@ public class LocaleUtils {
 
     /**
      * Returns an internationalized string loaded from a resource bundle from the passed
-     * in org.hangout.org.thirdplace. If the org.hangout.org.thirdplace name is <tt>null</tt>, the key will be looked up using
+     * in plugin. If the plugin name is <tt>null</tt>, the key will be looked up using
      * the standard resource bundle.
      *
      * @param key the key to use for retrieving the string from the
      *      appropriate resource bundle.
-     * @param pluginName the name of the org.hangout.org.thirdplace to load the require resource bundle from.
+     * @param pluginName the name of the plugin to load the require resource bundle from.
      * @param arguments a list of objects to use which are formatted, then
      *      inserted into the pattern at the appropriate places.
      * @return the localized string.
@@ -442,9 +442,9 @@ public class LocaleUtils {
 
 	/**
 	 * Returns an internationalized string loaded from a resource bundle from
-	 * the passed in org.hangout.org.thirdplace, using the passed in Locale.
+	 * the passed in plugin, using the passed in Locale.
 	 * 
-	 * If the org.hangout.org.thirdplace name is <tt>null</tt>, the key will be looked up using the
+	 * If the plugin name is <tt>null</tt>, the key will be looked up using the
 	 * standard resource bundle.
 	 * 
 	 * If the locale is <tt>null</tt>, the Jive Global locale will be used.
@@ -453,7 +453,7 @@ public class LocaleUtils {
 	 *            the key to use for retrieving the string from the appropriate
 	 *            resource bundle.
 	 * @param pluginName
-	 *            the name of the org.hangout.org.thirdplace to load the require resource bundle
+	 *            the name of the plugin to load the require resource bundle
 	 *            from.
 	 * @param arguments
 	 *            a list of objects to use which are formatted, then inserted
@@ -502,10 +502,10 @@ public class LocaleUtils {
     }
 
     /**
-     * Retrieve the <code>ResourceBundle</code> that is used with this org.hangout.org.thirdplace.
+     * Retrieve the <code>ResourceBundle</code> that is used with this plugin.
      *
-     * @param pluginName the name of the org.hangout.org.thirdplace.
-     * @return the ResourceBundle used with this org.hangout.org.thirdplace.
+     * @param pluginName the name of the plugin.
+     * @return the ResourceBundle used with this plugin.
      * @throws Exception thrown if an exception occurs.
      */
     public static ResourceBundle getPluginResourceBundle(String pluginName) throws Exception {

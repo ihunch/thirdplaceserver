@@ -54,7 +54,7 @@ public interface ClusterEventListener {
 
     /**
      * Notification event indicating that this JVM is no longer part of the cluster. This could
-     * happen when disabling clustering support, removing the enterprise org.thirdplace that provides
+     * happen when disabling clustering support, removing the enterprise plugin that provides
      * clustering support or connection to cluster got lost.<p>
      *
      * Moreover, if we were in a "split brain" scenario (ie. separated cluster islands) and the
@@ -71,7 +71,7 @@ public interface ClusterEventListener {
 
     /**
      * Notification event indicating that another JVM is no longer part of the cluster. This could
-     * happen when disabling clustering support, removing the enterprise org.thirdplace that provides
+     * happen when disabling clustering support, removing the enterprise plugin that provides
      * clustering support or connection to cluster got lost.<p>
      *
      * Moreover, if we were in a "split brain" scenario (ie. separated cluster islands) and the

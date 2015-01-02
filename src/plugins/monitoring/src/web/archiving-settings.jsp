@@ -11,7 +11,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="fmt" %>
 
 <%
-    // Get handle on the Monitoring org.org.thirdplace.org.hangout.org.thirdplace
+    // Get handle on the Monitoring plugin
     MonitoringPlugin plugin = (MonitoringPlugin) XMPPServer.getInstance().getPluginManager().getPlugin("monitoring");
     ConversationManager conversationManager = (ConversationManager) plugin.getModule(
             ConversationManager.class);

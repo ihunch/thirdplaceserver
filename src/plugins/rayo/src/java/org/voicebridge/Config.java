@@ -94,7 +94,7 @@ public class Config implements MUCEventListener {
 						processDefaultRegistration(username);
 					}
 
-					Log.info(String.format("VoiceBridge sip org.org.thirdplace.plugin assumed available"));
+					Log.info(String.format("VoiceBridge sip plugin assumed available"));
 					sipPlugin = true;
 
 				} else {

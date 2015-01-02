@@ -126,7 +126,7 @@ import org.xmpp.packet.JID;
  * through the server. The server maintains a list of loaded modules.
  * </p>
  * <p>
- * After starting up all the modules the server will load any available org.hangout.org.thirdplace.
+ * After starting up all the modules the server will load any available plugin.
  * For more information see: {@link org.jivesoftware.openfire.container.PluginManager}.
  * </p>
  * <p>A configuration file keeps the server configuration. This information is required for the
@@ -396,7 +396,7 @@ public class XMPPServer {
 
     /**
      * Finish the setup process. Because this method is meant to be called from inside
-     * the Admin console org.hangout.org.thirdplace, it spawns its own thread to do the work so that the
+     * the Admin console plugin, it spawns its own thread to do the work so that the
      * class loader is correct.
      */
     public void finishSetup() {
@@ -1004,7 +1004,7 @@ public class XMPPServer {
         	try {
         		pluginManager.shutdown();
         	} catch (Exception ex) {
-        		logger.error("Exception during org.hangout.org.thirdplace shutdown", ex);
+        		logger.error("Exception during plugin shutdown", ex);
         	}
         }
         modules.clear();

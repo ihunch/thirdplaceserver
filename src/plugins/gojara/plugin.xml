@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-	<!-- Main org.org.thirdplace.plugin class -->
+	<!-- Main plugin class -->
 	<class>org.jivesoftware.openfire.plugin.gojara.base.RemoteRosterPlugin
 	</class>
 

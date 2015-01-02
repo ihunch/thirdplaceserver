@@ -47,7 +47,7 @@ public class MSNBuddy extends TransportBuddy {
     }
 
     public void setMsnContact(MsnContact msnContact) {
-        if (JiveGlobals.getBooleanProperty("org.hangout.org.thirdplace.gateway.msn.autonickname", false)) {
+        if (JiveGlobals.getBooleanProperty("plugin.gateway.msn.autonickname", false)) {
             if (!getNickname().equals(msnContact.getDisplayName())) {
                 setNickname(msnContact.getDisplayName());
                 try {

@@ -5,7 +5,7 @@
  *  WebSockets Connection Manager for Openfire
  *
  *  Thie class manages an WebSockets connection
- *  to an Openfire XMPP server through the WebSockets org.hangout.org.thirdplace and dispatches events to the user callbacks as
+ *  to an Openfire XMPP server through the WebSockets plugin and dispatches events to the user callbacks as
  *  data arrives.  It uses the server side Openfire authentication
  *
  *  After creating a Openfire object, the user will typically
@@ -674,7 +674,7 @@ Openfire.Connection.prototype = {
                     try {
                         plugin.statusChanged(status, condition);
                     } catch (err) {
-                        Strophe.error("" + k + " org.hangout.org.thirdplace caused an exception changing status: " + err);
+                        Strophe.error("" + k + " plugin caused an exception changing status: " + err);
                     }
                 }
             }

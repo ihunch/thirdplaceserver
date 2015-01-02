@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ClassLoader for plugins. It searches the org.org.thirdplace.org.thirdplace directory for classes
+ * ClassLoader for plugins. It searches the plugin directory for classes
  * and JAR files, then constructs a class loader for the resources found.
  * Resources are loaded as follows:
  * <ul>
@@ -57,8 +57,8 @@ public class PluginClassLoader extends URLClassLoader {
      * Adds a directory to the class loader.
      *
      * @param directory the directory.
-     * @param developmentMode true if the org.org.thirdplace.org.thirdplace is running in development mode. This
-     *      resolves classloader conflicts between the deployed org.org.thirdplace.org.thirdplace
+     * @param developmentMode true if the plugin is running in development mode. This
+     *      resolves classloader conflicts between the deployed plugin
      * and development classes.
      */
     public void addDirectory(File directory, boolean developmentMode) {
@@ -99,8 +99,8 @@ public class PluginClassLoader extends URLClassLoader {
                     if (jars[i] != null && jars[i].isFile()) {
                     	String jarFileUri = jars[i].toURI().toString()  + "!/";
                         if (developmentMode) {
-                            // Do not add org.org.thirdplace.org.thirdplace-pluginName.jar to classpath.
-                            if (!jars[i].getName().equals("org.org.thirdplace.org.thirdplace-" + directory.getName() + ".jar")) {
+                            // Do not add plugin-pluginName.jar to classpath.
+                            if (!jars[i].getName().equals("plugin-" + directory.getName() + ".jar")) {
                                 addURLFile(new URL("jar", "", -1, jarFileUri));
                             }
                         } else {
@@ -131,18 +131,18 @@ public class PluginClassLoader extends URLClassLoader {
             	cachedJarFiles.add((JarURLConnection)uc);
         	}
     	} catch (Exception e) {
-    		Log.warn("Failed to cache org.org.thirdplace.org.thirdplace JAR file: " + file.toExternalForm());
+    		Log.warn("Failed to cache plugin JAR file: " + file.toExternalForm());
     	}
         addURL(file);
     }
     
     /**
-     * Unload any JAR files that have been cached by this org.org.thirdplace.org.thirdplace
+     * Unload any JAR files that have been cached by this plugin
      */
     public void unloadJarFiles() {
         for (JarURLConnection url : cachedJarFiles) {
         	try {
-        		Log.info("Unloading org.org.thirdplace.org.thirdplace JAR file " + url.getJarFile().getName());
+        		Log.info("Unloading plugin JAR file " + url.getJarFile().getName());
         		url.getJarFile().close();
         	} catch (Exception e) {
         		Log.error("Failed to unload JAR file", e);

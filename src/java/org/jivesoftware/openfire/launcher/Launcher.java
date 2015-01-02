@@ -597,7 +597,7 @@ public class Launcher {
 
                     copy(plugin.toURI().toURL(), tempPluginsFile);
 
-                    // If successfull, rename to real org.hangout.org.thirdplace name.
+                    // If successfull, rename to real plugin name.
                     tempPluginsFile.renameTo(realPluginsFile);
                 }
                 catch (Exception e) {

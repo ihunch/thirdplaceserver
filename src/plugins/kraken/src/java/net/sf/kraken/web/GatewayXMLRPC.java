@@ -56,13 +56,13 @@ public class GatewayXMLRPC extends XmlRpcServlet implements PropertyEventListene
     }
 
     public void propertySet(String property, Map<String, Object> params) {
-        if (property.equals("org.org.thirdplace.org.thirdplace.gateway.xmlrpc.password") && conduit != null) {
+        if (property.equals("plugin.gateway.xmlrpc.password") && conduit != null) {
             conduit.authPassword = (String)params.get("value");
         }
     }
 
     public void propertyDeleted(String property, Map<String, Object> params) {
-        if (property.equals("org.org.thirdplace.org.thirdplace.gateway.xmlrpc.password") && conduit != null) {
+        if (property.equals("plugin.gateway.xmlrpc.password") && conduit != null) {
             conduit.authPassword = null;
         }
     }
