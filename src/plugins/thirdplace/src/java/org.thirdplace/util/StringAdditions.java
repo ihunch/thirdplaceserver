@@ -9,6 +9,7 @@ package org.thirdplace.util;
  */
 public class StringAdditions
 {
+    /*
      public static String substringBeforeChar(String originalText, String character)
      {
          int index = originalText.indexOf(character);
@@ -20,4 +21,5 @@ public class StringAdditions
             return originalText;
          }
      }
+     */
 }

@@ -3,6 +3,7 @@ package org.thirdplace.bean;
 import org.xmpp.packet.JID;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +21,42 @@ public class HangoutDAO
     private boolean closed;
     private boolean timeconfirmed;
     private boolean locationconfirmed;
+    private List<HangoutLocationDAO> locationDAOList;
+    private List<HangoutMessageDAO>  messageDAOList;
+    private List<HangoutUserDAO> userDAOList;
+    private List<HangoutTimeDAO> timeDAOList;
+
+    public List<HangoutLocationDAO> getLocationDAOList() {
+        return locationDAOList;
+    }
+
+    public void setLocationDAOList(List<HangoutLocationDAO> locationDAOList) {
+        this.locationDAOList = locationDAOList;
+    }
+
+    public List<HangoutMessageDAO> getMessageDAOList() {
+        return messageDAOList;
+    }
+
+    public void setMessageDAOList(List<HangoutMessageDAO> messageDAOList) {
+        this.messageDAOList = messageDAOList;
+    }
+
+    public List<HangoutUserDAO> getUserDAOList() {
+        return userDAOList;
+    }
+
+    public void setUserDAOList(List<HangoutUserDAO> userDAOList) {
+        this.userDAOList = userDAOList;
+    }
+
+    public List<HangoutTimeDAO> getTimeDAOList() {
+        return timeDAOList;
+    }
+
+    public void setTimeDAOList(List<HangoutTimeDAO> timeDAOList) {
+        this.timeDAOList = timeDAOList;
+    }
 
     public long getHangoutid() {
         return hangoutid;

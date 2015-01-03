@@ -28,8 +28,9 @@ import org.xmpp.packet.Message;
  */
 public class HangoutComponent extends AbstractComponent
 {
-    private static final String HANGOUT_DETAIL 	= "hangout:iq:detail";
-    private static final String HANGOUT_LIST = "hangout:iq:list";
+    public static final String HANGOUT_DETAIL 	= "hangout:iq:detail";
+    public static final String HANGOUT_LIST = "hangout:iq:list";
+    public static final String HANGOUT_MESSAGE = "hangout:message:detail";
 
     private PluginManager pluginManager;
     private final Plugin plugin;

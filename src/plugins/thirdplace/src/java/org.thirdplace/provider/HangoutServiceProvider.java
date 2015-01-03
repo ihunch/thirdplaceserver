@@ -13,8 +13,10 @@ import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,14 +27,26 @@ import java.util.Iterator;
  */
 public class HangoutServiceProvider
 {
+    public static final String HANGOUT_ELEMET = "hangout";
+    public static final String HANGOUTDESCRIPTION_ELEMET = "description";
+
+    public static final String HANGOUTUSERS_ELEMENT = "users";
+    public static final String HANGOUTUSERS_SUBELEMENT = "user";
+    public static final String HANGOUT_STARTDATE_ELEMENT = "startdate";
+    public static final String HANGOUT_ENDDATE_ELEMENT = "enddate";
+    public static final String HANGOUT_MESSAGE_ELEMENT = "message";
+    public static final String HANGOUT_TIMEDESCRIPTION_ELEMENT = "timedescription";
+    public static final String HANGOUTLOCATION_ELEMENT = "locationid";
+
+
     private static final Logger Log = LoggerFactory.getLogger(HangoutServiceProvider.class);
 
     private static final String CREATE_HANGOUT =
-    "INSERT INTO thirdplaceHangout ("+
+             "INSERT INTO thirdplaceHangout ("+
             "hangoutid, description, createUser, createDate, closed, timeconfirmed, locationconfirmed)"
             + "VALUES (?,?,?,?,?,?,?)";
     private static final String CREATE_HANGOUTTIME =
-        "INSERT INTO thirdplaceHangoutTime ("+
+             "INSERT INTO thirdplaceHangoutTime ("+
                 "hangouttimeid, timeDescription, startdate, enddate, createTime, createUser, timeConfirmed, hangoutid)"
                 + "VALUES (?,?,?,?,?,?,?,?)";
     private static final String CREATE_HANGOUTUSER =
@@ -40,7 +54,7 @@ public class HangoutServiceProvider
                             "hangoutuserid, username, jid, goingstatus, hangoutid)"
                             + "VALUES (?,?,?,?,?)";
     private static final String CREATE_HANGOUTMESSAGE =
-                "INSERT INTO thirdplaceHangoutMessage ("+
+            "INSERT INTO thirdplaceHangoutMessage ("+
                                 "messageid, content, createTime, createUser, hangoutid)"
                                 + "VALUES (?,?,?,?,?)";
     private static final String CREATE_HANGOUTLOCATION =
@@ -51,7 +65,7 @@ public class HangoutServiceProvider
     public HangoutDAO createHangout(IQ packet)
     {
         Element iq = packet.getChildElement();
-        Element hangout = iq.element("hangout");
+        Element hangout = iq.element(HangoutServiceProvider.HANGOUT_ELEMET);
         Connection con = null;
         if (hangout != null)
         {
@@ -66,7 +80,12 @@ public class HangoutServiceProvider
                 hangoutDAO.setClosed(false);
                 hangoutDAO.setLocationconfirmed(false);
                 hangoutDAO.setTimeconfirmed(false);
-                Element desElement = hangout.element("description");
+                hangoutDAO.setLocationDAOList(new ArrayList<HangoutLocationDAO>());
+                hangoutDAO.setTimeDAOList(new ArrayList<HangoutTimeDAO>());
+                hangoutDAO.setMessageDAOList(new ArrayList<HangoutMessageDAO>());
+                hangoutDAO.setUserDAOList(new ArrayList<HangoutUserDAO>());
+
+                Element desElement = hangout.element(HangoutServiceProvider.HANGOUTDESCRIPTION_ELEMET);
                 if (desElement != null) {
                     String des =  desElement.getText();
                     hangoutDAO.setDescription(des);
@@ -76,9 +95,9 @@ public class HangoutServiceProvider
                 hangoutDAO.setCreateUser(fromjid);
                 this.createHangout_private(con, hangoutDAO);
                 //Hangout Time
-                Element startdateElement = hangout.element("startdate");
+                Element startdateElement = hangout.element(HangoutServiceProvider.HANGOUT_STARTDATE_ELEMENT);
                 String startdatestr = startdateElement.getText();
-                Element enddateElement = hangout.element("enddate");
+                Element enddateElement = hangout.element(HangoutServiceProvider.HANGOUT_ENDDATE_ELEMENT);
                 String enddatestr = null;
                 if (enddateElement != null)
                 {
@@ -87,7 +106,7 @@ public class HangoutServiceProvider
 
                 Date sdate = DateAdditions.stringToDate(startdatestr, HangoutConstant.Hangout_DATEFORMAT);
                 Date edate = DateAdditions.stringToDate(enddatestr, HangoutConstant.Hangout_DATEFORMAT);
-                Element timedescription = hangout.element("timedescription");
+                Element timedescription = hangout.element(HangoutServiceProvider.HANGOUT_TIMEDESCRIPTION_ELEMENT);
                 long hangouttimeID = SequenceManager
                         .nextID(HangoutConstant.THIRDPLACE_HANGOUTTIME);
                 HangoutTimeDAO timeDAO = new HangoutTimeDAO();
@@ -100,18 +119,18 @@ public class HangoutServiceProvider
                 timeDAO.setHangouttimeid(hangouttimeID);
                 timeDAO.setTimeDescription(timedescription.getText());
                 this.createHangoutTime(con, timeDAO);
-
+                hangoutDAO.getTimeDAOList().add(timeDAO);
                 //HangoutUser
-                Element users = hangout.element("users");
+                Element users = hangout.element(HangoutServiceProvider.HANGOUTUSERS_ELEMENT);
                 long hangoutuserID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOUTUSER);
                 HangoutUserDAO inviter = new HangoutUserDAO();
                 inviter.setHangoutid(hangoutID);
                 inviter.setGoingstatus(HangoutConstant.GoingStatus);
                 inviter.setJid(fromjid);
                 inviter.setHangoutuserid(hangoutuserID);
-                inviter.setUsername(StringAdditions.substringBeforeChar(fromjid.toBareJID(), "@"));
+                inviter.setUsername(fromjid.getNode());
                 this.createHangoutUser(con,inviter);
-                Iterator<Element> itr = users.elementIterator("user");
+                Iterator<Element> itr = users.elementIterator(HangoutServiceProvider.HANGOUTUSERS_SUBELEMENT);
                 while (itr.hasNext())
                 {
                     hangoutuserID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOUTUSER);
@@ -122,12 +141,13 @@ public class HangoutServiceProvider
                     user.setHangoutid(hangoutID);
                     user.setGoingstatus(HangoutConstant.PendingStatus);
                     user.setJid(tojid);
-                    user.setUsername(StringAdditions.substringBeforeChar(tojid.toBareJID(), "@"));
+                    user.setUsername(tojid.getNode());
                     user.setHangoutuserid(hangoutuserID);
                     this.createHangoutUser(con,user);
+                    hangoutDAO.getUserDAOList().add(user);
                 }
                 //Hangout Message
-                Element messageContent = hangout.element("message");
+                Element messageContent = hangout.element(HangoutServiceProvider.HANGOUT_MESSAGE_ELEMENT);
                 long hangoutMessageID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOOUTMESSAGE);
                 HangoutMessageDAO messageDAO = new HangoutMessageDAO();
                 messageDAO.setMessageid(hangoutMessageID);
@@ -141,9 +161,10 @@ public class HangoutServiceProvider
                 messageDAO.setHangoutid(hangoutDAO.getHangoutid());
                 messageDAO.setCreateUser(hangoutDAO.getCreateUser());
                 this.createHangoutMessage(con,messageDAO);
+                hangoutDAO.getMessageDAOList().add(messageDAO);
 
                 //Hangout Location
-                Element location = hangout.element("locationid");
+                Element location = hangout.element(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
                 long hangoutLocationID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOOUTLOCATION);
                 HangoutLocationDAO locationDAO = new HangoutLocationDAO();
                 locationDAO.setLocationid(hangoutLocationID);
@@ -152,7 +173,9 @@ public class HangoutServiceProvider
                 locationDAO.setCreateTime(hangoutDAO.getCreateDate());
                 locationDAO.setHangoutid(hangoutDAO.getHangoutid());
                 this.createHangoutlocation(con, locationDAO);
+                hangoutDAO.getLocationDAOList().add(locationDAO);
                 con.commit();
+                return hangoutDAO;
             }
             catch (Exception e) {
                 try {
@@ -169,11 +192,7 @@ public class HangoutServiceProvider
                 DbConnectionManager.closeConnection(con);
             }
         }
-        else
-        {
-
-        }
-        return null;
+        return  null;
     }
 
     private void createHangout_private(Connection con, HangoutDAO hangoutDAO)  throws SQLException
