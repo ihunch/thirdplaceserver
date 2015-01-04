@@ -71,7 +71,6 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
 
         if (CreateElement.equals(name))
         {
-
            HangoutDAO hangout = this.CreateDetail(packet);
            Document document = DocumentHelper.createDocument();
            Element create = document.addElement(CreateElement,HangoutComponent.HANGOUT_DETAIL);
@@ -84,30 +83,23 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                     User toUser = null;
                     try {
                         toUser = userManager.getUser(user.getUsername());
+                        HangoutMessagePacketWrapper messagePacketHandler = new HangoutMessagePacketWrapper(HangoutComponent.HANGOUT_MESSAGE);
+                        messagePacketHandler.addHangoutDetailContent(hangout);
+                        messagePacketHandler.setFrom(hangout.getCreateUser());
+                        messagePacketHandler.setTo(user.getJid());
+                        messagePacketHandler.setID(packet.getID());
+                        if (presenceManager.isAvailable(toUser)) {
+                            router.route(messagePacketHandler.getMessage());
+                        } else {
+                            offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                        }
                     } catch (UserNotFoundException e) {
-                        System.out.println(e.toString());
-                    }
-                    HangoutMessagePacketWrapper messagePacketHandler = new HangoutMessagePacketWrapper(HangoutComponent.HANGOUT_MESSAGE);
-                    messagePacketHandler.addHangoutDetailContent(hangout);
-                    messagePacketHandler.setFrom(hangout.getCreateUser());
-                    messagePacketHandler.setTo(user.getJid());
-                    messagePacketHandler.setID(packet.getID());
-                    System.out.println(messagePacketHandler.getMessage().toXML());
-                    if (presenceManager.isAvailable(toUser)) {
-                    System.out.println("Send Message");
-
-                    router.route(messagePacketHandler.getMessage());
-                    System.out.println("End Send Message");
-                    }
-                    else
-                    {
-                        System.out.println("Store Delay Message");
-                        offlineMessageStore.addMessage((Message)messagePacketHandler.getMessage());
+                        Log.error(e.toString());
                     }
                 }
                else
                 {
-                    //Not Implement at this stage.
+                    //Not Implement at this stage. for SMS FOR EMAIL
                 }
            }
            //Board

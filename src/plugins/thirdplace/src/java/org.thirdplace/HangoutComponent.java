@@ -82,20 +82,22 @@ public class HangoutComponent extends AbstractComponent
         final Element element = iq.getChildElement();
         final String namespace = element.getNamespaceURI();
         IQHangoutHandler handler = null;
-        if (HANGOUT_DETAIL.equals(namespace))
-        {
-            handler = new IQHangoutDetailHandler();
-            return handler.handleIQRequest(iq);
+        try {
+            if (HANGOUT_DETAIL.equals(namespace)) {
+                handler = new IQHangoutDetailHandler();
+                return handler.handleIQRequest(iq);
 
-        }
-        else if (HANGOUT_LIST.equals(namespace))
-        {
-            handler = new IQHangoutListHandler();
-            return handler.handleIQRequest(iq);
-        }
-        else
-        {
+            } else if (HANGOUT_LIST.equals(namespace)) {
+                handler = new IQHangoutListHandler();
+                return handler.handleIQRequest(iq);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            Log.error(e.toString());
             return null;
+        } finally {
+            handler.destory();
         }
     }
 

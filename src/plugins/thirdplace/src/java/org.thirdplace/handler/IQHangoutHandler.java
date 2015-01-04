@@ -12,4 +12,5 @@ import org.xmpp.packet.IQ;
 public interface IQHangoutHandler
 {
     IQ handleIQRequest (IQ packet);
+    void destory();
 }
