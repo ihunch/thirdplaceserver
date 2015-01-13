@@ -14,6 +14,7 @@ public class HangoutConstant
     public static final int THIRDPLACE_HANGOOUTMESSAGE = 102;
     public static final int THIRDPLACE_HANGOUTTIME = 103;
     public static final int THIRDPLACE_HANGOUTUSER = 104;
+    public static final int THIRDPLACE_HANGOUTVERSION = 105;
     public static final String Hangout_DATEFORMAT = "yyyy-MM-dd HH:mm";
     public static String NotGoingStatus = "notgoing";
     public static String GoingStatus = "going";

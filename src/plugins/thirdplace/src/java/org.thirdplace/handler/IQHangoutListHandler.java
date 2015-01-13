@@ -15,4 +15,8 @@ public class IQHangoutListHandler implements IQHangoutHandler
     public IQ handleIQRequest(IQ packet) {
         return null;
     }
+
+    public void destory() {
+
+    }
 }

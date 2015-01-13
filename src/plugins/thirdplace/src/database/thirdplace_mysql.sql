@@ -87,3 +87,16 @@ CREATE TABLE IF NOT EXISTS `openfire`.`thirdplaceHangoutUser` (
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
+
+CREATE TABLE `openfire`.`thirdplaceHangoutVersion` (
+  `versionid` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `versiontime` CHAR(15) NOT NULL,
+  `hangoutid` BIGINT(20) NULL,
+  PRIMARY KEY (`versionid`),
+  UNIQUE INDEX `versionid_UNIQUE` (`versionid` ASC),
+  INDEX `hangoutid_idx` (`hangoutid` ASC),
+  CONSTRAINT `FK_Version_Hangout`
+    FOREIGN KEY (`hangoutid`)
+    REFERENCES `openfire`.`thirdplaceHangout` (`hangoutid`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT);

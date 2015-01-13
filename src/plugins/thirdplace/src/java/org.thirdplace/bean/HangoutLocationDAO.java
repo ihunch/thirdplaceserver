@@ -13,6 +13,14 @@ import java.util.Date;
  */
 public class HangoutLocationDAO
 {
+    public final static String LocationID_Column = "locationid";
+    public final static String FourSquareID_Column = "foursquareLocationid";
+    public final static String LocationConfirm_Column = "locationconfirm";
+    public final static String CreateUser_Column = "createUser";
+    public final static String CreateTime_Column = "createTime";
+    public final static String Hangoutid_Column = "hangoutid";
+
+
     private long locationid;
     private long foursquare_locationid;
     private boolean locationconfirm;

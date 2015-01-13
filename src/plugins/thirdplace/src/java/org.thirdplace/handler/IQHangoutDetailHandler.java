@@ -17,8 +17,11 @@ import org.thirdplace.provider.HangoutServiceProvider;
 import org.thirdplace.util.HangoutMessagePacketWrapper;
 import org.thirdplace.util.IQAdditions;
 import org.xmpp.packet.IQ;
+import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 import org.xmpp.packet.PacketError;
+
+import java.sql.SQLException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +37,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     private final String CreateElement = "create";
     private final String UpdateElement = "update";
     private final String QueryElement = "query";
+    private final String HangoutID = "id";
     private UserManager userManager;
     private HangoutServiceProvider provider = null;
     private PacketRouter router;
@@ -107,7 +111,66 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
         }
         else if (UpdateElement.equals(name))
         {
-            return  null;
+            //Let's get the ID of Hangout
+            Element hangoutelement = iq.element("hangout");
+            Attribute attr = hangoutelement.attribute(HangoutID);
+            String id = attr.getValue();
+            Document document = DocumentHelper.createDocument();
+            HangoutDAO hangoutDAO = this.UpdateDetail(Long.valueOf(id), packet);
+            if (hangoutDAO != null)
+            {
+                Element update = document.addElement(UpdateElement,HangoutComponent.HANGOUT_DETAIL);
+                update.addAttribute("hangoutid",String.valueOf(hangoutDAO.getHangoutid()));
+                update.setText("success");
+                reply = IQAdditions.createResultIQ(packet,update);
+                String jidstr = packet.getElement().attributeValue("from");
+                JID fromjid = new JID(jidstr);
+                try {
+                    HangoutUserDAO sender = provider.selectHangoutUser(fromjid.toBareJID(), hangoutDAO.getHangoutid());
+                    //notify user's about update results
+                    boolean isContainSender = provider.containSenderStatus(hangoutDAO.getUserDAOList(),sender.getJid());
+
+                    System.out.println(isContainSender);
+                    for (HangoutUserDAO user : hangoutDAO.getUserDAOList()) {
+                        if (!user.getUsername().equals(fromjid.getNode())) {
+
+                            if (userManager.isRegisteredUser(user.getUsername()))
+                            {
+                                User toUser = null;
+                                toUser = userManager.getUser(user.getUsername());
+                                HangoutMessagePacketWrapper messagePacketHandler = new HangoutMessagePacketWrapper(HangoutComponent.HANGOUT_MESSAGE);
+                                messagePacketHandler.addHangoutDetailContent(hangoutDAO);
+                                messagePacketHandler.setFrom(fromjid);
+                                messagePacketHandler.setTo(user.getJid());
+                                messagePacketHandler.setID(packet.getID());
+                                // create Messages
+                                if (isContainSender) {
+                                    messagePacketHandler.addSenderGoingStatus(sender.getGoingstatus());
+                                }
+                                if (presenceManager.isAvailable(toUser)) {
+                                    router.route(messagePacketHandler.getMessage());
+                                } else {
+                                    offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                                }
+                            }
+                        }
+                    }
+
+                } catch (SQLException e) {
+                    Log.error(e.toString());
+                }
+                catch (UserNotFoundException e1)
+                {
+                    Log.error(e1.toString());
+                }
+                return reply;
+            }
+            else
+            {
+                reply = IQ.createResultIQ(packet);
+                reply.setError(PacketError.Condition.internal_server_error);
+                return reply;
+            }
         }
         else if (QueryElement.equals(name))
         {
@@ -119,11 +182,15 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
             reply.setError(PacketError.Condition.feature_not_implemented);
             return reply;
         }
-
     }
 
     private HangoutDAO CreateDetail(IQ packet)
     {
         return provider.createHangout(packet);
+    }
+
+    private HangoutDAO UpdateDetail(long hangoutid, IQ packet)
+    {
+        return provider.updateHangout(hangoutid, packet);
     }
 }

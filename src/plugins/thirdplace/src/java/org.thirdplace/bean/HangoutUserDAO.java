@@ -11,6 +11,11 @@ import org.xmpp.packet.JID;
  */
 public class HangoutUserDAO
 {
+    public final static String UserID_Column = "hangoutuserid";
+    public final static String Username_Column = "username";
+    public final static String JID_Column = "jid";
+    public final static String GoingStatus_Column = "goingstatus";
+
     private long hangoutuserid;
     private String username;
     private JID jid;

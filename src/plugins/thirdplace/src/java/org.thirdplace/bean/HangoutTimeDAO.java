@@ -13,6 +13,16 @@ import java.util.Date;
  */
 public class HangoutTimeDAO
 {
+    public final static String HangoutTimeID_Column = "hangouttimeid";
+    public final static String TimeDescription_Column = "timeDescription";
+    public final static String StartDate_Column = "startdate";
+    public final static String EndDate_Column = "enddate";
+    public final static String CreateTime_Column = "createTime";
+    public final static String CreateUser_Column = "createUser";
+    public final static String TimeConfirmed_Column = "timeConfirmed";
+    public final static String HangoutID_Column = "hangoutid";
+
+
     private long hangouttimeid;
     private String timeDescription;
     private Date startdate;

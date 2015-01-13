@@ -118,5 +118,4 @@ public class HangoutComponent extends AbstractComponent
             return null;
         }
     }
-
 }
