@@ -1,0 +1,100 @@
+<!-- create Hangout -->
+<iq type="set" id="ab08a" from="yang@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<create xmlns="hangout:iq:detail">
+<hangout>
+<description>this is a test</description>
+<users>
+    <user>admin@macintosh.bigpond</user>
+</users>
+<startdate>2015-01-02 09:10</startdate>
+<enddate>2015-01-02 10:10</enddate>
+<timedescription>This Saturday</timedescription>
+<message>Want to catch up this week?</message>
+<locationid>1</locationid>
+</hangout>
+</create>
+</iq>
+
+<iq type="set" id="ab08a" from="admin@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<update xmlns="hangout:iq:detail">
+<hangout id ="67">
+<users>
+    <user>yang@macintosh.bigpond</user>
+</users>
+<goingstatus>going</goingstatus>
+<time>
+    <startdate>2015-01-02 09:10</startdate>
+    <enddate>2015-01-02 10:10</enddate>
+    <timedescription>This Saturday</timedescription>
+    <timeconfirm>true</timeconfirm>
+</time>
+<message>Want to catch up this week?</message>
+<location>
+    <locationid>1</locationid>
+    <locationconfirm>true</locationconfirm>
+</location>
+</hangout>
+</update>
+</iq>
+
+
+<!-- update Hangout -->
+<iq type="set" id="ab08a" from="yang@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<update xmlns="hangout:iq:detail">
+<hangout id ="64">
+<users>
+    <user>admin@macintosh.bigpond</user>
+</users>
+<goingstatus>going</goingstatus>
+<time>
+    <startdate>2015-01-02 09:10</startdate>
+    <enddate>2015-01-02 10:10</enddate>
+    <timedescription>This Saturday confirm</timedescription>
+    <timeconfirm>true</timeconfirm>
+</time>
+<message>Want to catch up this week?</message>
+<location>
+    <locationid>1</locationid>
+    <locationconfirm>true</locationconfirm>
+</location>
+</hangout>
+</update>
+</iq>
+
+
+<message from="yang@macintosh.bigpond/Macintosh" to="admin@macintosh.bigpond" id="ab08a">
+<hangout xmlns="hangout:message:detail">
+<startdate>2015-01-02 09:10</startdate>
+<enddate>2015-01-02 10:10</enddate>
+<description>this is a test</description>
+<timedescription>This Saturday</timedescription>
+<message>Want to catch up this week?</message>
+<locationid>1</locationid>
+</hangout>
+</message>
+
+
+<!-- Close Hangout -->
+<iq type="set" id="ab08a" from="yang@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<close xmlns="hangout:iq:detail">
+<hangout id ="64">
+<users>
+    <user>admin@macintosh.bigpond</user>
+</users>
+</hangout>
+</close>
+</iq>
+
+
+ <!--Request Hangout List-->
+<iq type="get" id="ab08a" from="yang@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<query xmlns="hangout:iq:list"/>
+</iq>
+
+
+<!--Request Hangout Detail-->
+<iq type="get" id="ab08a" from="yang@macintosh.bigpond" to="thirdplacehangout.macintosh.bigpond">
+<query xmlns="hangout:iq:detail">
+<hangout id="70"/>
+</query>
+</iq>
