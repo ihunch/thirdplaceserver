@@ -13,6 +13,12 @@ import java.util.Date;
  */
 public class HangoutMessageDAO
 {
+    public final static String HangoutMessageID_Column = "messageid";
+    public final static String Content_Column = "content";
+    public final static String CreateUser_Column = "createUser";
+    public final static String CreateTime_Column = "createTime";
+    public final static String HangoutID_Column = "hangoutid";
+
     private long messageid;
     private String content;
     private Date createTime;

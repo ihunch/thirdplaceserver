@@ -96,4 +96,10 @@ public class HangoutMessagePacketWrapper
         Element goingstatus = hangout.addElement(HangoutServiceProvider.HANGOUT_GOINGSTATUS_ELEMENT);
         goingstatus.setText(status);
     }
+
+    public void addHangoutCloseInformation(HangoutDAO hangoutDAO)
+    {
+        Element close = hangout.addElement("close");
+        close.setText(String.valueOf(hangoutDAO.getHangoutid()));
+    }
 }

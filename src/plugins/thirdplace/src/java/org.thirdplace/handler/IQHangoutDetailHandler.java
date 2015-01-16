@@ -11,9 +11,9 @@ import org.jivesoftware.openfire.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thirdplace.HangoutComponent;
-import org.thirdplace.bean.HangoutDAO;
-import org.thirdplace.bean.HangoutUserDAO;
+import org.thirdplace.bean.*;
 import org.thirdplace.provider.HangoutServiceProvider;
+import org.thirdplace.util.HangoutConstant;
 import org.thirdplace.util.HangoutMessagePacketWrapper;
 import org.thirdplace.util.IQAdditions;
 import org.xmpp.packet.IQ;
@@ -22,6 +22,9 @@ import org.xmpp.packet.Message;
 import org.xmpp.packet.PacketError;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,13 +39,16 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
 
     private final String CreateElement = "create";
     private final String UpdateElement = "update";
+    private final String CloseElement = "close";
     private final String QueryElement = "query";
     private final String HangoutID = "id";
+    private final String ResultElment = "result";
     private UserManager userManager;
     private HangoutServiceProvider provider = null;
     private PacketRouter router;
     private OfflineMessageStore offlineMessageStore;
     private PresenceManager presenceManager;
+    private int First = 0;
 
     public IQHangoutDetailHandler()
     {
@@ -129,8 +135,6 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                     HangoutUserDAO sender = provider.selectHangoutUser(fromjid.toBareJID(), hangoutDAO.getHangoutid());
                     //notify user's about update results
                     boolean isContainSender = provider.containSenderStatus(hangoutDAO.getUserDAOList(),sender.getJid());
-
-                    System.out.println(isContainSender);
                     for (HangoutUserDAO user : hangoutDAO.getUserDAOList()) {
                         if (!user.getUsername().equals(fromjid.getNode())) {
 
@@ -156,8 +160,6 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                         }
                     }
 
-                } catch (SQLException e) {
-                    Log.error(e.toString());
                 }
                 catch (UserNotFoundException e1)
                 {
@@ -172,14 +174,130 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                 return reply;
             }
         }
+        else if (CloseElement.equals(name))
+        {
+             //Let's get the ID of Hangout
+            Element hangoutelement = iq.element("hangout");
+            Attribute attr = hangoutelement.attribute(HangoutID);
+            String id = attr.getValue();
+            Document document = DocumentHelper.createDocument();
+            HangoutDAO hangoutDAO = this.CloseDetail(Long.valueOf(id), packet);
+            String jidstr = packet.getElement().attributeValue("from");
+            JID fromjid = new JID(jidstr);
+            try {
+                if (hangoutDAO != null) {
+                    Element close = document.addElement(CloseElement, HangoutComponent.HANGOUT_DETAIL);
+                    close.addAttribute("hangoutid", String.valueOf(hangoutDAO.getHangoutid()));
+                    close.setText("success");
+                    reply = IQAdditions.createResultIQ(packet, close);
+                    for (HangoutUserDAO user : hangoutDAO.getUserDAOList()) {
+                        if (userManager.isRegisteredUser(user.getUsername())) {
+                            User toUser = null;
+                            toUser = userManager.getUser(user.getUsername());
+                            HangoutMessagePacketWrapper messagePacketHandler = new HangoutMessagePacketWrapper(HangoutComponent.HANGOUT_MESSAGE);
+                            messagePacketHandler.setFrom(fromjid);
+                            messagePacketHandler.setTo(user.getJid());
+                            messagePacketHandler.setID(packet.getID());
+                            messagePacketHandler.addHangoutCloseInformation(hangoutDAO);
+                             // create Messages
+                            if (presenceManager.isAvailable(toUser)) {
+                                router.route(messagePacketHandler.getMessage());
+                            } else {
+                                offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                            }
+                        }
+                    }
+                    return reply;
+                } else {
+                    reply = IQ.createResultIQ(packet);
+                    reply.setError(PacketError.Condition.internal_server_error);
+                    return reply;
+                }
+            } catch (UserNotFoundException e1) {
+                Log.error(e1.toString());
+                return null;
+            }
+        }
         else if (QueryElement.equals(name))
         {
-            return  null;
+            Element hangoutelement = iq.element("hangout");
+            Attribute attr = hangoutelement.attribute(HangoutID);
+            String id = attr.getValue();
+            String jidstr = packet.getElement().attributeValue("from");
+            JID fromjid = new JID(jidstr);
+            HangoutDAO hangoutDAO = this.FetchDetail(Long.valueOf(id));
+            if (hangoutDAO != null)
+            {
+                Document document = DocumentHelper.createDocument();
+                Element result = document.addElement(ResultElment, HangoutComponent.HANGOUT_DETAIL);
+                Element hangout = result.addElement("hangout");
+                Element idElement = hangout.addElement("id");
+                idElement.setText(String.valueOf(hangoutDAO.getHangoutid()));
+                if (hangoutDAO.getLocationDAOList().size() > 0) {
+                    HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
+                    Element location = hangout.addElement(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
+                    location.setText(String.valueOf(locationDAO.getFoursquare_locationid()));
+                    Element locationConfirm = hangout.addElement(HangoutServiceProvider.HANGOUT_LOCATIONCONFIRM_ELEMENT);
+                    if (locationDAO.isLocationconfirm())
+                    {
+                        locationConfirm.setText("true");
+                    }
+                    else {
+                        locationConfirm.setText("false");
+                    }
+                }
+                System.out.println(hangoutDAO.getTimeDAOList());
+                System.out.println(hangoutDAO.getTimeDAOList().size());
+                if (hangoutDAO.getTimeDAOList().size() > 0) {
+                    HangoutTimeDAO timeDAO = hangoutDAO.getTimeDAOList().get(First);
+                    Element time = hangout.addElement(HangoutServiceProvider.HANGOUT_TIMEDESCRIPTION_ELEMENT);
+                    time.setText(timeDAO.getTimeDescription());
+                    Element timeConfirm = hangout.addElement(HangoutServiceProvider.HANGOUT_TIMECONFIRM_ELEMENT);
+                    if (timeDAO.isTimeConfirmed())
+                    {
+                        timeConfirm.setText("true");
+                    }
+                    else
+                    {
+                        timeConfirm.setText("false");
+                    }
+                    DateFormat df = new SimpleDateFormat(HangoutConstant.Hangout_DATEFORMAT);
+                    Element startdate = hangout.addElement(HangoutServiceProvider.HANGOUT_STARTDATE_ELEMENT);
+                    startdate.setText(df.format(timeDAO.getStartdate()));
+                    Element enddate = hangout.addElement(HangoutServiceProvider.HANGOUT_ENDDATE_ELEMENT);
+                    enddate.setText(df.format(timeDAO.getEnddate()));
+                }
+                if (hangoutDAO.getMessageDAOList().size() > 0) {
+                    HangoutMessageDAO messageDAO = hangoutDAO.getMessageDAOList().get(First);
+                    Element message = hangout.addElement(HangoutServiceProvider.HANGOUT_MESSAGE_ELEMENT);
+                    message.setText(messageDAO.getContent());
+                }
+                if (hangoutDAO.getUserDAOList().size() > 0) {
+                    List<HangoutUserDAO> users = hangoutDAO.getUserDAOList();
+                    Element usersElement = hangout.addElement(HangoutServiceProvider.HANGOUTUSERS_ELEMENT);
+                    for (HangoutUserDAO user : users) {
+                        if (!user.getJid().toBareJID().equals(fromjid.getNode()))
+                        {
+                            Element userElement = usersElement.addElement(HangoutServiceProvider.HANGOUTUSERS_SUBELEMENT);
+                            userElement.addAttribute("jid", user.getJid().toBareJID());
+                            userElement.addAttribute(HangoutServiceProvider.HANGOUT_GOINGSTATUS_ELEMENT, user.getGoingstatus());
+                        }
+                    }
+                }
+                reply = IQAdditions.createResultIQ(packet, result);
+                return reply;
+            }
+            else
+            {
+                reply = IQ.createResultIQ(packet);
+                reply.setError(PacketError.Condition.internal_server_error);
+                return reply;
+            }
         }
         else
         {
             reply = IQ.createResultIQ(packet);
-            reply.setError(PacketError.Condition.feature_not_implemented);
+            reply.setError(PacketError.Condition.internal_server_error);
             return reply;
         }
     }
@@ -192,5 +310,14 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     private HangoutDAO UpdateDetail(long hangoutid, IQ packet)
     {
         return provider.updateHangout(hangoutid, packet);
+    }
+
+    private HangoutDAO CloseDetail(long hangoutid, IQ packet){
+        return provider.closeHangout(hangoutid,packet);
+    }
+
+    private HangoutDAO FetchDetail(long hangoutid)
+    {
+        return provider.selectHangoutInDetail(hangoutid);
     }
 }

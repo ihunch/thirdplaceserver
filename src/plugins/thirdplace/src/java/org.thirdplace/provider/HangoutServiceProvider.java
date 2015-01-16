@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.thirdplace.bean.*;
 import org.thirdplace.util.DateAdditions;
 import org.thirdplace.util.HangoutConstant;
-import org.thirdplace.util.StringAdditions;
 import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 
@@ -74,20 +73,30 @@ public class HangoutServiceProvider
                 + "locationconfirmed=? "
                 + "WHERE hangoutid=?";
 
-    private static final String Update_HANGOUT_TIMECONFIRM = "UPDATE thirdplaceHangout SET "
-                    + "timeconfirmed=? "
+    private static final String Update_HANGOUT_CLOSED = "UPDATE thirdplaceHangout SET "
+                    + "closed=? "
                     + "WHERE hangoutid=?";
+
+    private static final String Update_HANGOUT_TIMECONFIRM = "UPDATE thirdplaceHangout SET "
+                        + "timeconfirmed=? "
+                        + "WHERE hangoutid=?";
 
     private static final String Update_UserGoingStatus = "UPDATE thirdplaceHangoutUser SET "
                    + "goingstatus=? "
                    + "WHERE jid=? AND hangoutid=?";
 
+    private static final String Select_HangoutListID_BYJID = "SELECT user.hangoutid from thirdplaceHangoutUser as user join thirdplaceHangout as hangout " +
+            "on user.hangoutid = hangout.hangoutid where user.jid=? && hangout.closed =0 order by  user.hangoutid desc";
+
     private static final String Select_HANGOUT_BY_ID = "SELECT * from thirdplaceHangout WHERE hangoutid=?";
     private static final String Select_HANGOUT_USER = "SELECT * from thirdplaceHangoutUser WHERE hangoutid=? AND jid=?";
     private static final String Select_HANGOUT_USERS = "SELECT * from thirdplaceHangoutUser WHERE hangoutid=?";
-    private static final String Select_Hangout_Time = "SELECT * from thirdplaceHangoutTime WHERE hangoutid=? AND createuser=? ORDER BY createTime DESC";
-    private static final String Select_Hangout_Location = "SELECT * from thirdplaceHangoutLocation WHERE hangoutid=? AND createuser=? ORDER BY createTime DESC";
-
+    private static final String Select_Hangout_Time_LATEST_BY_USER = "SELECT * from thirdplaceHangoutTime WHERE hangoutid=? AND createuser=? ORDER BY createTime DESC LIMIT 1";
+    private static final String Select_Hangout_Location_LATEST_BY_USER = "SELECT * from thirdplaceHangoutLocation WHERE hangoutid=? AND createuser=? ORDER BY createTime DESC LIMIT 1";
+    private static final String Select_Hangout_Message_LATEST_BY_USER = "SELECT * from thirdplaceHangoutMessage WHERE hangoutid=? AND createuser=? ORDER BY createTime DESC LIMIT 1";
+    private static final String Select_Hangout_Time_LATEST = "SELECT * from thirdplaceHangoutTime WHERE hangoutid=? ORDER BY createTime DESC LIMIT 1";
+    private static final String Select_Hangout_Location_LATEST = "SELECT * from thirdplaceHangoutLocation WHERE hangoutid=? ORDER BY createTime DESC LIMIT 1";
+    private static final String Select_Hangout_Message_LATEST = "SELECT * from thirdplaceHangoutMessage WHERE hangoutid=? ORDER BY createTime DESC LIMIT 1";
     public HangoutDAO createHangout(IQ packet)
     {
         Element iq = packet.getChildElement();
@@ -229,7 +238,6 @@ public class HangoutServiceProvider
     private void createHangout_private(Connection con, HangoutDAO hangoutDAO)  throws SQLException
     {
         PreparedStatement pstmt_hangout = null;
-
         pstmt_hangout = con.prepareStatement(CREATE_HANGOUT);
         String hangoutDes = hangoutDAO.getDescription();
         pstmt_hangout.setLong(1, hangoutDAO.getHangoutid());
@@ -301,7 +309,7 @@ public class HangoutServiceProvider
 
     private void createHangoutMessage(Connection connection, HangoutMessageDAO messageDAO) throws SQLException
     {
-        System.out.println("createHangoutMessage");
+        Log.debug("createHangoutMessage");
         PreparedStatement pstmt_hangoutMessage = null;
         pstmt_hangoutMessage = connection.prepareStatement(CREATE_HANGOUTMESSAGE);
         pstmt_hangoutMessage.setLong(1, messageDAO.getMessageid());
@@ -322,7 +330,7 @@ public class HangoutServiceProvider
 
     private void createHangoutlocation(Connection connection, HangoutLocationDAO locationDAO) throws SQLException
     {
-        System.out.println("createHangoutlocation");
+        Log.debug("createHangoutlocation");
         PreparedStatement pstmt_hangoutLocation = null;
         pstmt_hangoutLocation = connection.prepareStatement(CREATE_HANGOUTLOCATION);
         pstmt_hangoutLocation.setLong(1, locationDAO.getLocationid());
@@ -344,7 +352,7 @@ public class HangoutServiceProvider
 
     private void createHangoutVersion(Connection connection, long Hangoutid, long HangoutVersionid, Date time) throws SQLException
     {
-        System.out.println("createHangoutVersion");
+        Log.debug("createHangoutVersion");
         PreparedStatement pstmt_hangoutVersion = null;
         pstmt_hangoutVersion = connection.prepareStatement(Create_HANGOUTVERSION);
         pstmt_hangoutVersion.setLong(1, HangoutVersionid);
@@ -510,6 +518,48 @@ public class HangoutServiceProvider
         }
     }
 
+    public HangoutDAO closeHangout(long hangoutid, IQ packet)
+    {
+        Element iq = packet.getChildElement();
+        Element hangout = iq.element(HangoutServiceProvider.HANGOUT_ELEMET);
+        Connection con = null;
+        try
+        {
+            HangoutDAO existingHangout = this.selectHangoutByID(hangoutid);
+            con = DbConnectionManager.getConnection();
+            con.setAutoCommit(false);
+            existingHangout.setClosed(true);
+            existingHangout.setUserDAOList(new ArrayList<HangoutUserDAO>());
+            Element users = hangout.element(HangoutServiceProvider.HANGOUTUSERS_ELEMENT);
+            Iterator<Element> itr = users.elementIterator(HangoutServiceProvider.HANGOUTUSERS_SUBELEMENT);
+            while (itr.hasNext())
+            {
+                Element element = itr.next();
+                String tojidstr = element.getText();
+                JID tojid = new JID(tojidstr);
+                HangoutUserDAO user = this.selectHangoutUser(tojid.toBareJID(),hangoutid);
+                existingHangout.getUserDAOList().add(user);
+            }
+            this.updateHangoutCloseStatus(con,existingHangout.getHangoutid(),true);
+            con.commit();
+            return existingHangout;
+        }
+        catch (Exception e)
+        {
+            Log.error(e.toString());
+            return null;
+        }
+        finally
+        {
+            DbConnectionManager.closeConnection(con);
+        }
+    }
+
+    public HangoutDAO queryHangout(long hangoutid)
+    {
+        return null;
+    }
+
     private void updateHangout_OverrallLocationConfirm(Connection connection, long hangoutid, boolean value)  throws SQLException
     {
         PreparedStatement pstmt = null;
@@ -548,7 +598,7 @@ public class HangoutServiceProvider
 
     private void updateUserGoingStatus(Connection connection, HangoutUserDAO user) throws SQLException
     {
-        System.out.println("Update User Going Status");
+        Log.debug("Update User Going Status");
         PreparedStatement pstmt = null;
         pstmt = connection.prepareStatement(Update_UserGoingStatus);
         pstmt.setString(1, user.getGoingstatus());
@@ -567,7 +617,7 @@ public class HangoutServiceProvider
             {
                 if (!userDAO.getJid().toBareJID().equals(myself.toBareJID()))
                 {
-                    HangoutLocationDAO locationDAO = this.selectLatestHangoutLocation(hangoutid,userDAO.getJid());
+                    HangoutLocationDAO locationDAO = this.selectLatestHangoutLocation_BYUSER(hangoutid, userDAO.getJid());
                     if (!locationDAO.isLocationconfirm())
                     {
                         return false;
@@ -590,7 +640,7 @@ public class HangoutServiceProvider
             {
                 if (!userDAO.getJid().toBareJID().equals(myself.toBareJID()))
                 {
-                    HangoutTimeDAO timeDAO = this.selectLatestHangoutTime(hangoutid, userDAO.getJid());
+                    HangoutTimeDAO timeDAO = this.selectLatestHangoutTime_BYUSER(hangoutid, userDAO.getJid());
                     if (!timeDAO.isTimeConfirmed())
                     {
                          return false;
@@ -604,86 +654,83 @@ public class HangoutServiceProvider
         }
     }
 
-    public HangoutDAO selectHangoutByID(long hangoutid) throws SQLException
+    private void updateHangoutCloseStatus(Connection connection, long hangoutid, Boolean closestatus) throws SQLException
     {
-        Connection con = DbConnectionManager.getConnection();
-        PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_BY_ID);
-        pstmt.setLong(1,hangoutid);
-        ResultSet result = pstmt.executeQuery();
-        HangoutDAO hangout = null;
-        if (result.next()) {
-            hangout = new HangoutDAO();
-            hangout.setHangoutid(hangoutid);
-            String description = result.getString("description");
-            hangout.setDescription(description);
-            String jidstr = result.getString("createUser");
-            JID jid = new JID(jidstr);
-            hangout.setCreateUser(jid);
-            String createDate = result.getString("createDate");
-            hangout.setCreateDate(new Date(Long.valueOf(createDate)));
-            int closedValue = result.getInt("closed");
-            int timeconfirmedValue = result.getInt("timeconfirmed");
-            int locationConfirmedValue = result.getInt("locationconfirmed");
-            if (closedValue == 0) {
-                hangout.setClosed(false);
-            } else {
-                hangout.setClosed(true);
-            }
-            if (timeconfirmedValue == 0) {
-                hangout.setTimeconfirmed(false);
-            }
-            else
-            {
-               hangout.setTimeconfirmed(true);
-            }
-            if (locationConfirmedValue == 0)
-            {
-                hangout.setLocationconfirmed(false);
-            }
-            else
-            {
-                hangout.setLocationconfirmed(true);
-            }
+        PreparedStatement pstmt = connection.prepareStatement(Update_HANGOUT_CLOSED);
+        if (closestatus)
+        {
+            pstmt.setLong(1,1);
         }
-        return hangout;
+        else
+        {
+            pstmt.setLong(0,0);
+        }
+        pstmt.setLong(2,hangoutid);
+        pstmt.executeUpdate();
+        DbConnectionManager.closeStatement(pstmt);
     }
 
-    public HangoutUserDAO selectHangoutUser(String JID, long hangoutid) throws SQLException
+    public HangoutDAO selectHangoutByID(long hangoutid)
     {
-        System.out.println("select Hangout User");
-        Connection con = DbConnectionManager.getConnection();
-        PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_USER);
-        pstmt.setLong(1, hangoutid);
-        pstmt.setString(2, JID);
-        ResultSet result = pstmt.executeQuery();
-        HangoutUserDAO user = null;
-        if (result.next()) {
-            user = new HangoutUserDAO();
-            long hangoutuserid = result.getLong(HangoutUserDAO.UserID_Column);
-            String usernameValue = result.getString(HangoutUserDAO.Username_Column);
-            String jidValue = result.getString(HangoutUserDAO.JID_Column);
-            String goingstatus = result.getString(HangoutUserDAO.GoingStatus_Column);
-            user.setHangoutid(hangoutid);
-            user.setHangoutuserid(hangoutuserid);
-            user.setUsername(usernameValue);
-            user.setJid(new JID(jidValue));
-            user.setGoingstatus(goingstatus);
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_BY_ID);
+            pstmt.setLong(1, hangoutid);
+            ResultSet result = pstmt.executeQuery();
+            HangoutDAO hangout = null;
+            if (result.next()) {
+                hangout = new HangoutDAO();
+                hangout.setHangoutid(hangoutid);
+                String description = result.getString("description");
+                hangout.setDescription(description);
+                String jidstr = result.getString("createUser");
+                JID jid = new JID(jidstr);
+                hangout.setCreateUser(jid);
+                String createDate = result.getString("createDate");
+                hangout.setCreateDate(new Date(Long.valueOf(createDate)));
+                int closedValue = result.getInt("closed");
+                int timeconfirmedValue = result.getInt("timeconfirmed");
+                int locationConfirmedValue = result.getInt("locationconfirmed");
+                if (closedValue == 0) {
+                    hangout.setClosed(false);
+                } else {
+                    hangout.setClosed(true);
+                }
+                if (timeconfirmedValue == 0) {
+                    hangout.setTimeconfirmed(false);
+                } else {
+                    hangout.setTimeconfirmed(true);
+                }
+                if (locationConfirmedValue == 0) {
+                    hangout.setLocationconfirmed(false);
+                } else {
+                    hangout.setLocationconfirmed(true);
+                }
+            }
+            DbConnectionManager.closeStatement(pstmt);
+            return hangout;
+        } catch (SQLException e) {
+            Log.error(e.toString());
+            return  null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
         }
-        return user;
     }
 
-    public List<HangoutUserDAO> selectHangoutUsers(long hangoutid) throws SQLException
+    public HangoutUserDAO selectHangoutUser(String JID, long hangoutid)
     {
-        System.out.println("select Hangout Users "+ hangoutid);
-        Connection con = DbConnectionManager.getConnection();
-        PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_USERS);
-        pstmt.setLong(1, hangoutid);
-        ResultSet result = pstmt.executeQuery();
-        List<HangoutUserDAO> returndata = null;
-        if (result.next()) {
-            returndata = new ArrayList<HangoutUserDAO>();
-            do {
-                HangoutUserDAO user = new HangoutUserDAO();
+        Log.debug("select Hangout User");
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_USER);
+            pstmt.setLong(1, hangoutid);
+            pstmt.setString(2, JID);
+            ResultSet result = pstmt.executeQuery();
+            HangoutUserDAO user = null;
+            if (result.next()) {
+                user = new HangoutUserDAO();
                 long hangoutuserid = result.getLong(HangoutUserDAO.UserID_Column);
                 String usernameValue = result.getString(HangoutUserDAO.Username_Column);
                 String jidValue = result.getString(HangoutUserDAO.JID_Column);
@@ -693,82 +740,247 @@ public class HangoutServiceProvider
                 user.setUsername(usernameValue);
                 user.setJid(new JID(jidValue));
                 user.setGoingstatus(goingstatus);
-                returndata.add(user);
-            }while (result.next());
+            }
+            DbConnectionManager.closeStatement(pstmt);
+            return user;
+        } catch (SQLException e) {
+            Log.error(e.toString());
+            return null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
         }
-        return returndata;
     }
 
-    public HangoutLocationDAO selectLatestHangoutLocation(long hangoutid, JID user) throws SQLException
+    public List<HangoutUserDAO> selectHangoutUsers(long hangoutid)
     {
-        System.out.println("select Hangout Location"+user.toBareJID());
-        Connection con = DbConnectionManager.getConnection();
-        PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Location);
-        pstmt.setLong(1, hangoutid);
-        pstmt.setString(2, user.toBareJID());
-        ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
-        HangoutLocationDAO locationDAO = null;
-        if (result.next()) {
-            locationDAO = new HangoutLocationDAO();
-            locationDAO.setHangoutid(hangoutid);
-            locationDAO.setCreateUser(user);
-            String createtime = result.getString(HangoutLocationDAO.CreateTime_Column);
-            locationDAO.setCreateTime(new Date(Long.valueOf(createtime)));
-            int confirm = result.getInt(HangoutLocationDAO.LocationConfirm_Column);
-            if (confirm == 0)
-            {
-                //System.out.println("Location FALSE");
-                locationDAO.setLocationconfirm(false);
+        Log.debug("select Hangout Users "+ hangoutid);
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_HANGOUT_USERS);
+            pstmt.setLong(1, hangoutid);
+            ResultSet result = pstmt.executeQuery();
+            List<HangoutUserDAO> returndata = null;
+            if (result.next()) {
+                returndata = new ArrayList<HangoutUserDAO>();
+                do {
+                    HangoutUserDAO user = new HangoutUserDAO();
+                    long hangoutuserid = result.getLong(HangoutUserDAO.UserID_Column);
+                    String usernameValue = result.getString(HangoutUserDAO.Username_Column);
+                    String jidValue = result.getString(HangoutUserDAO.JID_Column);
+                    String goingstatus = result.getString(HangoutUserDAO.GoingStatus_Column);
+                    user.setHangoutid(hangoutid);
+                    user.setHangoutuserid(hangoutuserid);
+                    user.setUsername(usernameValue);
+                    user.setJid(new JID(jidValue));
+                    user.setGoingstatus(goingstatus);
+                    returndata.add(user);
+                }while (result.next());
             }
-            else
-            {
-                //System.out.println("Location TRUE");
-                locationDAO.setLocationconfirm(true);
-            }
-            long foursquareLocationID = result.getLong(HangoutLocationDAO.FourSquareID_Column);
-            locationDAO.setFoursquare_locationid(foursquareLocationID);
-            long locationid = result.getLong(HangoutLocationDAO.LocationID_Column);
-            locationDAO.setLocationid(locationid);
+            DbConnectionManager.closeStatement(pstmt);
+            return returndata;
         }
-        return locationDAO;
+        catch (SQLException e)
+        {
+           Log.error(e.toString());
+           return null;
+        }
+        finally {
+            DbConnectionManager.closeConnection(con);
+        }
     }
 
-    public HangoutTimeDAO selectLatestHangoutTime(long hangoutid, JID user) throws SQLException
+    public HangoutLocationDAO selectLatestHangoutLocation(long hangoutid)
     {
-       System.out.println("select Hangout Time"+user.toBareJID());
-       Connection con = DbConnectionManager.getConnection();
-       PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Time);
-       pstmt.setLong(1, hangoutid);
-       pstmt.setString(2, user.toBareJID());
-       ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
-       HangoutTimeDAO timeDAO = null;
-       if (result.next()) {
-           timeDAO = new HangoutTimeDAO();
-           timeDAO.setHangoutid(hangoutid);
-           timeDAO.setCreateUser(user);
-           String createtime = result.getString(HangoutTimeDAO.CreateTime_Column);
-           String startdate = result.getString(HangoutTimeDAO.StartDate_Column);
-           String enddate = result.getString(HangoutTimeDAO.EndDate_Column);
-           timeDAO.setStartdate(new Date(Long.valueOf(startdate)));
-           timeDAO.setEnddate(new Date(Long.valueOf(enddate)));
-           timeDAO.setCreateTime(new Date(Long.valueOf(createtime)));
-           String timedes = result.getString(HangoutTimeDAO.TimeDescription_Column);
-           timeDAO.setTimeDescription(timedes);
-           long hangouttimeid = result.getLong(HangoutTimeDAO.HangoutTimeID_Column);
-           timeDAO.setHangouttimeid(hangouttimeid);
-           int confirm = result.getInt(HangoutTimeDAO.TimeConfirmed_Column);
-           if (confirm == 0)
-           {
-               //System.out.println("Time FALSE");
-               timeDAO.setTimeConfirmed(false);
-           }
-           else
-           {
-               //System.out.println("Time true");
-               timeDAO.setTimeConfirmed(true);
-           }
-       }
-       return timeDAO;
+        Log.debug("select Hangout Location");
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Location_LATEST);
+            pstmt.setLong(1, hangoutid);
+            ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+            HangoutLocationDAO locationDAO = null;
+            if (result.next()) {
+                locationDAO = new HangoutLocationDAO();
+                locationDAO.setHangoutid(hangoutid);
+                locationDAO.setCreateUser(new JID(result.getString(HangoutLocationDAO.CreateUser_Column)));
+                String createtime = result.getString(HangoutLocationDAO.CreateTime_Column);
+                locationDAO.setCreateTime(new Date(Long.valueOf(createtime)));
+                int confirm = result.getInt(HangoutLocationDAO.LocationConfirm_Column);
+                if (confirm == 0) {
+                    //System.out.println("Location FALSE");
+                    locationDAO.setLocationconfirm(false);
+                } else {
+                    //System.out.println("Location TRUE");
+                    locationDAO.setLocationconfirm(true);
+                }
+                long foursquareLocationID = result.getLong(HangoutLocationDAO.FourSquareID_Column);
+                locationDAO.setFoursquare_locationid(foursquareLocationID);
+                long locationid = result.getLong(HangoutLocationDAO.LocationID_Column);
+                locationDAO.setLocationid(locationid);
+            }
+            DbConnectionManager.closeStatement(pstmt);
+            return locationDAO;
+        } catch (SQLException e) {
+            Log.error(e.toString());
+            return null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
+        }
+    }
+
+    public HangoutLocationDAO selectLatestHangoutLocation_BYUSER(long hangoutid, JID user)
+        {
+            Log.debug("select Hangout Location" + user.toBareJID());
+            Connection con = null;
+            try {
+                con = DbConnectionManager.getConnection();
+                PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Location_LATEST_BY_USER);
+                pstmt.setLong(1, hangoutid);
+                pstmt.setString(2, user.toBareJID());
+                ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+                HangoutLocationDAO locationDAO = null;
+                if (result.next()) {
+                    locationDAO = new HangoutLocationDAO();
+                    locationDAO.setHangoutid(hangoutid);
+                    locationDAO.setCreateUser(user);
+                    String createtime = result.getString(HangoutLocationDAO.CreateTime_Column);
+                    locationDAO.setCreateTime(new Date(Long.valueOf(createtime)));
+                    int confirm = result.getInt(HangoutLocationDAO.LocationConfirm_Column);
+                    if (confirm == 0) {
+                        //System.out.println("Location FALSE");
+                        locationDAO.setLocationconfirm(false);
+                    } else {
+                        //System.out.println("Location TRUE");
+                        locationDAO.setLocationconfirm(true);
+                    }
+                    long foursquareLocationID = result.getLong(HangoutLocationDAO.FourSquareID_Column);
+                    locationDAO.setFoursquare_locationid(foursquareLocationID);
+                    long locationid = result.getLong(HangoutLocationDAO.LocationID_Column);
+                    locationDAO.setLocationid(locationid);
+                }
+                DbConnectionManager.closeStatement(pstmt);
+                return locationDAO;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+                return null;
+            } finally {
+                DbConnectionManager.closeConnection(con);
+            }
+        }
+
+    public HangoutTimeDAO selectLatestHangoutTime(long hangoutid)
+    {
+        Log.debug("select Hangout Time");
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Time_LATEST);
+            pstmt.setLong(1, hangoutid);
+            ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+            HangoutTimeDAO timeDAO = null;
+            if (result.next()) {
+                timeDAO = new HangoutTimeDAO();
+                timeDAO.setHangoutid(hangoutid);
+                timeDAO.setCreateUser(new JID(result.getString(HangoutTimeDAO.CreateUser_Column)));
+                String createtime = result.getString(HangoutTimeDAO.CreateTime_Column);
+                String startdate = result.getString(HangoutTimeDAO.StartDate_Column);
+                String enddate = result.getString(HangoutTimeDAO.EndDate_Column);
+                timeDAO.setStartdate(new Date(Long.valueOf(startdate)));
+                timeDAO.setEnddate(new Date(Long.valueOf(enddate)));
+                timeDAO.setCreateTime(new Date(Long.valueOf(createtime)));
+                String timedes = result.getString(HangoutTimeDAO.TimeDescription_Column);
+                timeDAO.setTimeDescription(timedes);
+                long hangouttimeid = result.getLong(HangoutTimeDAO.HangoutTimeID_Column);
+                timeDAO.setHangouttimeid(hangouttimeid);
+                int confirm = result.getInt(HangoutTimeDAO.TimeConfirmed_Column);
+                if (confirm == 0) {
+                    //System.out.println("Time FALSE");
+                    timeDAO.setTimeConfirmed(false);
+                } else {
+                    //System.out.println("Time true");
+                    timeDAO.setTimeConfirmed(true);
+                }
+            }
+            System.out.println(timeDAO);
+            DbConnectionManager.closeStatement(pstmt);
+            return timeDAO;
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+            return null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
+        }
+    }
+
+    public HangoutTimeDAO selectLatestHangoutTime_BYUSER(long hangoutid, JID user)
+      {
+          Log.debug("select Hangout Time" + user.toBareJID());
+          Connection con = null;
+          try {
+              con = DbConnectionManager.getConnection();
+              PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Time_LATEST_BY_USER);
+              pstmt.setLong(1, hangoutid);
+              pstmt.setString(2, user.toBareJID());
+              ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+              HangoutTimeDAO timeDAO = null;
+              if (result.next()) {
+                  timeDAO = new HangoutTimeDAO();
+                  timeDAO.setHangoutid(hangoutid);
+                  timeDAO.setCreateUser(user);
+                  String createtime = result.getString(HangoutTimeDAO.CreateTime_Column);
+                  String startdate = result.getString(HangoutTimeDAO.StartDate_Column);
+                  String enddate = result.getString(HangoutTimeDAO.EndDate_Column);
+                  timeDAO.setStartdate(new Date(Long.valueOf(startdate)));
+                  timeDAO.setEnddate(new Date(Long.valueOf(enddate)));
+                  timeDAO.setCreateTime(new Date(Long.valueOf(createtime)));
+                  String timedes = result.getString(HangoutTimeDAO.TimeDescription_Column);
+                  timeDAO.setTimeDescription(timedes);
+                  long hangouttimeid = result.getLong(HangoutTimeDAO.HangoutTimeID_Column);
+                  timeDAO.setHangouttimeid(hangouttimeid);
+                  int confirm = result.getInt(HangoutTimeDAO.TimeConfirmed_Column);
+                  if (confirm == 0) {
+                      //System.out.println("Time FALSE");
+                      timeDAO.setTimeConfirmed(false);
+                  } else {
+                      //System.out.println("Time true");
+                      timeDAO.setTimeConfirmed(true);
+                  }
+              }
+              DbConnectionManager.closeStatement(pstmt);
+              return timeDAO;
+          } catch (SQLException e) {
+              return null;
+          } finally {
+              DbConnectionManager.closeConnection(con);
+          }
+      }
+
+    public HangoutMessageDAO selectLatestHangoutMessage(long hangoutid)
+    {
+        Log.debug("select Hangout Message");
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_Hangout_Message_LATEST);
+            pstmt.setLong(1, hangoutid);
+            ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+            HangoutMessageDAO messageDAO = null;
+            if (result.next()) {
+                messageDAO = new HangoutMessageDAO();
+                messageDAO.setHangoutid(hangoutid);
+                messageDAO.setCreateUser(new JID(result.getString(HangoutMessageDAO.CreateUser_Column)));
+                messageDAO.setContent(result.getString(HangoutMessageDAO.Content_Column));
+                String createtime = result.getString(HangoutTimeDAO.CreateTime_Column);
+                messageDAO.setCreateTime(new Date(Long.valueOf(createtime)));
+            }
+            DbConnectionManager.closeStatement(pstmt);
+            return messageDAO;
+        } catch (SQLException e) {
+            Log.error(e.toString()); return null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
+        }
     }
 
     public Boolean containSenderStatus(List<HangoutUserDAO> list, JID sender)
@@ -780,5 +992,77 @@ public class HangoutServiceProvider
           }
         }
         return false;
+    }
+
+    public List<HangoutDAO> selectListOfHangout(JID user)
+    {
+        Log.debug("select hangout lists");
+        Connection con = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(Select_HangoutListID_BYJID);
+            pstmt.setString(1, user.toBareJID());
+            ResultSet result = pstmt.executeQuery(); //the results are array, but we only get the top one
+            List<HangoutDAO> returndata = null;
+            if (result.next()) {
+                returndata = new ArrayList<HangoutDAO>();
+                do {
+                    HangoutDAO hangoutDAO = new HangoutDAO();
+                    long hangoutid = result.getLong("hangoutid");
+                    HangoutLocationDAO locationDAO = this.selectLatestHangoutLocation(hangoutid);
+                    HangoutMessageDAO messageDAO = this.selectLatestHangoutMessage(hangoutid);
+                    HangoutTimeDAO timeDAO = this.selectLatestHangoutTime(hangoutid);
+                    hangoutDAO.setLocationDAOList(new ArrayList<HangoutLocationDAO>());
+                    hangoutDAO.setTimeDAOList(new ArrayList<HangoutTimeDAO>());
+                    hangoutDAO.setUserDAOList(new ArrayList<HangoutUserDAO>());
+                    hangoutDAO.setMessageDAOList(new ArrayList<HangoutMessageDAO>());
+                    if (messageDAO != null)
+                    hangoutDAO.getMessageDAOList().add(messageDAO);
+                    if (timeDAO != null)
+                    hangoutDAO.getTimeDAOList().add(timeDAO);
+                    if (locationDAO != null)
+                    hangoutDAO.getLocationDAOList().add(locationDAO);
+                    hangoutDAO.setHangoutid(hangoutid);
+                    List<HangoutUserDAO> users = this.selectHangoutUsers(hangoutid);
+                    for (HangoutUserDAO u : users)
+                    {
+                        if (!u.getJid().toBareJID().equals(user.getNode()))
+                        {
+                            hangoutDAO.getUserDAOList().add(u);
+                        }
+                    }
+                    returndata.add(hangoutDAO);
+                } while (result.next());
+            }
+            DbConnectionManager.closeStatement(pstmt);
+            return returndata;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        } finally {
+            DbConnectionManager.closeConnection(con);
+        }
+    }
+
+    public HangoutDAO selectHangoutInDetail(long hangoutid)
+    {
+        HangoutDAO hangoutDAO = this.selectHangoutByID(hangoutid);
+        hangoutDAO.setLocationDAOList(new ArrayList<HangoutLocationDAO>());
+        hangoutDAO.setMessageDAOList(new ArrayList<HangoutMessageDAO>());
+        hangoutDAO.setUserDAOList(new ArrayList<HangoutUserDAO>());
+        hangoutDAO.setTimeDAOList(new ArrayList<HangoutTimeDAO>());
+        HangoutLocationDAO locationDAO = this.selectLatestHangoutLocation(hangoutid);
+        if (locationDAO != null)
+            hangoutDAO.getLocationDAOList().add(locationDAO);
+        HangoutMessageDAO messageDAO = this.selectLatestHangoutMessage(hangoutid);
+        if (messageDAO != null)
+            hangoutDAO.getMessageDAOList().add(messageDAO);
+        HangoutTimeDAO timeDAO = this.selectLatestHangoutTime(hangoutid);
+        if (timeDAO != null)
+            hangoutDAO.getTimeDAOList().add(timeDAO);
+        List<HangoutUserDAO> users = this.selectHangoutUsers(hangoutid);
+        if (users != null)
+            hangoutDAO.getUserDAOList().addAll(users);
+        return hangoutDAO;
     }
 }
