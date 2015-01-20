@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS `openfire`.`thirdplaceHangoutTime` (
   `updateUser` VARCHAR(64) NULL DEFAULT NULL,
   `timeConfirmed` TINYINT(4) NOT NULL,
   `hangoutid` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`hangoutimeid`),
-  UNIQUE INDEX `hangoutimeid_UNIQUE` (`hangoutimeid` ASC),
+  PRIMARY KEY (`hangouttimeid`),
+  UNIQUE INDEX `hangouttimeid_UNIQUE` (`hangouttimeid` ASC),
   INDEX `hangoutid_idx` (`hangoutid` ASC),
   CONSTRAINT `FK_Time_Hangout`
     FOREIGN KEY (`hangoutid`)
@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS `openfire`.`thirdplaceHangoutUser` (
   `jid` VARCHAR(1024) NOT NULL,
   `goingstatus` VARCHAR(20) NOT NULL,
   `hangoutid` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`hangouruserid`),
-  UNIQUE INDEX `hangouruserid_UNIQUE` (`hangouruserid` ASC),
+  PRIMARY KEY (`hangoutuserid`),
+  UNIQUE INDEX `hangoutuserid_UNIQUE` (`hangoutuserid` ASC),
   INDEX `hangoutid_idx` (`hangoutid` ASC),
   CONSTRAINT `FK_User_Hangout`
     FOREIGN KEY (`hangoutid`)
