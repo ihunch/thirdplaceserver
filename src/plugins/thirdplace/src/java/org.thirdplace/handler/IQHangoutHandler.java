@@ -1,5 +1,6 @@
 package org.thirdplace.handler;
 
+import com.notnoop.apns.ApnsService;
 import org.xmpp.packet.IQ;
 
 /**
@@ -12,5 +13,6 @@ import org.xmpp.packet.IQ;
 public interface IQHangoutHandler
 {
     IQ handleIQRequest (IQ packet);
+    void setApnsServce(ApnsService service);
     void destory();
 }

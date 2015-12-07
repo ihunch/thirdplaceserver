@@ -1,5 +1,7 @@
 package org.thirdplace;
 
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsService;
 import org.dom4j.Element;
 import org.jivesoftware.openfire.IQHandlerInfo;
 import org.jivesoftware.openfire.IQRouter;
@@ -12,12 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.thirdplace.handler.IQHangoutHandler;
 import org.thirdplace.handler.IQHangoutDetailHandler;
 import org.thirdplace.handler.IQHangoutListHandler;
+import org.thirdplace.util.SystemUtils;
 import org.xmpp.component.AbstractComponent;
 import org.xmpp.component.ComponentException;
 import org.xmpp.component.ComponentManager;
 import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
+
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,10 +36,11 @@ public class HangoutComponent extends AbstractComponent
     public static final String HANGOUT_DETAIL 	= "hangout:iq:detail";
     public static final String HANGOUT_LIST = "hangout:iq:list";
     public static final String HANGOUT_MESSAGE = "hangout:message:detail";
-
+    public static final String APSPATHKEY = "APSCertificate_path";
+    public static final String APSCertificatePassword="APSCertificatePassword";
+    private ApnsService service;
     private PluginManager pluginManager;
     private final Plugin plugin;
-
     private static final Logger Log = LoggerFactory.getLogger(HangoutComponent.class);
 
     public HangoutComponent(final Plugin plugin, PluginManager pluginManager)
@@ -45,12 +51,25 @@ public class HangoutComponent extends AbstractComponent
 
     public void doStart()
     {
+        try {
+            String path = SystemUtils.loadProperty(APSPATHKEY);
+            String password = SystemUtils.loadProperty(APSCertificatePassword);
+            service =
+                        APNS.newService()
+                        .withCert(path, password)
+                                .withSandboxDestination()
+                                .build();
+        }
+        catch (IOException e)
+        {
+            Log.error(e.toString());
+        }
 
     }
 
     public void doStop()
     {
-
+        service.stop();
     }
 
     @Override
@@ -85,10 +104,12 @@ public class HangoutComponent extends AbstractComponent
         try {
             if (HANGOUT_DETAIL.equals(namespace)) {
                 handler = new IQHangoutDetailHandler();
+                handler.setApnsServce(service);
                 return handler.handleIQRequest(iq);
 
             } else if (HANGOUT_LIST.equals(namespace)) {
                 handler = new IQHangoutListHandler();
+                handler.setApnsServce(service);
                 return handler.handleIQRequest(iq);
             } else {
                 return null;
@@ -111,6 +132,7 @@ public class HangoutComponent extends AbstractComponent
         if (HANGOUT_DETAIL.equals(namespace))
         {
             handler = new IQHangoutDetailHandler();
+            handler.setApnsServce(service);
             return handler.handleIQRequest(iq);
         }
         else

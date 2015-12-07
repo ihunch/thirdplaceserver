@@ -1,5 +1,7 @@
 package org.thirdplace.handler;
 
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsService;
 import org.dom4j.*;
 import org.jivesoftware.openfire.OfflineMessageStore;
 import org.jivesoftware.openfire.PacketRouter;
@@ -8,6 +10,7 @@ import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserManager;
 import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.jivesoftware.openfire.vcard.VCardManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thirdplace.HangoutComponent;
@@ -43,13 +46,15 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     private final String QueryElement = "query";
     private final String HangoutID = "id";
     private final String ResultElment = "result";
+    private final String DeviceToken = "TOKEN";
     private UserManager userManager;
+    private VCardManager vCardManager;
     private HangoutServiceProvider provider = null;
     private PacketRouter router;
     private OfflineMessageStore offlineMessageStore;
     private PresenceManager presenceManager;
     private int First = 0;
-
+    private ApnsService service = null;
     public IQHangoutDetailHandler()
     {
         this.init();
@@ -59,6 +64,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     {
         provider = new HangoutServiceProvider();
         userManager = UserManager.getInstance();
+        vCardManager = VCardManager.getInstance();
         router = XMPPServer.getInstance().getPacketRouter();
         offlineMessageStore =  OfflineMessageStore.getInstance();
         presenceManager = XMPPServer.getInstance().getPresenceManager();
@@ -72,6 +78,9 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
         presenceManager=null;
     }
 
+    public void setApnsServce(ApnsService service){
+        this.service = service;
+    }
 
     public IQ handleIQRequest(IQ packet)
     {
@@ -100,8 +109,11 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                         messagePacketHandler.setID(packet.getID());
                         if (presenceManager.isAvailable(toUser)) {
                             router.route(messagePacketHandler.getMessage());
-                        } else {
+                        } else
+                        {
                             offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                            String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
+                            this.pushNotification(tokendevice,hangout.getMessageDAOList().get(First).getContent());
                         }
                     } catch (UserNotFoundException e) {
                         Log.error(e.toString());
@@ -155,11 +167,12 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                                     router.route(messagePacketHandler.getMessage());
                                 } else {
                                     offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                                    String tokendevice = vCardManager.getVCardProperty(user.getUsername(), DeviceToken);
+                                    this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
                                 }
                             }
                         }
                     }
-
                 }
                 catch (UserNotFoundException e1)
                 {
@@ -202,8 +215,11 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                              // create Messages
                             if (presenceManager.isAvailable(toUser)) {
                                 router.route(messagePacketHandler.getMessage());
-                            } else {
+                            } else
+                            {
                                 offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
+                                String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
+                                this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
                             }
                         }
                     }
@@ -319,5 +335,14 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     private HangoutDAO FetchDetail(long hangoutid)
     {
         return provider.selectHangoutInDetail(hangoutid);
+    }
+
+    private void pushNotification(String tokendevice, String message)
+    {
+        if (tokendevice != null)
+        {
+            String payload = APNS.newPayload().alertBody(message).build();
+            service.push(tokendevice, payload);
+        }
     }
 }

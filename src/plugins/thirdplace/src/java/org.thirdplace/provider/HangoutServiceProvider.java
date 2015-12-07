@@ -85,8 +85,8 @@ public class HangoutServiceProvider
                    + "goingstatus=? "
                    + "WHERE jid=? AND hangoutid=?";
 
-    private static final String Select_HangoutListID_BYJID = "SELECT user.hangoutid from thirdplaceHangoutUser as user join thirdplaceHangout as hangout " +
-            "on user.hangoutid = hangout.hangoutid where user.jid=? && hangout.closed =0 order by  user.hangoutid desc";
+    private static final String Select_HangoutListID_BYJID = "SELECT hangoutuser.hangoutid from thirdplaceHangoutUser as hangoutuser join thirdplaceHangout as hangout " +
+            "on hangoutuser.hangoutid = hangout.hangoutid where hangoutuser.jid=? && hangout.closed =0 order by hangoutuser.hangoutid desc";
 
     private static final String Select_HANGOUT_BY_ID = "SELECT * from thirdplaceHangout WHERE hangoutid=?";
     private static final String Select_HANGOUT_USER = "SELECT * from thirdplaceHangoutUser WHERE hangoutid=? AND jid=?";
@@ -663,7 +663,7 @@ public class HangoutServiceProvider
         }
         else
         {
-            pstmt.setLong(0,0);
+            pstmt.setLong(1,0);
         }
         pstmt.setLong(2,hangoutid);
         pstmt.executeUpdate();

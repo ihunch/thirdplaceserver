@@ -1,5 +1,6 @@
 package org.thirdplace.handler;
 
+import com.notnoop.apns.ApnsService;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -38,6 +39,7 @@ public class IQHangoutListHandler implements IQHangoutHandler
     private HangoutServiceProvider provider = null;
     private static final Logger Log = LoggerFactory.getLogger(IQHangoutListHandler.class);
     private int First = 0;
+    private ApnsService service = null;
     public IQHangoutListHandler()
     {
        this.init();
@@ -108,6 +110,10 @@ public class IQHangoutListHandler implements IQHangoutHandler
 
     public void destory() {
        provider = null;
+    }
+
+    public void setApnsServce(ApnsService service){
+            this.service = service;
     }
 }
 

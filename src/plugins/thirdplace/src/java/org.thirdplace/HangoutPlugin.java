@@ -6,16 +6,20 @@ package org.thirdplace;
  * Time: 11:55 PM
  * To change this template use File | Settings | File Templates.
  */
+import com.notnoop.apns.APNS;
+import com.notnoop.apns.ApnsService;
 import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.openfire.event.SessionEventDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thirdplace.util.SystemUtils;
 import org.xmpp.component.ComponentException;
 import org.xmpp.component.ComponentManager;
 import org.xmpp.component.ComponentManagerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class HangoutPlugin implements Plugin
 {
@@ -23,10 +27,11 @@ public class HangoutPlugin implements Plugin
     private static Logger logger = LoggerFactory.getLogger(HangoutPlugin.class);
     public static HangoutComponent component = null;
     private final String serviceName = "thirdplacehangout";
-
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
         componentManager = ComponentManagerFactory.getComponentManager();
         component = new HangoutComponent(this,manager);
+
+
         try
         {
             componentManager.addComponent(serviceName, component);
@@ -55,4 +60,5 @@ public class HangoutPlugin implements Plugin
     public String getDescription() {
         return "Third Place Description";
     }
+
 }
