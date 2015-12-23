@@ -11,6 +11,7 @@
 <timedescription>This Saturday</timedescription>
 <message>Want to catch up this week?</message>
 <locationid>1</locationid>
+    <preferredlocation>1,2,3</preferredlocation>
 </hangout>
 </create>
 </iq>

@@ -21,6 +21,7 @@ public class HangoutDAO
     private boolean closed;
     private boolean timeconfirmed;
     private boolean locationconfirmed;
+    private String preferredlocation;
     private List<HangoutLocationDAO> locationDAOList;
     private List<HangoutMessageDAO>  messageDAOList;
     private List<HangoutUserDAO> userDAOList;
@@ -112,5 +113,13 @@ public class HangoutDAO
 
     public void setLocationconfirmed(boolean locationconfirmed) {
         this.locationconfirmed = locationconfirmed;
+    }
+
+    public String getPreferredlocation() {
+        return preferredlocation;
+    }
+
+    public void setPreferredlocation(String preferredlocation) {
+        this.preferredlocation = preferredlocation;
     }
 }

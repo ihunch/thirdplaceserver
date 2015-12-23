@@ -100,3 +100,7 @@ CREATE TABLE `openfire`.`thirdplaceHangoutVersion` (
     REFERENCES `openfire`.`thirdplaceHangout` (`hangoutid`)
     ON DELETE CASCADE
     ON UPDATE RESTRICT);
+
+ALTER TABLE `openfiredev`.`thirdplaceHangout`
+ADD `preferredlocation` VARCHAR(64) NOT NULL
+

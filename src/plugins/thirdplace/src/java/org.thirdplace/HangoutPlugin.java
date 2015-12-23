@@ -30,8 +30,6 @@ public class HangoutPlugin implements Plugin
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
         componentManager = ComponentManagerFactory.getComponentManager();
         component = new HangoutComponent(this,manager);
-
-
         try
         {
             componentManager.addComponent(serviceName, component);

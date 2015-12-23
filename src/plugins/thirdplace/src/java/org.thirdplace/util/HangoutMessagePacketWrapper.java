@@ -63,7 +63,6 @@ public class HangoutMessagePacketWrapper
     {
         HangoutTimeDAO time = hangoutDAO.getTimeDAOList().get(First);
         HangoutMessageDAO messageDAO = hangoutDAO.getMessageDAOList().get(First);
-        HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
         Element hangoutid = hangout.addElement(HangoutServiceProvider.HANGOUTID_ELEMET);
         hangoutid.setText(String.valueOf(hangoutDAO.getHangoutid()));
         DateFormat df = new SimpleDateFormat(HangoutConstant.Hangout_DATEFORMAT);
@@ -82,13 +81,18 @@ public class HangoutMessagePacketWrapper
         }
         Element message = hangout.addElement(HangoutServiceProvider.HANGOUT_MESSAGE_ELEMENT);
         message.setText(messageDAO.getContent());
-        Element location = hangout.addElement(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
-        location.setText(String.valueOf(locationDAO.getFoursquare_locationid()));
-        if (locationDAO.isLocationconfirm())
-        {
-            Element locationconfirm = hangout.addElement(HangoutServiceProvider.HANGOUT_LOCATIONCONFIRM_ELEMENT);
-            locationconfirm.setText("true");
+        if (hangoutDAO.getLocationDAOList() != null && hangoutDAO.getLocationDAOList().size() > 0) {
+            HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
+
+            Element location = hangout.addElement(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
+            location.setText(String.valueOf(locationDAO.getFoursquare_locationid()));
+            if (locationDAO.isLocationconfirm()) {
+                Element locationconfirm = hangout.addElement(HangoutServiceProvider.HANGOUT_LOCATIONCONFIRM_ELEMENT);
+                locationconfirm.setText("true");
+            }
         }
+        Element perferredlocation = hangout.addElement(HangoutServiceProvider.HANGOUT_PERFERREDLOCATION_ELEMENT);
+        perferredlocation.setText(hangoutDAO.getPreferredlocation());
     }
 
     public void addSenderGoingStatus(String status)

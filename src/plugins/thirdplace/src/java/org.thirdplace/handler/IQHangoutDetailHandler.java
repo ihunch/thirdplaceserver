@@ -47,6 +47,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
     private final String HangoutID = "id";
     private final String ResultElment = "result";
     private final String DeviceToken = "TOKEN";
+    private final String FormatedName = "FN";
     private UserManager userManager;
     private VCardManager vCardManager;
     private HangoutServiceProvider provider = null;
@@ -219,7 +220,13 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                             {
                                 offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
                                 String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
-                                this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
+                                String realname = vCardManager.getVCardProperty(user.getUsername(),FormatedName);
+                                if (tokendevice != null && realname != null) {
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(realname);
+                                    sb.append(" can not catch up this weekend");
+                                    this.pushNotification(tokendevice, sb.toString());
+                                }
                             }
                         }
                     }
@@ -262,8 +269,6 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                         locationConfirm.setText("false");
                     }
                 }
-                System.out.println(hangoutDAO.getTimeDAOList());
-                System.out.println(hangoutDAO.getTimeDAOList().size());
                 if (hangoutDAO.getTimeDAOList().size() > 0) {
                     HangoutTimeDAO timeDAO = hangoutDAO.getTimeDAOList().get(First);
                     Element time = hangout.addElement(HangoutServiceProvider.HANGOUT_TIMEDESCRIPTION_ELEMENT);

@@ -40,14 +40,14 @@ public class HangoutServiceProvider
     public static final String HANGOUTLOCATION_ELEMENT = "locationid";
     public static final String HANGOUT_LOCATIONCONFIRM_ELEMENT = "locationconfirm";
     public static final String HANGOUT_GOINGSTATUS_ELEMENT = "goingstatus";
-
+    public static final String HANGOUT_PERFERREDLOCATION_ELEMENT = "preferredlocation";
 
     private static final Logger Log = LoggerFactory.getLogger(HangoutServiceProvider.class);
 
     private static final String CREATE_HANGOUT =
              "INSERT INTO thirdplaceHangout ("+
-            "hangoutid, description, createUser, createDate, closed, timeconfirmed, locationconfirmed)"
-            + "VALUES (?,?,?,?,?,?,?)";
+            "hangoutid, description, createUser, createDate, closed, timeconfirmed, locationconfirmed, preferredlocation)"
+            + "VALUES (?,?,?,?,?,?,?,?)";
     private static final String CREATE_HANGOUTTIME =
              "INSERT INTO thirdplaceHangoutTime ("+
                 "hangouttimeid, timeDescription, startdate, enddate, createTime, createUser, timeConfirmed, hangoutid)"
@@ -86,7 +86,7 @@ public class HangoutServiceProvider
                    + "WHERE jid=? AND hangoutid=?";
 
     private static final String Select_HangoutListID_BYJID = "SELECT hangoutuser.hangoutid from thirdplaceHangoutUser as hangoutuser join thirdplaceHangout as hangout " +
-            "on hangoutuser.hangoutid = hangout.hangoutid where hangoutuser.jid=? && hangout.closed =0 order by hangoutuser.hangoutid desc";
+            "on hangoutuser.hangoutid = hangout.hangoutid where hangoutuser.jid=? order by hangoutuser.hangoutid desc";
 
     private static final String Select_HANGOUT_BY_ID = "SELECT * from thirdplaceHangout WHERE hangoutid=?";
     private static final String Select_HANGOUT_USER = "SELECT * from thirdplaceHangoutUser WHERE hangoutid=? AND jid=?";
@@ -126,6 +126,13 @@ public class HangoutServiceProvider
                     String des =  desElement.getText();
                     hangoutDAO.setDescription(des);
                 }
+                Element preferredlocationElement = hangout.element(HangoutServiceProvider.HANGOUT_PERFERREDLOCATION_ELEMENT);
+                if (preferredlocationElement != null)
+                {
+                    String des = preferredlocationElement.getText();
+                    hangoutDAO.setPreferredlocation(des);
+                }
+
                 String jidstr = packet.getElement().attributeValue("from");
                 JID fromjid = new JID(jidstr);
                 hangoutDAO.setCreateUser(fromjid);
@@ -199,17 +206,18 @@ public class HangoutServiceProvider
                 this.createHangoutMessage(con,messageDAO);
                 hangoutDAO.getMessageDAOList().add(messageDAO);
 
-                //Hangout Location
-                Element location = hangout.element(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
-                long hangoutLocationID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOOUTLOCATION);
-                HangoutLocationDAO locationDAO = new HangoutLocationDAO();
-                locationDAO.setLocationid(hangoutLocationID);
-                locationDAO.setFoursquare_locationid(Long.valueOf(location.getText()));
-                locationDAO.setCreateUser(hangoutDAO.getCreateUser());
-                locationDAO.setCreateTime(hangoutDAO.getCreateDate());
-                locationDAO.setHangoutid(hangoutDAO.getHangoutid());
-                this.createHangoutlocation(con, locationDAO);
-                hangoutDAO.getLocationDAOList().add(locationDAO);
+//                //Hangout Location
+//                Element location = hangout.element(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
+//                long hangoutLocationID = SequenceManager.nextID(HangoutConstant.THIRDPLACE_HANGOOUTLOCATION);
+//                HangoutLocationDAO locationDAO = new HangoutLocationDAO();
+//                locationDAO.setLocationid(hangoutLocationID);
+//                locationDAO.setFoursquare_locationid(Long.valueOf(location.getText()));
+//                locationDAO.setCreateUser(hangoutDAO.getCreateUser());
+//                locationDAO.setCreateTime(hangoutDAO.getCreateDate());
+//                locationDAO.setHangoutid(hangoutDAO.getHangoutid());
+//                this.createHangoutlocation(con, locationDAO);
+//                hangoutDAO.getLocationDAOList().add(locationDAO);
+
                 // HangoutVersion
                 long hangoutversionID = SequenceManager
                                            .nextID(HangoutConstant.THIRDPLACE_HANGOUTVERSION);
@@ -263,6 +271,7 @@ public class HangoutServiceProvider
         } else {
             pstmt_hangout.setInt(7, 1);
         }
+        pstmt_hangout.setString(8, hangoutDAO.getPreferredlocation());
         pstmt_hangout.executeUpdate();
         DbConnectionManager.closeStatement(pstmt_hangout);
     }
@@ -530,22 +539,33 @@ public class HangoutServiceProvider
             con.setAutoCommit(false);
             existingHangout.setClosed(true);
             existingHangout.setUserDAOList(new ArrayList<HangoutUserDAO>());
+            String jidstr = packet.getElement().attributeValue("from");
+            JID fromjid = new JID(jidstr);
+            HangoutUserDAO fromuser = this.selectHangoutUser(fromjid.toBareJID(),hangoutid);
+            fromuser.setGoingstatus("notgoing");
+            this.updateUserGoingStatus(con,fromuser);
+            this.updateHangoutCloseStatus(con,existingHangout.getHangoutid(),true);
             Element users = hangout.element(HangoutServiceProvider.HANGOUTUSERS_ELEMENT);
             Iterator<Element> itr = users.elementIterator(HangoutServiceProvider.HANGOUTUSERS_SUBELEMENT);
-            while (itr.hasNext())
-            {
+            while (itr.hasNext()) {
                 Element element = itr.next();
                 String tojidstr = element.getText();
                 JID tojid = new JID(tojidstr);
-                HangoutUserDAO user = this.selectHangoutUser(tojid.toBareJID(),hangoutid);
+                HangoutUserDAO user = this.selectHangoutUser(tojid.toBareJID(), hangoutid);
                 existingHangout.getUserDAOList().add(user);
             }
-            this.updateHangoutCloseStatus(con,existingHangout.getHangoutid(),true);
             con.commit();
             return existingHangout;
         }
         catch (Exception e)
         {
+            try {
+                con.rollback();
+            }
+            catch (SQLException e1)
+            {
+                Log.error(e1.toString());
+            }
             Log.error(e.toString());
             return null;
         }
@@ -707,6 +727,7 @@ public class HangoutServiceProvider
                 } else {
                     hangout.setLocationconfirmed(true);
                 }
+                hangout.setPreferredlocation(result.getString("preferredlocation"));
             }
             DbConnectionManager.closeStatement(pstmt);
             return hangout;
