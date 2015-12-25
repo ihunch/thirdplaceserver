@@ -101,6 +101,6 @@ CREATE TABLE `openfire`.`thirdplaceHangoutVersion` (
     ON DELETE CASCADE
     ON UPDATE RESTRICT);
 
-ALTER TABLE `openfiredev`.`thirdplaceHangout`
+ALTER TABLE `openfire`.`thirdplaceHangout`
 ADD `preferredlocation` VARCHAR(64) NOT NULL
 
