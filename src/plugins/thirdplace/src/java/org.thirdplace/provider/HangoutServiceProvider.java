@@ -129,7 +129,6 @@ public class HangoutServiceProvider
                 Element preferredlocationElement = hangout.element(HangoutServiceProvider.HANGOUT_PERFERREDLOCATION_ELEMENT);
                 if (preferredlocationElement != null)
                 {
-                    Log.debug("preferredlocationElement.getText()");
                     String des = preferredlocationElement.getText();
                     hangoutDAO.setPreferredlocation(des);
                 }

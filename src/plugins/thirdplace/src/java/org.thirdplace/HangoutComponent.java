@@ -57,7 +57,7 @@ public class HangoutComponent extends AbstractComponent
             service =
                         APNS.newService()
                         .withCert(path, password)
-                                .withSandboxDestination()
+                                .withProductionDestination()
                                 .build();
         }
         catch (IOException e)

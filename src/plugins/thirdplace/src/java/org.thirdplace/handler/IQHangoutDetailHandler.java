@@ -348,8 +348,6 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
         {
             try {
                 String payload = APNS.newPayload().alertBody(message).build();
-                Log.info(tokendevice);
-                Log.info(payload);
                 service.push(tokendevice, payload);
             }
             catch (Exception e)
