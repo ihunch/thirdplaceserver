@@ -4,11 +4,6 @@ import com.notnoop.apns.ApnsService;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.jivesoftware.openfire.OfflineMessageStore;
-import org.jivesoftware.openfire.PacketRouter;
-import org.jivesoftware.openfire.PresenceManager;
-import org.jivesoftware.openfire.XMPPServer;
-import org.jivesoftware.openfire.user.UserManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thirdplace.HangoutComponent;
@@ -20,7 +15,6 @@ import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -57,33 +51,65 @@ public class IQHangoutListHandler implements IQHangoutHandler
                 Element result = document.addElement(ResultElment, HangoutComponent.HANGOUT_LIST);
                 List<HangoutDAO> list = provider.selectListOfHangout(fromjid);
                 for (HangoutDAO hangoutDAO : list) {
-                    Element hangout = result.addElement("hangout");
-                    Element id = hangout.addElement("id");
-                    id.setText(String.valueOf(hangoutDAO.getHangoutid()));
-                    if (hangoutDAO.getLocationDAOList().size() > 0) {
-                        HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
+                    Element hangout = result.addElement(HangoutServiceProvider.HANGOUT_ELEMET);
+                     Element createUser = hangout.addElement("createUser");
+                    Element preferlocation = hangout.addElement("preferredlocation");
+                    Element createTime = hangout.addElement("createTime");
+                    Element description = hangout.addElement("description");
+                    description.setText(hangoutDAO.getDescription());
+                    preferlocation.setText(hangoutDAO.getPreferredlocation());
+                    createUser.setText(hangoutDAO.getCreateUser().toBareJID());
+                    DateFormat df = new SimpleDateFormat(HangoutConstant.Hangout_DATEFORMAT);
+                    createTime.setText(df.format(hangoutDAO.getCreateDate()));
+                    hangout.addAttribute("id", String.valueOf(hangoutDAO.getHangoutid()));
+                    if (hangoutDAO.getLocationDAOList().size() > 0)
+                    {
                         Element location = hangout.addElement("location");
-                        location.setText(String.valueOf(locationDAO.getFoursquare_locationid()));
-                        System.out.println(String.valueOf(locationDAO.getFoursquare_locationid()));
+
+                        HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
+                        Element locationid = location.addElement(HangoutServiceProvider.HANGOUTLOCATION_ELEMENT);
+                        locationid.setText(String.valueOf(locationDAO.getFoursquare_locationid()));
+                        Element createjid = location.addElement(HangoutServiceProvider.HANGOUT_CREATEUSER);
+                        Element createtime = location.addElement(HangoutServiceProvider.HANGOUT_CREATETIME);
+                        createjid.setText(locationDAO.getCreateUser().toBareJID());
+                        createtime.setText(df.format(locationDAO.getCreateTime()));
                     }
-                    if (hangoutDAO.getTimeDAOList().size() > 0) {
-                        HangoutTimeDAO timeDAO = hangoutDAO.getTimeDAOList().get(First);
+
+                    if (hangoutDAO.getTimeDAOList().size() > 0)
+                    {
                         Element time = hangout.addElement("time");
-                        time.setText(timeDAO.getTimeDescription());
+                        HangoutTimeDAO timeDAO = hangoutDAO.getTimeDAOList().get(First);
+                        Element timedescription = time.addElement(HangoutServiceProvider.HANGOUT_TIMEDESCRIPTION_ELEMENT);
+                        Element startdate = time.addElement(HangoutServiceProvider.HANGOUT_STARTDATE_ELEMENT);
+                        Element enddate = time.addElement(HangoutServiceProvider.HANGOUT_ENDDATE_ELEMENT);
+                        timedescription.setText(timeDAO.getTimeDescription());
+                        startdate.setText(df.format(timeDAO.getStartdate()));
+                        enddate.setText(df.format(timeDAO.getEnddate()));
+                        Element createjid = time.addElement(HangoutServiceProvider.HANGOUT_CREATEUSER);
+                        Element createtime = time.addElement(HangoutServiceProvider.HANGOUT_CREATETIME);
+                        createjid.setText(timeDAO.getCreateUser().toBareJID());
+                        createtime.setText(df.format(timeDAO.getCreateTime()));
                     }
                     if (hangoutDAO.getMessageDAOList().size() > 0) {
-                        HangoutMessageDAO messageDAO = hangoutDAO.getMessageDAOList().get(First);
-                        Element message = hangout.addElement("message");
-                        System.out.println(messageDAO.getContent());
-                        message.setText(messageDAO.getContent());
-                    }
+                        Element messages = hangout.addElement("messages");
+                          for(HangoutMessageDAO messageDAO : hangoutDAO.getMessageDAOList())
+                          {
+                              Element message = messages.addElement("message");
+                              Element content = message.addElement("content");
+                              content.setText(messageDAO.getContent());
+                              Element createjid = message.addElement(HangoutServiceProvider.HANGOUT_CREATEUSER);
+                              Element createtime = message.addElement(HangoutServiceProvider.HANGOUT_CREATETIME);
+                              createjid.setText(messageDAO.getCreateUser().toBareJID());
+                              createtime.setText(df.format(messageDAO.getCreateTime()));
+                          }
+                       }
                     if (hangoutDAO.getUserDAOList().size() > 0) {
                         List<HangoutUserDAO> users = hangoutDAO.getUserDAOList();
                         Element usersElement = hangout.addElement("users");
                         for (HangoutUserDAO user : users) {
                             Element userElement = usersElement.addElement("user");
-                            userElement.addAttribute("jid",user.getJid().toBareJID());
-                            userElement.addAttribute("goingstatus",user.getGoingstatus());
+                            userElement.addAttribute("jid", user.getJid().toBareJID());
+                            userElement.addAttribute("goingstatus", user.getGoingstatus());
                         }
                     }
                 }
