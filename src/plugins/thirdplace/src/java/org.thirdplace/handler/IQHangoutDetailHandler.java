@@ -113,9 +113,9 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                         } else
                         {
                             offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
-                            String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
-                            this.pushNotification(tokendevice,hangout.getMessageDAOList().get(First).getContent());
                         }
+                        String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
+                        this.pushNotification(tokendevice,hangout.getMessageDAOList().get(First).getContent());
                     } catch (UserNotFoundException e) {
                         Log.error(e.toString());
                     }
@@ -168,9 +168,9 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                                     router.route(messagePacketHandler.getMessage());
                                 } else {
                                     offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
-                                    String tokendevice = vCardManager.getVCardProperty(user.getUsername(), DeviceToken);
-                                    this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
                                 }
+                                String tokendevice = vCardManager.getVCardProperty(user.getUsername(), DeviceToken);
+                                this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
                             }
                         }
                     }
@@ -219,14 +219,14 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                             } else
                             {
                                 offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
-                                String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
-                                String realname = vCardManager.getVCardProperty(user.getUsername(),FormatedName);
-                                if (tokendevice != null && realname != null) {
-                                    StringBuilder sb = new StringBuilder();
-                                    sb.append(realname);
-                                    sb.append(" can not catch up this weekend");
-                                    this.pushNotification(tokendevice, sb.toString());
-                                }
+                            }
+                            String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
+                            String realname = vCardManager.getVCardProperty(user.getUsername(),FormatedName);
+                            if (tokendevice != null && realname != null) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(realname);
+                                sb.append(" can not catch up this weekend");
+                                this.pushNotification(tokendevice, sb.toString());
                             }
                         }
                     }
