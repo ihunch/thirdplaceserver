@@ -230,7 +230,7 @@ public class HangoutServiceProvider
                 // HangoutVersion
                 long hangoutversionID = SequenceManager
                                            .nextID(HangoutConstant.THIRDPLACE_HANGOUTVERSION);
-                this.createHangoutVersion(con,hangoutID,hangoutversionID,now);
+                this.createHangoutVersion(con,hangoutID,hangoutversionID,hangoutDAO.getCreateDate());
                 con.commit();
                 return hangoutDAO;
             }

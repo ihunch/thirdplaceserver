@@ -64,6 +64,8 @@ public class HangoutMessagePacketWrapper
         HangoutTimeDAO time = hangoutDAO.getTimeDAOList().get(First);
         HangoutMessageDAO messageDAO = hangoutDAO.getMessageDAOList().get(First);
         Element hangoutid = hangout.addElement(HangoutServiceProvider.HANGOUTID_ELEMET);
+        Element hangoutcreateuser = hangout.addElement(HangoutServiceProvider.HANGOUT_CREATEUSER);
+        hangoutcreateuser.setText(hangoutDAO.getCreateUser().toBareJID());
         hangoutid.setText(String.valueOf(hangoutDAO.getHangoutid()));
         DateFormat df = new SimpleDateFormat(HangoutConstant.Hangout_DATEFORMAT);
         Element startdate = hangout.addElement(HangoutServiceProvider.HANGOUT_STARTDATE_ELEMENT);
