@@ -35,6 +35,7 @@ public class HangoutServiceProvider
     public static final String HANGOUT_STARTDATE_ELEMENT = "startdate";
     public static final String HANGOUT_ENDDATE_ELEMENT = "enddate";
     public static final String HANGOUT_MESSAGE_ELEMENT = "message";
+    public static final String HANGOUT_MESSAGEID_ELEMENT = "messageid";
     public static final String HANGOUT_TIMEDESCRIPTION_ELEMENT = "timedescription";
     public static final String HANGOUT_TIMECONFIRM_ELEMENT = "timeconfirm";
     public static final String HANGOUTLOCATION_ELEMENT = "locationid";
@@ -1028,6 +1029,7 @@ public class HangoutServiceProvider
                       HangoutMessageDAO messageDAO = null;
                       messageDAO = new HangoutMessageDAO();
                       messageDAO.setHangoutid(hangoutid);
+                      messageDAO.setMessageid(result.getLong(HangoutMessageDAO.HangoutMessageID_Column));
                       messageDAO.setCreateUser(new JID(result.getString(HangoutMessageDAO.CreateUser_Column)));
                       messageDAO.setContent(result.getString(HangoutMessageDAO.Content_Column));
                       String createtime = result.getString(HangoutTimeDAO.CreateTime_Column);

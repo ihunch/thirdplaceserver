@@ -83,6 +83,8 @@ public class HangoutMessagePacketWrapper
         }
         Element message = hangout.addElement(HangoutServiceProvider.HANGOUT_MESSAGE_ELEMENT);
         message.setText(messageDAO.getContent());
+        Element messageid = hangout.addElement(HangoutServiceProvider.HANGOUT_MESSAGEID_ELEMENT);
+        messageid.setText(Long.toString(messageDAO.getMessageid()));
         if (hangoutDAO.getLocationDAOList() != null && hangoutDAO.getLocationDAOList().size() > 0) {
             HangoutLocationDAO locationDAO = hangoutDAO.getLocationDAOList().get(First);
 

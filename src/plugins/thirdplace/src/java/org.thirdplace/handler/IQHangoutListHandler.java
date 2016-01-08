@@ -96,7 +96,9 @@ public class IQHangoutListHandler implements IQHangoutHandler
                           {
                               Element message = messages.addElement("message");
                               Element content = message.addElement("content");
+                              Element messageid = message.addElement("messageid");
                               content.setText(messageDAO.getContent());
+                              messageid.setText(Long.toString(messageDAO.getMessageid()));
                               Element createjid = message.addElement(HangoutServiceProvider.HANGOUT_CREATEUSER);
                               Element createtime = message.addElement(HangoutServiceProvider.HANGOUT_CREATETIME);
                               createjid.setText(messageDAO.getCreateUser().toBareJID());
