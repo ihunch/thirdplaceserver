@@ -115,7 +115,22 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                             offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
                         }
                         String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
-                        this.pushNotification(tokendevice,hangout.getMessageDAOList().get(First).getContent());
+                        String sendername = vCardManager.getVCardProperty(hangout.getCreateUser().getNode(),FormatedName);
+                        if (tokendevice != null)
+                        {
+                            String plainmessage =  hangout.getMessageDAOList().get(First).getContent();
+                            if (sendername != null) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(sendername);
+                                sb.append(": ");
+                                sb.append(plainmessage);
+                                this.pushNotification(tokendevice, sb.toString());
+                            }
+                            else
+                            {
+                                this.pushNotification(tokendevice, plainmessage);
+                            }
+                        }
                     } catch (UserNotFoundException e) {
                         Log.error(e.toString());
                     }
@@ -170,7 +185,22 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                                     offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
                                 }
                                 String tokendevice = vCardManager.getVCardProperty(user.getUsername(), DeviceToken);
-                                this.pushNotification(tokendevice,hangoutDAO.getMessageDAOList().get(First).getContent());
+                                String sendername = vCardManager.getVCardProperty(sender.getUsername(),FormatedName);
+                                if (tokendevice != null)
+                                {
+                                    String plainmessage =  hangoutDAO.getMessageDAOList().get(First).getContent();
+                                    if (sendername != null) {
+                                        StringBuilder sb = new StringBuilder();
+                                        sb.append(sendername);
+                                        sb.append(": ");
+                                        sb.append(plainmessage);
+                                        this.pushNotification(tokendevice, sb.toString());
+                                    }
+                                    else
+                                    {
+                                        this.pushNotification(tokendevice, plainmessage);
+                                    }
+                                }
                             }
                         }
                     }
