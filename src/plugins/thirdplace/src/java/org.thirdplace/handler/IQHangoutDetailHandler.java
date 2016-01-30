@@ -377,7 +377,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
         if (tokendevice != null)
         {
             try {
-                String payload = APNS.newPayload().alertBody(message).build();
+                String payload = APNS.newPayload().alertBody(message).badge(1).build();
                 service.push(tokendevice, payload);
             }
             catch (Exception e)
