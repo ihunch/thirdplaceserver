@@ -228,6 +228,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
             HangoutDAO hangoutDAO = this.CloseDetail(Long.valueOf(id), packet);
             String jidstr = packet.getElement().attributeValue("from");
             JID fromjid = new JID(jidstr);
+            HangoutUserDAO sender = provider.selectHangoutUser(fromjid.toBareJID(), hangoutDAO.getHangoutid());
             try {
                 if (hangoutDAO != null) {
                     Element close = document.addElement(CloseElement, HangoutComponent.HANGOUT_DETAIL);
@@ -251,7 +252,7 @@ public class IQHangoutDetailHandler implements IQHangoutHandler
                                 offlineMessageStore.addMessage((Message) messagePacketHandler.getMessage());
                             }
                             String tokendevice = vCardManager.getVCardProperty(user.getUsername(),DeviceToken);
-                            String realname = vCardManager.getVCardProperty(user.getUsername(),FormatedName);
+                            String realname = vCardManager.getVCardProperty(sender.getUsername(),FormatedName);
                             if (tokendevice != null && realname != null) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(realname);
